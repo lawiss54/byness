@@ -1,0 +1,92 @@
+
+import { memo, useState, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { ShoppingBag } from 'lucide-react';
+import { Product } from './types/product.types';
+import { ANIMATIONS } from './constants/animations';
+import { Badge } from './components/ui/Badge';
+import { ColorPalette } from './components/ui/ColorPalette';
+import { OptimizedImage } from './components/ui/OptimizedImage';
+import { QuickActions } from './components/ui/QuickActions';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export const ProductCard = memo(({ product }: ProductCardProps) => {
+  const [isLiked, setIsLiked] = useState(false);
+  
+  const handleToggleLike = useCallback(() => {
+    setIsLiked(prev => !prev);
+  }, []);
+
+  const handleAddToCart = useCallback(() => {
+    console.log('Ajout au panier:', product.id);
+  }, [product.id]);
+
+  return (
+    <motion.div
+      variants={ANIMATIONS.item}
+      className="group relative bg-brand-sage-100 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-brand-camel-200"
+      whileHover={ANIMATIONS.card.hover}
+      whileTap={ANIMATIONS.card.tap}
+    >
+      {/* IMAGE SECTION */}
+      <div className="relative aspect-[3/4] overflow-hidden bg-brand-ivory-100">
+        <OptimizedImage
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105"
+        />
+
+        {/* BADGES */}
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {product.isNew && <Badge type="new" />}
+          {product.isSale && product.discount && (
+            <Badge type="sale" discount={product.discount} />
+          )}
+        </div>
+
+        {/* QUICK ACTIONS */}
+        <QuickActions isLiked={isLiked} onToggleLike={handleToggleLike} />
+
+        {/* ADD TO CART OVERLAY */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <button 
+            onClick={handleAddToCart}
+            className="w-full bg-white text-brand-darkGreen-600 py-2 px-3 rounded-lg font-medium text-sm hover:bg-brand-camel-50 transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            أضف للسلة
+          </button>
+        </div>
+      </div>
+
+      {/* PRODUCT INFO */}
+      <div className="p-3">
+       
+        <h3 className="font-medium text-sm text-brand-darkGreen-600 mb-2 line-clamp-2 leading-tight">
+          {product.name}
+        </h3>
+
+        {/* PRICE */}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="font-bold text-brand-darkGreen-600 text-lg">
+            {product.price} DA
+          </span>
+          {product.originalPrice && (
+            <span className="text-gray-400 line-through text-sm">
+              {product.originalPrice} DA
+            </span>
+          )}
+        </div>
+
+        {/* COLORS */}
+        {product.colors && <ColorPalette colors={product.colors} />}
+      </div>
+    </motion.div>
+  );
+});
+
+ProductCard.displayName = 'ProductCard';
+
