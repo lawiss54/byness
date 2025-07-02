@@ -2,8 +2,8 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { AddToCartButtons } from './ProductActionButtons';
-import { ProductRating } from './ProductRating';
+
+
 
 interface ProductImageProps {
   product: SimilarProduct;
@@ -62,11 +62,9 @@ export const ProductImage: React.FC<ProductImageProps> = memo(({
         </motion.div>
       )}
 
-      {/* Action Buttons */}
-      <AddToCartButtons />
+      
 
-      {/* Rating Badge */}
-      <ProductRating product={product} index={index} />
+     
     </div>
   );
 });

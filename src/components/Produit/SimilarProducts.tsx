@@ -9,13 +9,11 @@ import type { SimilarProductsProps } from './SimilarProducts/types';
 /**
  * SimilarProducts Component
  * 
- * Displays a grid of similar products with animations and interactive features.
- * Optimized for performance with memoization and component splitting.
- * 
  * @param products - Array of similar products to display
  * @param onProductClick - Optional callback for product click events
  * @param onViewAllClick - Optional callback for view all button click
  */
+
 const SimilarProducts: React.FC<SimilarProductsProps> = memo(({ 
   products, 
   onProductClick,
@@ -64,7 +62,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
             margin: "-10% 0px -10% 0px" // Start animation earlier for better UX
           }}
         >
-          {memoizedProducts.map((product, index) => (
+          {memoizedProducts.slice(0, 6).map((product, index) => (
             <ProductCard
               key={product.id}
               product={product}

@@ -72,10 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = memo(({
       />
 
       {/* Hover Effect Overlay */}
-      <motion.div
-        className="absolute inset-0 bg-brand-camel-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        initial={false}
-      />
+    
     </motion.div>
   );
 });

@@ -59,7 +59,7 @@ const ProductInfo = memo<ProductInfoProps>(({
               <span className="text-3xl md:text-4xl font-bold text-brand-camel-500">
                 {product?.price.toLocaleString()} DA
               </span>
-              {product?.originalPrice && (
+              {product?.originalPrice > 0 && (
                 <span className="text-xl text-brand-sage-400 line-through">
                   {product?.originalPrice.toLocaleString()} DA
                 </span>

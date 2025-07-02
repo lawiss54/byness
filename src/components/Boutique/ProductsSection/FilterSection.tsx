@@ -1,7 +1,7 @@
 
 import { memo } from 'react';
 import { Grid, List } from 'lucide-react';
-import { Category, ViewMode, SortType } from './types/product.types';
+import { Category, ViewMode, SortType } from '../types/product.types';
 
 interface FilterSectionProps {
   categories: Category[];
@@ -23,6 +23,7 @@ export const FilterSection = memo(({
   onViewModeChange
 }: FilterSectionProps) => {
   return (
+    
     <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between mb-8">
       {/* CATEGORIES FILTER */}
       <div className="flex flex-wrap gap-2">

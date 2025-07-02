@@ -1,9 +1,8 @@
-import { Product } from '@/components/Boutique/ProductsSection/types/product.types';
+import { Product } from '@/components/Boutique/types/product.types';
 
 interface ProductDetailsPageProps {
   product: Product;
   similarProducts: Product[];
-  exclusiveProducts: Product[];
 }
 
 interface ProductInfoProps {

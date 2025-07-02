@@ -5,7 +5,14 @@ import { useEffect, useState, useRef } from "react";
 import { Filter } from "lucide-react";
 import { containerVariants, itemVariants } from "./CategorieSection/animations/variants";
 import { CategoryButton } from "./CategorieSection/CategoryButton";
-import type { CategoriesSectionProps } from "./CategorieSection/type.ts";
+import { Category, Product } from "@/components/Boutique/types/product.types";
+
+interface CategoriesSectionProps {
+  categories: Category[];
+  products: Product[];
+  setfilteredProducts: (products: Product[]) => void;
+  setSelectedCategoryCallBack: (category: string) => void;
+}
 
 export default function CategorieSection({
   categories,

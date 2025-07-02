@@ -3,7 +3,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ProductsSectionProps, ViewMode, SortType } from './ProductsSection/types/product.types';
+import { ProductsSectionProps, ViewMode, SortType } from './types/product.types';
 import { ANIMATIONS } from './ProductsSection/constants/animations';
 import { sortProducts, filterProducts } from './ProductsSection/utils/productUtils';
 import { ProductCard } from './ProductsSection/ProductCard';
@@ -19,8 +19,13 @@ export default function ProductsSection({
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<SortType>('default');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [page, setPage] = useState(10)
 
   // OPTIMIZED CALLBACKS
+  const handleViewMore = useCallback((page: number) => {
+    setPage(page + 6);
+  }, []);
+
   const handleCategoryChange = useCallback((category: string) => {
     setSelectedCategory(category);
   }, []);
@@ -71,8 +76,8 @@ export default function ProductsSection({
             exit="hidden"
             className={gridClasses}
           >
-            {filteredAndSortedProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {filteredAndSortedProducts.slice(0, 10).map((product) => (
+              <ProductCard key={product?.id} product={product} />
             ))}
           </motion.div>
         </AnimatePresence>
@@ -87,8 +92,8 @@ export default function ProductsSection({
             transition={{ delay: 0.2, duration: 0.5 }}
             viewport={{ once: true }}
           >
-            <button className="bg-brand-camel-500 hover:bg-brand-camel-600 text-white px-8 py-3 rounded-full font-medium transition-all duration-200 hover:shadow-lg">
-              عرض المزيد من المنتجات
+            <button onClick={handleViewMore} className="bg-brand-camel-500 hover:bg-brand-camel-600 text-white px-8 py-3 rounded-full font-medium transition-all duration-200 hover:shadow-lg">
+              Découvrir plus de produits
             </button>
           </motion.div>
         )}

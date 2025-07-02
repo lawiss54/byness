@@ -5,21 +5,20 @@
  */
 export interface SimilarProduct {
   id: string;
+  slug: string;
   name: string;
   description: string;
   price: number;
   originalPrice?: number;
   images: string[];
-  badge?: string;
+  badge: string;
   colors?: string[];
   sizes?: string[];
   category: string;
-  features?: string[];
   stockQuantity?: number;
   isNew?: boolean;
   isSale?: boolean;
   discount?: number;
-  sku?: string;
   status?: 'active' | 'inactive' | 'out-of-stock';
 }
 

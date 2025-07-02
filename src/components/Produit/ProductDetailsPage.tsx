@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 // Components - Split into separate files for better code splitting
 import ProductImageGallery from './ProductDetailsPage/ProductImageGallery';
 import ProductInfo from './ProductDetailsPage/ProductInfo';
-import ProductTabs from './ProductDetailsPage/ProductTabs';
 import TrustSignals from './ProductDetailsPage/TrustSignals';
 
 import type {ProductDetailsPageProps } from './ProductDetailsPage/type';
@@ -19,10 +18,7 @@ const SimilarProducts = dynamic(() => import('./SimilarProducts'), {
   ssr: false // Only load on client side to reduce server load
 });
 
-const ExclusiveProducts = dynamic(() => import('./ExclusiveProducts'), {
-  loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-3xl" />,
-  ssr: false
-});
+
 
 const ImageModal = dynamic(() => import('./ProductDetailsPage/ImageModal'), {
   ssr: false // Modal only needed on client interaction
@@ -32,14 +28,12 @@ const ImageModal = dynamic(() => import('./ProductDetailsPage/ImageModal'), {
 export default function ProductDetailsPage({ 
   product, 
   similarProducts, 
-  exclusiveProducts 
 }: ProductDetailsPageProps) {
   // State management - Keep related state together
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(product?.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product?.sizes[0]);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState('description');
   const [showImageModal, setShowImageModal] = useState(false);
 
   // Memoized calculations to prevent unnecessary re-calculations
@@ -70,11 +64,6 @@ export default function ProductDetailsPage({
   const handleQuantityChange = useCallback((newQuantity: number) => {
     setQuantity(Math.max(1, newQuantity));
   }, []);
-
-  const handleTabChange = useCallback((tab: string) => {
-    setActiveTab(tab);
-  }, []);
-
 
   const handleModalToggle = useCallback(() => {
     setShowImageModal(prev => !prev);
@@ -128,25 +117,10 @@ export default function ProductDetailsPage({
         </div>
       </motion.section>
 
-      {/* Product Details Tabs */}
-      <motion.section 
-        className="py-16 bg-white"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ProductTabs
-            product={product}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
-          />
-        </div>
-      </motion.section>
+     
 
       {/* Lazy-loaded sections for better performance */}
       <SimilarProducts products={similarProducts} />
-      <ExclusiveProducts products={exclusiveProducts} />
 
       {/* Image Modal - Only rendered when needed */}
       {showImageModal && (

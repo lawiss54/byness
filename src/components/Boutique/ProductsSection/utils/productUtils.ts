@@ -1,4 +1,4 @@
-import { Product, SortType } from '../types/product.types';
+import { Product, SortType } from '../../types/product.types';
 
 export const sortProducts = (products: Product[], sortBy: SortType): Product[] => {
   const sorted = [...products];

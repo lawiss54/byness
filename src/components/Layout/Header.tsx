@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import { useCart } from "@/components/cart/CartContext";
 
 export default function Header() {
+
+  const { itemCount } = useCart();
   return (
     <header className="h-16 w-full bg-brand-greenBlack-500 text-white sticky top-0 z-50">
       <div className="flex items-center justify-between h-full px-4 max-w-7xl mx-auto">
@@ -45,6 +48,8 @@ export default function Header() {
           {/* Shopping Cart */}
           <Link
             href="/panier"
+            prefetch={true}
+            
             className="relative group transition-all duration-300 ease-out p-3 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-110 hover:-translate-y-0.5 flex items-center justify-center shadow-xl hover:shadow-2xl"
           >
             <ShoppingCart
@@ -55,7 +60,7 @@ export default function Header() {
 
             {/* Cart Items Count */}
             <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold shadow-lg ring-2 ring-white/60 animate-pulse">
-              3
+              {itemCount}
             </span>
 
             {/* Glow Effect */}

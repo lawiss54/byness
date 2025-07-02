@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { categoryButtonVariants } from "./animations/variants";
-import type { Category } from "./types";
+import type { Category } from "@/components/Boutique/types/product.types";
 
 interface Props {
   category: Category;

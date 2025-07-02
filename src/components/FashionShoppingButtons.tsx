@@ -1,11 +1,18 @@
+'use client'
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Heart, Package } from "lucide-react";
+import { Product } from "@/components/Boutique/types/product.types";
 
-export const AddToCartButtons: React.FC = () => {
+interface AddToCartButtonsProps {
+  product: Product;
+}
+
+export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
 
   const handleAddToCart = () => {
+    console.log(`Adding to cart: ${product.name} - ${product.price}`);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -42,9 +49,18 @@ export const AddToCartButtons: React.FC = () => {
   );
 };
 
-export const BuyNowButtons: React.FC = () => {
+interface BuyNowButtonsProps {
+  product: Product;
+}
+
+export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
+  const handleBuyNow = () => {
+    console.log(`Buying now: ${product.name} - ${product.price}`);
+  };
+
   return (
     <motion.button
+      onClick={handleBuyNow}
       className="px-8 py-3 bg-brand-camel-500 hover:bg-brand-camel-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}

@@ -1,60 +1,158 @@
 'use client'
-import ProductSection from './NouvelleCollectionSection/ProductSection';
 
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ExclusiveProductsProps } from './NouvelleCollectionSection/types';
+import { useCountdownTimer, useProductHover } from './NouvelleCollectionSection/hooks';
+import { containerVariants, itemVariants, backgroundVariants } from './NouvelleCollectionSection/animations';
+import dynamic from 'next/dynamic';
 
+// Dynamic imports مع loading states أفضل
+const FloatingElements = dynamic(() => import('./NouvelleCollectionSection/FloatingElements'), {
+  loading: () => null,
+  ssr: false
+});
 
+const ProductCard = dynamic(() => import('./NouvelleCollectionSection/ProductCard'), {
+  loading: null,
+  ssr: false
+});
 
+const SectionHeader = dynamic(() => import('./NouvelleCollectionSection/SectionHeader'), {
+  loading: () => null,
+  ssr: false
+});
 
-export default function NouvelleCollectionSection() {
-  
+const VipCTA = dynamic(() => import('./NouvelleCollectionSection/VipCTA'), {
+  loading: () => (
+    <div className="text-center mt-16 animate-pulse">
+      <div className="h-16 bg-gray-300/20 rounded-xl max-w-md mx-auto"></div>
+    </div>
+  ),
+  ssr: false
+});
+
+export default function NouvelleCollectionSection({ products }: ExclusiveProductsProps) {
+  const { timeLeft, formatTime } = useCountdownTimer(100);
+  const { hoveredProduct, handleHoverStart, handleHoverEnd } = useProductHover();
+ 
 
   return (
-    <section className="py-16 bg-gradient-to-br from-brand-sage-50 to-brand-sage-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <span className="inline-block px-4 py-2 bg-brand-camel-100 text-brand-camel-800 rounded-full text-sm font-semibold mb-4">
-              ✨ Nouvelle Collection Été 2025
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-brand-darkGreen-900 mb-4">
-              Découvrez nos Dernières
-              <span className="block text-brand-camel-600">Créations</span>
-            </h2>
-            <p className="text-lg text-brand-darkGreen-700 max-w-2xl mx-auto">
-              Des pièces uniques et tendances, conçues avec passion pour sublimer votre style au quotidien
-            </p>
-          </motion.div>
-        </div>
-        <ProductSection />
+    <section className="relative py-24 overflow-hidden">
+      {/* Animated Background */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20"
+        variants={backgroundVariants}
+        animate="animate"
+      />
+      
+      {/* Dynamic overlay with subtle animation */}
+      <motion.div 
+        className="absolute inset-0 bg-black/20"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      />
 
-        {/* View All Button */}
+      
+      <FloatingElements />
+      
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Header */}
+        
+          <SectionHeader timeLeft={timeLeft} formatTime={formatTime} />
+        
+
+        {/* Products Grid */}
         <motion.div
-          className="text-center mt-12"
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
+          className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ 
+            once: true,
+            margin: "-100px",
+            amount: 0.3
+          }}
         >
-          <Link
-            href="/boutique"
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-brand-darkGreen-600 to-brand-darkGreen-700 hover:from-brand-darkGreen-700 hover:to-brand-darkGreen-800 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl group"
-          >
-            <span className="text-lg">Voir la boutique</span>
-            <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-2" />
-          </Link>
+          {products.slice(0, 4).map((product, index) => (
+            <motion.div
+              key={product.id || index}
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.02,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
+              whileTap={{ 
+                scale: 0.98,
+                transition: { duration: 0.1 }
+              }}
+            >
+              
+                <ProductCard
+                  product={product}
+                  index={index}
+                  isHovered={hoveredProduct === product.id}
+                  onHoverStart={() => handleHoverStart(product.id)}
+                  onHoverEnd={handleHoverEnd}
+                />
+             
+            </motion.div>
+          ))}
         </motion.div>
 
+        {/* VIP Access CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ 
+            opacity: 1, 
+            y: 0,
+            transition: { 
+              duration: 0.8, 
+              delay: 0.4,
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }
+          }}
+          viewport={{ once: true }}
+        >
+          <React.Suspense fallback={
+            <div className="text-center mt-16 animate-pulse">
+              <div className="h-16 bg-white/10 rounded-xl max-w-md mx-auto"></div>
+            </div>
+          }>
+            <VipCTA />
+          </React.Suspense>
+        </motion.div>
       </div>
+
+      {/* Enhanced background decorations */}
+      <motion.div 
+        className="absolute top-10 right-10 w-72 h-72 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      <motion.div 
+        className="absolute bottom-10 left-10 w-96 h-96 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"
+        animate={{
+          scale: [1.2, 1, 1.2],
+          opacity: [0.2, 0.5, 0.2],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+      />
     </section>
   );
 }

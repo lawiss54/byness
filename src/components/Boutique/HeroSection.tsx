@@ -1,22 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
 import HeroHeading from "./HeroSection/HeroHeading";
 import HeroBackground from "./HeroSection/HeroBackground";
 import HeroProductCard from "./HeroSection/HeroProductCard";
-import QuickViewModal from "./HeroSection/QuickViewModal";
 import { containerVariants } from "./HeroSection/animations/variants";
-import type { Product } from "./HeroSection/types";
+import type { Product } from "@/components/Boutique/types/product.types";
 
 interface HeroSectionProps {
   heroProducts?: Product[];
 }
 
 export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
   const products = heroProducts.length > 0 ? heroProducts : [];
+
+  const [activeItem, setActiveItem] = useState(heroProducts[0]);
+  const [width, setWidth] = useState(0);
+  const carousel = useRef(null);
+  useEffect(() => {
+    setWidth(carousel.current.scrollWidth - carousel.current.offsetWidth);
+  }, [carousel]);
 
   return (
     <>
@@ -28,27 +33,43 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
 
           {/* Products Grid */}
           <motion.div
-            className="grid md:grid-cols-2 sm:grid-cols-2 gap-12 max-w-6xl mx-auto"
+            className=" gap-12 max-w-6xl mx-auto"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {products.map((product, index) => (
-              <HeroProductCard
-                key={product.id}
-                product={product}
-                index={index}
-                onQuickView={() => setSelectedProduct(product)}
-              />
-            ))}
+            <NeonGradientCard neonColors={ {firstColor: "#0f3a37", secondColor: "#7d583a"} }>
+              <div className="w-full overflow-hidden">
+                <motion.div
+                  ref={carousel}
+                  drag="x"
+                  whileDrag={{ scale: 0.95 }}
+                  dragElastic={0.2}
+                  dragConstraints={{ right: 0, left: -width }}
+                  dragTransition={{ bounceDamping: 30 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="flex will-change-transform cursor-grab active:cursor-grabbing"
+                >
+                  {products.map((product, index) => (
+                  
+                      <motion.div key={product?.id} className="min-w-[20rem] min-h-[25rem] p-2">
+
+                      
+                          <HeroProductCard
+                            key={product?.id}
+                            product={product}
+                            index={index}
+                          />
+                        
+                      </motion.div>
+                  
+                ))}
+                </motion.div>
+              </div>
+            </NeonGradientCard>
           </motion.div>
         </div>
       </section>
-
-      <QuickViewModal
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
-      />
     </>
   );
 }

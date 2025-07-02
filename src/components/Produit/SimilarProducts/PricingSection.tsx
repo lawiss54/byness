@@ -20,7 +20,7 @@ export const PricingSection: React.FC<PricingSectionProps> = memo(({ product, sa
           <span className="text-2xl font-bold text-brand-camel-500">
             {product?.price.toLocaleString()} DA
           </span>
-          {product?.originalPrice && (
+          {product?.originalPrice > 0 && (
             <span className="text-sm text-brand-sage-400 line-through">
               {product?.originalPrice.toLocaleString()} DA
             </span>

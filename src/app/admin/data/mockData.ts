@@ -1,5 +1,5 @@
 import { Branch, Order, SiteSettings } from '../types';
-import { Product } from '@/components/Boutique/ProductsSection/types/product.types';
+import { Product } from '@/components/Boutique/types/product.types';
 
 export const branches: Branch[] = [
   {
@@ -37,14 +37,13 @@ export const products: Product[] = [
     name: 'Wireless Headphones',
     sku: 'WH-001',
     price: 199.99,
-    stock: 45,
+    stockQuantity: 45,
     category: 'Electronics',
-    branchId: '1',
+    
     status: 'active',
     description: 'High-quality wireless headphones with noise cancellation.',
-    image: '/placeholder.jpg',
-    rating: 4.5,
-    reviews: 120,
+    images: ['/placeholder.jpg'],
+    
     colors: ['black', 'silver'],
     sizes: ['one-size'],
     isNew: true,
@@ -56,14 +55,13 @@ export const products: Product[] = [
     name: 'Smart Watch',
     sku: 'SW-002',
     price: 299.99,
-    stock: 12,
+    stockQuantity: 12,
     category: 'Electronics',
-    branchId: '1',
+    
     status: 'active',
     description: 'Advanced smart watch with health tracking features.',
-    image: '/placeholder.jpg',
-    rating: 4.7,
-    reviews: 80,
+    images: ['/placeholder.jpg'],
+    
     colors: ['black', 'rose-gold'],
     sizes: ['small', 'large'],
     isNew: false,
@@ -75,14 +73,13 @@ export const products: Product[] = [
     name: 'Running Shoes',
     sku: 'RS-003',
     price: 89.99,
-    stock: 0,
+    stockQuantity: 0,
     category: 'Footwear',
-    branchId: '2',
+    
     status: 'out-of-stock',
     description: 'Comfortable running shoes for daily use.',
-    image: '/placeholder.jpg',
-    rating: 4.2,
-    reviews: 200,
+    images: ['/placeholder.jpg'],
+    
     colors: ['blue', 'red'],
     sizes: ['7', '8', '9', '10'],
     isNew: false,
@@ -94,14 +91,13 @@ export const products: Product[] = [
     name: 'Coffee Maker',
     sku: 'CM-004',
     price: 149.99,
-    stock: 23,
+    stockQuantity: 23,
     category: 'Appliances',
-    branchId: '2',
+    
     status: 'active',
     description: 'Automatic coffee maker with multiple brewing options.',
-    image: '/placeholder.jpg',
-    rating: 4.6,
-    reviews: 50,
+    images: ['/placeholder.jpg'],
+    
     colors: ['white', 'black'],
     sizes: ['one-size'],
     isNew: true,
@@ -143,6 +139,7 @@ export const orders: Order[] = [
     status: 'delivered',
     orderDate: '2024-01-13T09:15:00Z',
     branchId: '2',
+    
     items: [
       { productId: '4', productName: 'Coffee Maker', quantity: 1, price: 149.99 }
     ]
@@ -155,6 +152,7 @@ export const orders: Order[] = [
     status: 'pending',
     orderDate: '2024-01-16T16:45:00Z',
     branchId: '2',
+    
     items: [
       { productId: '3', productName: 'Running Shoes', quantity: 1, price: 89.99 }
     ]

@@ -1,4 +1,6 @@
 
+import { Easing } from "framer-motion";
+
 export const containerVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -17,7 +19,7 @@ export const itemVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" as Easing },
   },
 };
 
@@ -32,7 +34,7 @@ export const categoryButtonVariants = {
     y: -5,
     boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 300,
       damping: 20,
     },
@@ -42,7 +44,7 @@ export const categoryButtonVariants = {
     y: -3,
     boxShadow: "0 15px 30px rgba(0, 0, 0, 0.12)",
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 25,
     },
