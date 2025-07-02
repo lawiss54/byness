@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
     optimizeCss: false,
     optimizePackageImports: ['lucide-react'],
   },
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

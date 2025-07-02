@@ -16,7 +16,6 @@ interface HeroSectionProps {
 export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
   const products = heroProducts.length > 0 ? heroProducts : [];
 
-  const [activeItem, setActiveItem] = useState(heroProducts[0]);
   const [width, setWidth] = useState(0);
   const carousel = useRef(null);
   useEffect(() => {

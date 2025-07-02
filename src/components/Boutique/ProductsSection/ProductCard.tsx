@@ -16,13 +16,11 @@ interface ProductCardProps {
 }
 
 export const ProductCard = memo(({ product }: ProductCardProps) => {
-  const [isLiked, setIsLiked] = useState(false);
+
 
   const {addToCart} = useCart();
   
-  const handleToggleLike = useCallback(() => {
-    setIsLiked(prev => !prev);
-  }, []);
+ 
 
   const handleAddToCart = useCallback(() => {
     
