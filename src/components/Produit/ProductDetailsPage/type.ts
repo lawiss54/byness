@@ -22,7 +22,6 @@ interface ProductInfoProps {
   onColorSelect: (color: string) => void;
   onSizeSelect: (size: string) => void;
   onQuantityChange: (quantity: number) => void;
-  onWishlistToggle: () => void;
 }
 
 interface ProductTabsProps {

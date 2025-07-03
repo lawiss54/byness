@@ -28,6 +28,8 @@ const ProductInfo = memo<ProductInfoProps>(({
     'Beige': '#f5f5dc'
   }), []);
 
+  
+
   const [nameColor, setNameColor] = useState(namer(selectionData?.selectedColor))
   useEffect(() => {
     function changeColor(){
@@ -209,7 +211,7 @@ const ProductInfo = memo<ProductInfoProps>(({
       <div className="space-y-4">
         <div className="flex gap-4 justify-evenly">
           <div className="flex-1">
-            <AddToCartButtons />
+            <AddToCartButtons product={product} />
           </div>
           
            {/* Buy Now Button */}

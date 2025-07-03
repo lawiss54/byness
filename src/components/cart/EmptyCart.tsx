@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Heart, Sparkles, ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function EmptyCart() {
   const containerVariants = {
@@ -27,6 +28,11 @@ export default function EmptyCart() {
       },
     },
   };
+
+  const router = useRouter();
+  const goShop = () => {
+    router.push('/boutique')
+  }
 
   return (
     <motion.div
@@ -98,6 +104,7 @@ export default function EmptyCart() {
           className="group flex items-center gap-3 px-8 py-4 bg-brand-camel-500 hover:bg-brand-camel-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
           whileHover={{ scale: 1.05, y: -2 }}
           whileTap={{ scale: 0.95 }}
+          onClick={goShop}
         >
           <ShoppingBag className="w-5 h-5" />
           <span>Découvrir nos produits</span>
@@ -109,14 +116,6 @@ export default function EmptyCart() {
           </motion.div>
         </motion.button>
 
-        <motion.button
-          className="group flex items-center gap-3 px-8 py-4 bg-white border-2 border-brand-darkGreen-500 text-brand-darkGreen-500 hover:bg-brand-darkGreen-500 hover:text-white font-semibold rounded-2xl transition-all duration-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Heart className="w-5 h-5" />
-          <span>Ma liste de souhaits</span>
-        </motion.button>
       </motion.div>
 
       {/* Suggestions */}
