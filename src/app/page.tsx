@@ -4,6 +4,7 @@ import HeroSection from '@/components/Home/HeroSection';
 import { products, heroProducts } from './boutique/api';
 
 
+
 export default function Home() {
 
     const slides = [

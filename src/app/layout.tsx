@@ -3,8 +3,7 @@ import Header from '@/components/Layout/Header';
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from '@/components/cart/CartContext';
-
-
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "By Ness - Premium Experience",
@@ -39,6 +38,7 @@ export default function RootLayout({
     <html lang="fr" className="scroll-smooth">
       <body className="font-secondary antialiased bg-brand-ivory-200 text-brand-greenBlack-500 selection:bg-brand-sage-200 selection:text-brand-greenBlack-700">
         <div className="min-h-screen flex flex-col">
+          <Analytics />gitadd
           <CartProvider>
             <Header /> 
               {children}
