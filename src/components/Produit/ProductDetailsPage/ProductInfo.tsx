@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useState, useEffect } from 'react';
+اimport React, { memo, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import namer from "color-namer"
 import { 
