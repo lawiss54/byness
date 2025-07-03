@@ -2,7 +2,7 @@ import NouvelleCollectionSection from '@/components/Home/NouvelleCollectionSecti
 import FeaturesSection from '@/components/Home/FeaturesSection';
 import HeroSection from '@/components/Home/HeroSection';
 import { products, heroProducts } from './boutique/api';
-import dynamic from 'next/dynamic';
+
 
 
 

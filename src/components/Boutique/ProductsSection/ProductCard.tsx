@@ -21,12 +21,28 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
   const {addToCart} = useCart();
   
  
+  const handleAddToCart = () => {
 
-  const handleAddToCart = useCallback((product) => {
     
-    addToCart(product);
+
+    const passProduct = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      quantity: 1,
+      category: product.category,
+      images: product.images,
+      colors: product.colors,
+      color: product.colors?.[0] || null,
+      colorName: product.colors?.[0] || null,
+      sizes: product.sizes,
+      size: product.sizes?.[0] || null
+    }
     
-  }, [product?.id]);
+    addToCart(passProduct);
+    
+  };
 
   return (
     <motion.div

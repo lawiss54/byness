@@ -49,7 +49,7 @@ const Button = React.forwardRef(({
         danger: 'bg-error text-white hover:bg-opacity-90 active:bg-opacity-100 disabled:opacity-50',
         warning: 'bg-warning text-primary-foreground hover:bg-opacity-90 active:bg-opacity-100 disabled:opacity-50',
         info: 'bg-accent text-white hover:bg-opacity-90 active:bg-opacity-100 disabled:opacity-50',
-        ghost: 'hover:bg-primary hover:text-primary-foreground',
+        ghost: 'hover:bg-primary hover:text-primary-foreground hover:border-brand-camel-300',
         link: 'bg-transparent text-primary-foreground underline hover:text-primary-600 p-0',
         outline: 'border border-input bg-background hover:bg-primary hover:text-primary-foreground',
         text: 'bg-transparent text-primary-foreground hover:bg-surface hover:bg-opacity-50 active:bg-surface active:bg-opacity-70',
