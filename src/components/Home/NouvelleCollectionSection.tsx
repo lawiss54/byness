@@ -24,16 +24,12 @@ const SectionHeader = dynamic(() => import('./NouvelleCollectionSection/SectionH
 });
 
 const VipCTA = dynamic(() => import('./NouvelleCollectionSection/VipCTA'), {
-  loading: () => (
-    <div className="text-center mt-16 animate-pulse">
-      <div className="h-16 bg-gray-300/20 rounded-xl max-w-md mx-auto"></div>
-    </div>
-  ),
+  loading: null,
   ssr: false
 });
 
 export default function NouvelleCollectionSection({ products }: ExclusiveProductsProps) {
-  const { timeLeft, formatTime } = useCountdownTimer(100);
+  const { timeLeft, formatTime } = useCountdownTimer(380);
   const { hoveredProduct, handleHoverStart, handleHoverEnd } = useProductHover();
  
 
@@ -76,7 +72,8 @@ export default function NouvelleCollectionSection({ products }: ExclusiveProduct
             amount: 0.3
           }}
         >
-          {products.slice(0, 4).map((product, index) => (
+          {products.map((product, index) => (
+
             <motion.div
               key={product.id || index}
               variants={itemVariants}
