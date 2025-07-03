@@ -1,6 +1,6 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import {} from "color-namer"
+import namer from "color-namer"
 import { 
   Check,
   Plus,
@@ -27,6 +27,15 @@ const ProductInfo = memo<ProductInfoProps>(({
     'Blanc': '#ffffff',
     'Beige': '#f5f5dc'
   }), []);
+
+  const [nameColor, setNameColor] = useState(namer(selectionData?.selectedColor))
+  useEffect(() => {
+    function changeColor(){
+      setNameColor(namer(selectionData?.selectedColor))
+    }
+    changeColor()
+  }, [selectionData?.selectedColor, onColorSelect])
+  
 
   
   return (
@@ -98,7 +107,7 @@ const ProductInfo = memo<ProductInfoProps>(({
       {/* Color Selection */}
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-brand-darkGreen-500">
-          Couleur: <span className="text-brand-camel-500">{selectionData?.selectedColor}</span>
+          Couleur: <span className="text-brand-camel-500">{nameColor?.html[0]?.name?.charAt(0).toUpperCase() + nameColor?.html[0]?.name?.slice(1)}</span>
         </h3>
         <div className="flex flex-wrap gap-3">
           {product?.colors.map((color) => (
