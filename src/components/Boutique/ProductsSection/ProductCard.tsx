@@ -22,11 +22,11 @@ export const ProductCard = memo(({ product }: ProductCardProps) => {
   
  
 
-  const handleAddToCart = useCallback(() => {
+  const handleAddToCart = useCallback((product) => {
     
     addToCart(product);
     
-  }, [product.id]);
+  }, [product?.id]);
 
   return (
     <motion.div

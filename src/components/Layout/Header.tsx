@@ -4,15 +4,24 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "@/components/cart/CartContext";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
 
+
   const { itemCount } = useCart();
+  const router = useRouter();
+
+  const goHome = () => {
+    router.push('/')
+  }
+
+
   return (
     <header className="h-16 w-full bg-brand-greenBlack-500 text-white sticky top-0 z-50">
       <div className="flex items-center justify-between h-full px-4 max-w-7xl mx-auto">
         {/* Logo Section */}
-        <div className="flex items-center gap-3 h-full">
+        <div className="flex items-center gap-3 h-full cursor-pointer" onClick={goHome}>
           <div className="text-lg font-bold flex items-center h-full">
             <Image
               src="/logo.png"
@@ -59,9 +68,12 @@ export default function Header() {
             <span className="sr-only">Panier</span>
 
             {/* Cart Items Count */}
-            <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold shadow-lg ring-2 ring-white/60 animate-pulse">
-              {itemCount}
-            </span>
+            {itemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold shadow-lg ring-2 ring-white/60 animate-pulse">
+                {itemCount}
+              </span>
+            )}
+            
 
             {/* Glow Effect */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-brand-camel-400/20 to-brand-camel-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>

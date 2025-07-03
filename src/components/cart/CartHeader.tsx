@@ -2,11 +2,18 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useCart } from './CartContext';
+import { useRouter } from 'next/navigation';
 
 export default function CartHeader() {
   const { itemCount } = useCart();
+
+  const router = useRouter();
+
+  const handleBack = () => {
+    router.push('/boutique')
+  }
 
   return (
     <motion.div
@@ -20,6 +27,7 @@ export default function CartHeader() {
         className="inline-flex items-center gap-2 text-brand-darkGreen-500 hover:text-brand-camel-500 mb-6 transition-colors duration-300"
         whileHover={{ x: -5 }}
         whileTap={{ scale: 0.95 }}
+        onClick={handleBack}
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="font-semibold">Continuer mes achats</span>

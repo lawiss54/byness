@@ -2,10 +2,12 @@ import NouvelleCollectionSection from '@/components/Home/NouvelleCollectionSecti
 import FeaturesSection from '@/components/Home/FeaturesSection';
 import HeroSection from '@/components/Home/HeroSection';
 import { products, heroProducts } from './boutique/api';
+import dynamic from 'next/dynamic';
 
 
 
 export default function Home() {
+
 
     const slides = [
         {
@@ -38,6 +40,9 @@ export default function Home() {
        
     ];
     const getProduct = heroProducts(products)
+    const nouvelleCollectionProducts = getProduct.slice(0, 4);
+
+    
 
   
 
@@ -47,7 +52,7 @@ export default function Home() {
     
       <HeroSection slides={slides} />
       <FeaturesSection />
-      <NouvelleCollectionSection products={getProduct} /> 
+      <NouvelleCollectionSection products={nouvelleCollectionProducts} /> 
       
     </>
   );

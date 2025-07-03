@@ -29,7 +29,7 @@ const VipCTA = dynamic(() => import('./NouvelleCollectionSection/VipCTA'), {
 });
 
 export default function NouvelleCollectionSection({ products }: ExclusiveProductsProps) {
-  const { timeLeft, formatTime } = useCountdownTimer(380);
+  const { timeLeft, formatTime } = useCountdownTimer(3600);
   const { hoveredProduct, handleHoverStart, handleHoverEnd } = useProductHover();
  
 
@@ -66,37 +66,39 @@ export default function NouvelleCollectionSection({ products }: ExclusiveProduct
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ 
-            once: true,
-            margin: "-100px",
-            amount: 0.3
-          }}
+         
         >
-          {products.map((product, index) => (
+            <React.Suspense fallback={
+              <div className="text-center mt-16 animate-pulse">
+                <div className="h-16 bg-white/10 rounded-xl max-w-md mx-auto"></div>
+              </div>
+          }>
+              {products.map((product, index) => (
 
-            <motion.div
-              key={product.id || index}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.02,
-                transition: { duration: 0.3, ease: "easeOut" }
-              }}
-              whileTap={{ 
-                scale: 0.98,
-                transition: { duration: 0.1 }
-              }}
-            >
-              
-                <ProductCard
-                  product={product}
-                  index={index}
-                  isHovered={hoveredProduct === product.id}
-                  onHoverStart={() => handleHoverStart(product.id)}
-                  onHoverEnd={handleHoverEnd}
-                />
-             
-            </motion.div>
-          ))}
+                <motion.div
+                  key={product.id || index}
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.02,
+                    transition: { duration: 0.3, ease: "easeOut" }
+                  }}
+                  whileTap={{ 
+                    scale: 0.98,
+                    transition: { duration: 0.1 }
+                  }}
+                >
+                  
+                    <ProductCard
+                      product={product}
+                      index={index}
+                      isHovered={hoveredProduct === product.id}
+                      onHoverStart={() => handleHoverStart(product.id)}
+                      onHoverEnd={handleHoverEnd}
+                    />
+                
+                </motion.div>
+              ))}
+            </React.Suspense>  
         </motion.div>
 
         {/* VIP Access CTA */}

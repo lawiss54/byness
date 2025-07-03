@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import {} from "color-namer"
 import { 
   Check,
   Plus,

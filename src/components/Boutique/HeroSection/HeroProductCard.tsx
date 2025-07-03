@@ -5,7 +5,7 @@ import { Tag } from "lucide-react";
 import { AddToCartButtons } from "@/components/FashionShoppingButtons";
 import { itemVariants } from "./animations/variants";
 import type { Product } from "../types/product.types";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Props {
   product: Product;
@@ -13,6 +13,12 @@ interface Props {
 }
 
 export default function HeroProductCard({ product, index }: Props) {
+  const router = useRouter()
+
+  const goPageProduct = () => {
+    router.push(`/produit/${product?.slug}`)
+  }
+
   return (
     <motion.div
       variants={itemVariants}
@@ -20,8 +26,8 @@ export default function HeroProductCard({ product, index }: Props) {
       whileHover={{ y: -8, rotateY: 2, rotateX: 2 }}
       style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
     >
-      {/* Product Image + Badge + Quick View Button */}
-      <div className="h-[20rem] relative overflow-hidden rounded-t-3xl">
+      {/* Product Image + Badge */}
+      <div onClick={goPageProduct} className="h-[20rem] relative overflow-hidden rounded-t-3xl">
         <motion.img
           src={product?.images[0]}
           alt={product?.name}
@@ -41,21 +47,21 @@ export default function HeroProductCard({ product, index }: Props) {
       </div>
 
       {/* Product Info */}
-      <Link href={`/produit/${product?.slug}`} className="p-8 flex-1 flex flex-col justify-between">
-        <div>
-          <motion.h3
+      <div className="p-8 flex-1 flex flex-col justify-between">
+        <div onClick={goPageProduct}>
+          <motion.h2
             className="text-2xl font-playfair font-semibold text-brand-darkGreen-500 mb-3 line-clamp-2"
             whileHover={{ x: 5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
             {product?.name}
-          </motion.h3>
+          </motion.h2>
           <p className="text-sm text-brand-darkGreen-400 font-secondary mb-6 line-clamp-3">
             {product?.description}
           </p>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-evenly">
           <motion.div
             className="relative bg-brand-camel-100 text-brand-camel-500 border-2 border-dashed border-brand-camel-200 rounded-lg p-2 shadow-lg font-bold"
             whileHover={{ scale: 1.2 }}
@@ -73,7 +79,7 @@ export default function HeroProductCard({ product, index }: Props) {
             <AddToCartButtons product={product} />
           </motion.div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }

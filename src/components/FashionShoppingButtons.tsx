@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Heart, Package } from "lucide-react";
 import { Product } from "@/components/Boutique/types/product.types";
+import { useCart } from "./cart/CartContext";
 
 interface AddToCartButtonsProps {
   product: Product;
@@ -10,9 +11,10 @@ interface AddToCartButtonsProps {
 
 export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
+  const {addToCart} = useCart();
 
   const handleAddToCart = () => {
-    console.log(`Adding to cart: ${product.name} - ${product.price}`);
+    addToCart(product)
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
