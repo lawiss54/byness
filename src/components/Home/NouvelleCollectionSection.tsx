@@ -14,7 +14,7 @@ const FloatingElements = dynamic(() => import('./NouvelleCollectionSection/Float
 });
 
 const ProductCard = dynamic(() => import('./NouvelleCollectionSection/ProductCard'), {
-  loading: null,
+  loading: () => null,
   ssr: false
 });
 
