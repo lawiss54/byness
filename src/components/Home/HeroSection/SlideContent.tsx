@@ -83,7 +83,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
         
         <m.h1 
           variants={itemVariants}
-          className="text-4xl sm:text-5xl lg:text-7xl font-heading font-heading-bold text-shadow text-shadow-y-2 text-shadow-blur-9 text-shadow-md text-shadow-black/40 text-brand-darkGreen-900 mb-6 leading-tight"
+          className="text-4xl sm:text-5xl lg:text-7xl font-heading font-heading-bold text-shadow text-shadow-y-5 text-shadow-x-3 text-shadow-blur-[30px] text-shadow-md text-shadow-black/40 text-brand-darkGreen-900 mb-6 leading-tight"
         >
           {slide?.title}
         </m.h1>
