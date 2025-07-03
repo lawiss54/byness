@@ -139,6 +139,6 @@ module.exports = {
   		}
   	}
   },
-  plugins: [heroui(), require("tailwindcss-animate")],
+  plugins: [heroui(), require("tailwindcss-animate"), require("@designbycode/tailwindcss-text-shadow")],
 }
 
