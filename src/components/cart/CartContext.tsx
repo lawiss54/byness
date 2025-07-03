@@ -50,6 +50,8 @@ interface CartContextType {
   applyPromoCode: () => void;
   removePromo: () => void;
   addToCart: (product: Product) => void;
+  isProductInCart: (product: Product) => void;
+
 
   // Totals
   subtotal: number;
@@ -80,18 +82,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     city: '',
     wilaya: '',
   });
-  const [paymentInfo, setPaymentInfo] = useState<PaymentInfo>({
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: '',
-  });
+  
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
   const [shippingMethod, setShippingMethod] = useState('bureau');
   const [paymentMethod, setPaymentMethod] = useState('cod');
-  const [giftWrap, setGiftWrap] = useState(false);
-  const [newsletter, setNewsletter] = useState(false);
+ 
 
   const updateQuantity = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -135,6 +131,15 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
+  const isProductInCart = (product, cartItems): boolean => {
+    return cartItems.some(
+      item =>
+        item.id === product.id &&
+        item.color === product.color &&
+        item.size === product.size
+    );
+  };
+
 
  
 
@@ -156,9 +161,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
   const savings = originalTotal - subtotal;
   const shippingCost = shippingMethod === 'bureau' ? 300 : 800;
-  const giftWrapCost = giftWrap ? 200 : 0;
   const promoDiscount = appliedPromo ? Math.floor(subtotal * 0.1) : 0;
-  const total = subtotal + shippingCost + giftWrapCost - promoDiscount;
+  const total = subtotal + shippingCost - promoDiscount;
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const value: CartContextType = {
@@ -169,8 +173,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     clearCart,
     shippingInfo,
     setShippingInfo,
-    paymentInfo,
-    setPaymentInfo,
     promoCode,
     setPromoCode,
     appliedPromo,
@@ -179,21 +181,17 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setShippingMethod,
     paymentMethod,
     setPaymentMethod,
-    giftWrap,
-    setGiftWrap,
-    newsletter,
-    setNewsletter,
     applyPromoCode,
     removePromo,
     subtotal,
     originalTotal,
     savings,
     shippingCost,
-    giftWrapCost,
     promoDiscount,
     total,
     itemCount,
-    addToCart
+    addToCart,
+    isProductInCart
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

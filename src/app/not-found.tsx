@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Home, 
   Search, 
@@ -131,7 +131,7 @@ export default function NotFound() {
             onHoverStart={() => setIsHovering(true)}
             onHoverEnd={() => setIsHovering(false)}
           >
-            <motion.h1
+            <motion.h2
               className="text-[12rem] md:text-[16rem] font-playfair font-bold text-brand-darkGreen-500/20 leading-none select-none"
               animate={{
                 scale: isHovering ? 1.05 : 1,
@@ -140,7 +140,7 @@ export default function NotFound() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               404
-            </motion.h1>
+            </motion.h2>
             
             {/* Floating Icons around 404 */}
             <motion.div
@@ -202,7 +202,7 @@ export default function NotFound() {
               </span>
             </motion.div>
 
-            <h2 className="text-4xl md:text-6xl font-playfair font-bold text-brand-darkGreen-500 mb-6">
+            <h3 className="text-4xl md:text-6xl font-playfair font-bold text-brand-darkGreen-500 mb-6">
               Vous semblez
               <motion.span
                 className="block text-brand-camel-500"
@@ -212,7 +212,7 @@ export default function NotFound() {
               >
                 perdu(e)
               </motion.span>
-            </h2>
+            </h3>
 
             <p className="text-xl text-brand-darkGreen-400 font-secondary max-w-2xl mx-auto leading-relaxed">
               La page que vous recherchez n'existe pas ou a été déplacée. 

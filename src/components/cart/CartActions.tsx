@@ -1,8 +1,6 @@
-'use client';
-
-import React from 'react';
+'use client';;
 import { motion } from 'framer-motion';
-import { Trash2, Heart, RotateCcw } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useCart } from './CartContext';
 
 export default function CartActions() {
@@ -14,12 +12,7 @@ export default function CartActions() {
     }
   };
 
-  const handleMoveAllToWishlist = () => {
-    if (window.confirm('Déplacer tous les articles vers la liste de souhaits ?')) {
-      // Logic to move all items to wishlist
-      clearCart();
-    }
-  };
+ 
 
   return (
     <div className="flex items-center gap-3">

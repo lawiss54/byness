@@ -1,9 +1,10 @@
 'use client'
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Heart, Package } from "lucide-react";
+import { ShoppingCart, Package, CreditCard } from "lucide-react";
 import { Product } from "@/components/Boutique/types/product.types";
 import { useCart } from "./cart/CartContext";
+import { useRouter } from "next/navigation";
 
 interface AddToCartButtonsProps {
   product: Product;
@@ -56,37 +57,34 @@ interface BuyNowButtonsProps {
 }
 
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
+  const {addToCart, isProductInCart} = useCart();
+  const router = useRouter();
+
   const handleBuyNow = () => {
-    console.log(`Buying now: ${product.name} - ${product.price}`);
+    if(isProductInCart(product)){
+        router.push('/checkout')
+    }else{
+      addToCart(product);
+      router.push('/checkout')
+    }
+
   };
 
   return (
     <motion.button
       onClick={handleBuyNow}
-      className="px-8 py-3 bg-brand-camel-500 hover:bg-brand-camel-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+      className="px-8 py-3 w-full bg-brand-camel-500 hover:bg-brand-camel-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
-      Acheter maintenant
+      <motion.div
+        className="flex items-center gap-2"
+        transition={{ duration: 0.2 }}
+      >
+        <CreditCard className="w-4 h-4" />
+        <span className="whitespace-nowrap">Acheter maintenant</span>
+      </motion.div>
     </motion.button>
   );
 };
 
-export const WishlistButton: React.FC = () => {
-  const [isLiked, setIsLiked] = useState(false);
-
-  return (
-    <motion.button
-      onClick={() => setIsLiked(!isLiked)}
-      className={`p-3 rounded-full shadow-lg transition-all duration-300 ${
-        isLiked
-          ? "bg-red-100 text-red-500"
-          : "bg-white/90 hover:bg-white text-brand-camel-600"
-      } hover:shadow-xl`}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-    >
-      <Heart className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`} />
-    </motion.button>
-  );
-};

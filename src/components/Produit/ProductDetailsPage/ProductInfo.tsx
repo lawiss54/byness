@@ -37,6 +37,21 @@ const ProductInfo = memo<ProductInfoProps>(({
     }
     changeColor()
   }, [selectionData?.selectedColor, onColorSelect])
+
+  const passProduct = {
+    id: product.id,
+    name: product.name,
+    price: product.price ,
+    originalPrice: product.originalPrice,
+    quantity: selectionData.quantity,
+    category: product.category,
+    images: product.images,
+    colors: product.colors,
+    color: selectionData.selectedSize,
+    colorName: nameColor.html[0]?.name,
+    sizes: product.sizes,
+    size: selectionData.selectedSize
+  }
   
 
   
@@ -211,7 +226,7 @@ const ProductInfo = memo<ProductInfoProps>(({
       <div className="space-y-4">
         <div className="flex gap-4 justify-evenly">
           <div className="flex-1">
-            <AddToCartButtons product={product} />
+            <AddToCartButtons product={passProduct} />
           </div>
           
            {/* Buy Now Button */}
@@ -219,7 +234,7 @@ const ProductInfo = memo<ProductInfoProps>(({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <BuyNowButtons />
+              <BuyNowButtons items={passProduct} />
             </motion.div>
          
         </div>

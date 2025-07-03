@@ -16,7 +16,6 @@ interface ProductInfoProps {
     selectedColor: string;
     selectedSize: string;
     quantity: number;
-    isWishlisted: boolean;
     totalPrice: number;
   };
   onColorSelect: (color: string) => void;

@@ -439,7 +439,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     <span className="text-xl lg:text-2xl font-bold text-brand-camel-500">
                       {item.price.toLocaleString()} DA
                     </span>
-                    {item.originalPrice && item.originalPrice > 0 && (
+                    {item.originalPrice > 0 && item.originalPrice > 0 && (
                       <span className="text-base lg:text-lg text-brand-sage-400 line-through">
                         {item.originalPrice.toLocaleString()} DA
                       </span>
@@ -492,7 +492,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     <div className="text-lg lg:text-xl font-bold text-brand-darkGreen-500">
                       {(item.price * item.quantity).toLocaleString()} DA
                     </div>
-                    {item.originalPrice && item.originalPrice > 0 && (
+                    {item.originalPrice > 0 && item.originalPrice > 0 && (
                       <div className="text-sm text-brand-sage-400 line-through">
                         {(item.originalPrice * item.quantity).toLocaleString()} DA
                       </div>
