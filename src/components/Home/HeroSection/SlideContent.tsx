@@ -83,14 +83,14 @@ const SlideContent = ({ slide, isActive, animationType }) => {
         
         <m.h1 
           variants={itemVariants}
-          className="text-4xl sm:text-5xl lg:text-7xl font-heading font-heading-bold text-white mb-6 leading-tight"
+          className="text-4xl sm:text-5xl lg:text-7xl font-heading font-heading-bold text-brand-darkGreen-900 mb-6 leading-tight"
         >
           {slide?.title}
         </m.h1>
         
         <m.p 
           variants={itemVariants}
-          className="text-lg sm:text-xl lg:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed"
+          className="text-lg sm:text-xl lg:text-2xl text-brand-sage-200 mb-8 max-w-2xl mx-auto leading-relaxed"
         >
           {slide?.subtitle}
         </m.p>
@@ -108,7 +108,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
               size="lg"
               iconName="Play"
               iconPosition="left"
-              className="text-white border-white/30 hover:bg-white/10 hover:border-white/50 px-8 py-4 text-lg transition-spring hover:scale-105"
+              className="text-brand-greenBlack-600 border-brand-sage-300/30 hover:bg-white/10 hover:border-white/50 px-8 py-4 text-lg transition-spring hover:scale-105"
             >
               Voir la Collection
             </Button>
