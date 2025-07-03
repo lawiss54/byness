@@ -12,12 +12,13 @@ export default function Home() {
     const slides = [
         {
           id: 1,
-          image: "/robe.jpg",
+          image: "/hero.jpg",
           title: "Collection Été 2025",
-          subtitle: "Découvrez notre nouvelle collection estivale avec des pièces uniques et tendances pour un style raffiné.",
+          subtitle: "",
           category: "Nouvelle Collection",
           ctaText: "Découvrir",
-          animationType: "fadeInUp"
+          animationType: "fadeInUp",
+          className: "left-0 -translate-x-[4rem]"
         },
         {
           id: 2,
@@ -26,7 +27,8 @@ export default function Home() {
           subtitle: "Style contemporain et confort optimal pour vos journées en ville avec notre gamme urbaine exclusive.",
           category: "Tendance Urbaine",
           ctaText: "Explorer",
-          animationType: "slideInLeft"
+          animationType: "slideInLeft",
+          className: ""
         },
         {
           id: 3,
@@ -35,7 +37,8 @@ export default function Home() {
           subtitle: "Des créations sophistiquées qui transcendent les saisons pour un look élégant en toute occasion.",
           category: "Collection Premium",
           ctaText: "Voir Plus",
-          animationType: "bounceIn"
+          animationType: "bounceIn",
+          className: ""
         },
        
     ];
