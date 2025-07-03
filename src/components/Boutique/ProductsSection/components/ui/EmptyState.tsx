@@ -13,10 +13,10 @@ export const EmptyState = memo(() => (
       <ShoppingBag className="w-8 h-8 text-brand-camel-500" />
     </div>
     <h3 className="text-xl font-medium text-brand-darkGreen-600 mb-2">
-      لا توجد منتجات
+      Aucun produit n’est disponible pour le moment
     </h3>
     <p className="text-brand-darkGreen-400">
-      لم نجد أي منتجات تطابق المعايير المحددة
+      Aucun résultat pour les filtres appliqués
     </p>
   </motion.div>
 ));
