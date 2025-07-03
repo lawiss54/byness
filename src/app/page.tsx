@@ -18,7 +18,7 @@ export default function Home() {
           category: "Nouvelle Collection",
           ctaText: "Découvrir",
           animationType: "fadeInUp",
-          className: "left-0 -translate-x-[4rem]"
+          className: "left-0 -translate-x-[3rem] -translate-y-[5rem]"
         },
         {
           id: 2,
