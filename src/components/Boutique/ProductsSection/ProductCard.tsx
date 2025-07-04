@@ -8,7 +8,7 @@ import { Badge } from './components/ui/Badge';
 import { ColorPalette } from './components/ui/ColorPalette';
 import { OptimizedImage } from './components/ui/OptimizedImage';
 import Link from 'next/link';
-import { useCart } from "@/components/cart/CartContext";
+import { useUnifiedCart as useCart } from "@/components/shared/UnifiedCartContext";
 
 
 interface ProductCardProps {

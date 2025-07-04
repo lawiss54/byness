@@ -3,7 +3,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { User, Phone, MapPin, Truck, Package } from 'lucide-react';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { useCheckout } from '../CheckoutContext';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const wilayas = [
   'Alger', 'Oran', 'Constantine', 'Annaba', 'Blida', 'Batna', 'Djelfa', 'Sétif',

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import { ShoppingCart, User, Calendar, Package, Search } from 'lucide-react';
-import { orders } from '@/app/admin/data/mockData';
+import { orders } from '@/app/admin/Dashboard/data/mockData';
 
 
 export default function OrdersSection() {

@@ -1,10 +1,10 @@
 'use client';;
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
-import { useCart } from './CartContext';
+import { useUnifiedCart } from '../shared/UnifiedCartContext';
 
 export default function CartActions() {
-  const { clearCart, cartItems } = useCart();
+  const { clearCart, cartItems } = useUnifiedCart();
 
   const handleClearCart = () => {
     if (window.confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {
@@ -12,10 +12,17 @@ export default function CartActions() {
     }
   };
 
- 
+  const handleMoveAllToWishlist = () => {
+    if (window.confirm('Déplacer tous les articles vers la liste de souhaits ?')) {
+      // Logic to move all items to wishlist
+      clearCart();
+    }
+  };
 
   return (
     <div className="flex items-center gap-3">
+      
+
       <motion.button
         onClick={handleClearCart}
         disabled={cartItems.length === 0}

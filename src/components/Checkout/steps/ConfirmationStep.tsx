@@ -3,12 +3,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, Package, Truck, PhoneCall } from 'lucide-react';
-import { useCheckout } from '../CheckoutContext';
+
+import {useCheckout} from '../CheckoutContext'
+
 
 export default function ConfirmationStep() {
   const {
     shippingMethod,
-    paymentMethod,
     total
   } = useCheckout();
 
@@ -51,12 +52,7 @@ export default function ConfirmationStep() {
               {shippingMethod === 'bureau' ? 'Livraison au bureau yalidin ' : 'Livraison à domicile'}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-brand-darkGreen-500">Mode de paiement:</span>
-            <span className="font-semibold">
-              {paymentMethod === 'card' ? 'Carte bancaire' : 'Paiement à la livraison'}
-            </span>
-          </div>
+         
         </div>
 
         <div className="border-t border-brand-sage-200 pt-4">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Store, ShoppingCart, Package, DollarSign } from 'lucide-react';
-import { branches, orders } from '@/app/admin/data/mockData';
+import { branches, orders } from '@/app/admin/Dashboard/data/mockData';
 
 export default function Dashboard() {
   const totalRevenue = branches.reduce((sum, branch) => sum + branch.revenue, 0);

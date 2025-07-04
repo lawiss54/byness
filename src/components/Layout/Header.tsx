@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import { useCart } from "@/components/cart/CartContext";
+import { useUnifiedCart as useCart } from "@/components/shared/UnifiedCartContext";
 import { useRouter } from "next/navigation";
 
 export default function Header() {

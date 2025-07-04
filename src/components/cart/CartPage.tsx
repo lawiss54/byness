@@ -2,15 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CartProvider } from './CartContext';
+import { UnifiedCartProvider, useUnifiedCart } from '../shared/UnifiedCartContext';
 import CartHeader from './CartHeader';
 import CartContent from './CartContent';
-import CartSummary from './CartSummary';
+import OrderSummary from '../shared/OrderSummary';
 import EmptyCart from './EmptyCart';
-import { useCart } from './CartContext';
 
 function CartPageContent() {
-  const { cartItems } = useCart();
+  const { cartItems } = useUnifiedCart();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -26,7 +25,7 @@ function CartPageContent() {
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full max-w-[95rem] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-20 py-10 md:py-12">
           <CartHeader />
           <EmptyCart />
         </div>
@@ -35,21 +34,25 @@ function CartPageContent() {
   }
 
   return (
-    <div className="min-h-full w-full bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
-      <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
+      <div className="w-full max-w-[95rem] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-20 py-10 md:py-12">
         <CartHeader />
-        
+
         <motion.div
-          className="w-full"
+          className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-12"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Cart Items */}
-          <div className="w-full">
+          <div className="lg:col-span-2">
             <CartContent />
           </div>
 
+          {/* Cart Summary */}
+          <div className="lg:col-span-1">
+            <OrderSummary />
+          </div>
         </motion.div>
       </div>
     </div>
@@ -58,8 +61,8 @@ function CartPageContent() {
 
 export default function CartPage() {
   return (
-    
+    <UnifiedCartProvider>
       <CartPageContent />
-    
+    </UnifiedCartProvider>
   );
 }

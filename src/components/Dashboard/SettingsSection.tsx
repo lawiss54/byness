@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Save} from 'lucide-react';
-import { siteSettings as initialSettings } from '@/app/admin/data/mockData';
-import { SiteSettings } from '@/app/admin/types';
+import { siteSettings as initialSettings } from '@/app/admin/Dashboard/data/mockData';
+import { SiteSettings } from '@/app/admin/Dashboard/types';
 import ContactInformation from './Settings/ContactInformation';
 import BasicInformation from './Settings/BasicInformation';
 import Yalidine from './Settings/Yalidine';

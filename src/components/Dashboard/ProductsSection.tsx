@@ -1,8 +1,8 @@
 'use client'
 import React, { useState } from 'react';
 import { Store, Package, Users, MapPin, Plus, Eye } from 'lucide-react';
-import { branches, products } from '@/app/admin/data/mockData';
-import { Branch, Product } from '@/app/admin/types';
+import { branches, products } from '@/app/admin/Dashboard/data/mockData';
+import { Branch, Product } from '@/app/admin/Dashboard/types';
 
 export default function ProductsSection() {
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);

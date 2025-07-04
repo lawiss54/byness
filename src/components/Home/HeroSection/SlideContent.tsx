@@ -74,7 +74,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
       animate={isActive ? "visible" : "hidden"}
       exit="exit"
     >
-      <div className={`${slide?.className} text-center mt-[15rem] px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto`}>
+      <div className={`${slide?.className} text-center mt-[15rem] xs:mt-[9rem] px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto`}>
         <m.div variants={itemVariants}>
           <span className="inline-block px-4 py-2 bg-accent/20 backdrop-blur-soft text-accent font-body font-body-medium text-sm rounded-full mb-4 border border-accent/30">
             {slide?.category}
@@ -83,7 +83,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
         
         <m.h2 
           variants={itemVariants}
-          className={`text-4xl sm:text-5xl lg:text-7xl font-heading font-heading-bold text-shadow text-shadow-y-2 text-shadow-x-3 text-shadow-blur-[13px] text-shadow-md text-shadow-white/40 text-brand-darkGreen-900 mb-6 leading-tight`}
+          className={`text-3xl xs:text-2xl sm:text-2xl lg:text-7xl font-heading font-heading-bold text-shadow text-shadow-y-2 text-shadow-x-3 text-shadow-blur-[13px] text-shadow-md text-shadow-white/40 text-brand-darkGreen-900 mb-6 leading-tight`}
         >
           {slide?.title}
         </m.h2>

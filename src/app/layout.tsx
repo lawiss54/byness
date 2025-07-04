@@ -2,7 +2,7 @@ import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import type { Metadata } from "next";
 import "./globals.css";
-import { CartProvider } from '@/components/cart/CartContext';
+import { UnifiedCartProvider as CartProvider } from '@/components/shared/UnifiedCartContext';
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {

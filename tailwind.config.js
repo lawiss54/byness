@@ -137,7 +137,17 @@ module.exports = {
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		}
-  	}
+		
+  	},
+	screens: {
+  		xs: '0px',
+  		sm: '576px',
+  		md: '768px',
+  		lg: '992px',
+  		xl: '1200px'
+  	},
+	
+
   },
   plugins: [heroui(), require("tailwindcss-animate"), require("@designbycode/tailwindcss-text-shadow")],
 }

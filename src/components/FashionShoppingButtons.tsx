@@ -1,9 +1,9 @@
 'use client'
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Package, CreditCard } from "lucide-react";
+import { ShoppingCart, Package, CreditCard, LogIn } from "lucide-react";
 import { Product } from "@/components/Boutique/types/product.types";
-import { useCart } from "./cart/CartContext";
+import { useUnifiedCart as useCart } from "@/components/shared/UnifiedCartContext";
 import { useRouter } from "next/navigation";
 
 interface AddToCartButtonsProps {
@@ -55,6 +55,12 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
 interface BuyNowButtonsProps {
   product: Product;
 }
+interface LoginButtonsProps {
+  data: {
+    phone: number;
+    password: string;
+  };
+}
 
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
   const {addToCart, isProductInCart} = useCart();
@@ -83,6 +89,31 @@ export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
       >
         <CreditCard className="w-4 h-4" />
         <span className="whitespace-nowrap">Acheter maintenant</span>
+      </motion.div>
+    </motion.button>
+  );
+};
+export const LoginButtons: React.FC<LoginButtonsProps> = ({ data }) => {
+  
+
+  const handleBuyNow = () => {
+    console.log(data)
+
+  };
+
+  return (
+    <motion.button
+      onClick={handleBuyNow}
+      className="px-8 py-3 w-full bg-brand-camel-500 hover:bg-brand-camel-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <motion.div
+        className="flex items-center gap-2"
+        transition={{ duration: 0.2 }}
+      >
+        <LogIn className="w-4 h-4" />
+        <span className="whitespace-nowrap">login</span>
       </motion.div>
     </motion.button>
   );
