@@ -48,9 +48,7 @@ export const products = [
     "sizes": ["M", "L"],
     "category": "Robes",
     "stockQuantity": 29,
-    "sku": "SKU-002",
     "status": "active",
-    "features": ["Casual", "Cotton"],
     "isNew": false,
     "isSale": false,
     "discount": 0,
@@ -159,3 +157,5 @@ export const products = [
   export const productFinder = ( slug: string) => { 
     return products.filter(products => products?.slug === slug);
   }
+
+

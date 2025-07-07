@@ -8,7 +8,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form';
+} from '@/components/shared/ui/form';
 import { Truck, Package, Clock, Check } from 'lucide-react';
 import type { CheckoutFormData } from '../schemas/checkoutSchemas';
 

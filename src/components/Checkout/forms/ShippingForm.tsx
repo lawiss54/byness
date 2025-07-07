@@ -9,8 +9,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/shared/ui/form";
+import { Input } from "@/components/shared/ui/Input";
 import { User, Truck, Phone, MapPin, Building, Check, Clock, Package } from "lucide-react";
 import type { CheckoutFormData } from "../schemas/checkoutSchemas";
 

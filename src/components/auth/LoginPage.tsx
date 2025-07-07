@@ -1,13 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import LoginForm from './LoginForm';
 import LoginHeader from './LoginHeader';
 import LoginFeatures from './LoginFeatures';
 
-
 export default function LoginPage() {
+  const [positions, setPositions] = useState([]);
+  const [isClient, setIsClient] = useState(false);
+
+  // إنشاء المواضع العشوائية بعد تحميل العميل
+  useEffect(() => {
+    const randomPositions = [...Array(6)].map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 2,
+    }));
+    
+    setPositions(randomPositions);
+    setIsClient(true);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -23,13 +38,13 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        {[...Array(6)].map((_, i) => (
+        {isClient && positions.map((position, i) => (
           <motion.div
             key={i}
             className="absolute w-4 h-4 bg-brand-camel-200/30 rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: `${position.left}%`,
+              top: `${position.top}%`,
             }}
             animate={{
               y: [0, -30, 0],
@@ -37,9 +52,9 @@ export default function LoginPage() {
               scale: [1, 1.5, 1],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: position.duration,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: position.delay,
             }}
           />
         ))}
@@ -63,7 +78,6 @@ export default function LoginPage() {
             <LoginForm />
           </div>
         </motion.div>
-
       </div>
     </div>
   );

@@ -1,86 +1,114 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { UnifiedCartProvider } from "../shared/UnifiedCartContext";
-import CheckoutHeader from "./CheckoutHeader";
-import StepIndicator from "./StepIndicator";
-import CheckoutSteps from "./CheckoutSteps";
-import OrderSummary from "../shared/OrderSummary";
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useCheckoutForm } from '@/hooks/useCheckoutForm';
+import { StepIndicator, Button } from '@/components/shared/ui';
+import CustomerInfoStep from './steps/CustomerInfoStep';
+import OrderSummaryStep from './steps/OrderSummaryStep';
+import SuccessStep from './steps/SuccessStep';
+import { useRouter } from 'next/navigation';
 
-function CheckoutPageContent() {
-  const [currentStep, setCurrentStep] = useState(1);
+const CheckoutPage: React.FC = () => {
+  const router = useRouter();
+  const { form, currentStep, isSubmitting, nextStep, prevStep, onSubmit } = useCheckoutForm();
 
-  const nextStep = () => {
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
-  };
+  const steps = [
+    { id: 1, title: 'Informations', description: 'Vos coordonnées' },
+    { id: 2, title: 'Confirmation', description: 'Récapitulatif' }
+  ];
 
-  const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <CustomerInfoStep form={form} />;
+      case 2:
+        return (
+          <OrderSummaryStep 
+            form={form} 
+            onSubmit={onSubmit}
+            isSubmitting={isSubmitting}
+          />
+        );
+      case 3:
+        return <SuccessStep />;
+      default:
+        return <CustomerInfoStep form={form} />;
+    }
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50 py-4 sm:py-6 md:py-8 lg:py-12">
-      {/* Container with responsive padding and max-width */}
-      <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 xl:px-10">
-        {/* Header with responsive spacing */}
-        <div className="mb-4 sm:mb-6 lg:mb-8">
-          <CheckoutHeader />
+    <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.button
+            className="inline-flex items-center gap-2 text-brand-darkGreen-500 hover:text-brand-camel-500 mb-6 transition-colors duration-300"
+            whileHover={{ x: -5 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => router.push('/panier')}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="font-semibold">Retour au panier</span>
+          </motion.button>
+
+          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-brand-darkGreen-500 mb-4">
+            Finaliser ma commande
+          </h1>
+          <p className="text-xl text-brand-darkGreen-400 font-secondary">
+            Quelques étapes simples pour finaliser votre achat
+          </p>
+        </motion.div>
+
+        {/* Step Indicator */}
+        {currentStep < 3 && <StepIndicator steps={steps} currentStep={currentStep} />}
+
+        {/* Step Content */}
+        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+          <AnimatePresence mode="wait">
+            {renderStep()}
+          </AnimatePresence>
         </div>
 
-        {/* Step Indicator with responsive spacing */}
-        <div className="mb-6 sm:mb-8 lg:mb-10">
-          <StepIndicator currentStep={currentStep} />
-        </div>
-
-        {/* Main content grid - responsive layout */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
-          {/* Main Content - Takes full width on mobile, 8 columns on large screens */}
-          <div className="lg:col-span-8 xl:col-span-2 order-2 lg:order-1">
-            <motion.div
-              className="bg-white rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl lg:shadow-2xl p-4 sm:p-6 lg:p-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
+        {/* Navigation Buttons */}
+        {currentStep < 3 && (
+          <motion.div
+            className="flex justify-between"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Button
+              onClick={prevStep}
+              disabled={currentStep === 1}
+              variant="outline"
+              size="lg"
+              icon={<ArrowLeft className="w-5 h-5" />}
             >
-              <CheckoutSteps
-                currentStep={currentStep}
-                nextStep={nextStep}
-                prevStep={prevStep}
-              />
-            </motion.div>
-          </div>
+              Retour
+            </Button>
 
-          {/* Cart Summary - Appears first on mobile, second on desktop */}
-          <div className="lg:col-span-4 xl:col-span-1 order-1 lg:order-2">
-            <div className="sticky top-4 sm:top-6 lg:top-8">
-              <OrderSummary />
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom spacing for mobile */}
-        <div className="h-4 sm:h-6 lg:h-8"></div>
+            {currentStep === 1 && (
+              <Button
+                onClick={nextStep}
+                size="lg"
+                icon={<ArrowRight className="w-5 h-5" />}
+                iconPosition="right"
+              >
+                Continuer
+              </Button>
+            )}
+          </motion.div>
+        )}
       </div>
     </div>
   );
-}
+};
 
-export default function CheckoutPage() {
-  return (
-    <UnifiedCartProvider>
-      <CheckoutPageContent />
-    </UnifiedCartProvider>
-  );
-}
+export default CheckoutPage;

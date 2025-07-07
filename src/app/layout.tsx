@@ -2,8 +2,13 @@ import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
 import type { Metadata } from "next";
 import "./globals.css";
-import { UnifiedCartProvider as CartProvider } from '@/components/shared/UnifiedCartContext';
-import { Analytics } from "@vercel/analytics/next"
+import { CartProvider } from '@/components/cart/CartContext';
+import { Analytics } from "@vercel/analytics/next";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 
 export const metadata: Metadata = {
   title: "By Ness - Premium Experience",
@@ -41,9 +46,12 @@ export default function RootLayout({
           <Analytics />
           <CartProvider>
             <Header /> 
+            <main className="flex-1">
               {children}
+            </main>
             <Footer /> 
           </CartProvider>
+          <ToastContainer position="top-right" autoClose={3000} />
         </div>
       </body>
     </html>

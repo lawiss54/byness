@@ -12,13 +12,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+} from '@/components/shared/ui/form';
+import { Input } from '@/components/shared/ui/Input';
+import { Button } from '@/components/shared/ui/Button';
 import { 
   LogIn, 
-  Loader, 
-  Mail, 
+  Loader,
   Lock, 
   Eye, 
   EyeOff, 
@@ -27,6 +26,8 @@ import {
   ArrowRight,
   Phone
 } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 const loginSchema = z.object({
   phone: z
@@ -46,6 +47,8 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
+  const router = useRouter();
+
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -56,11 +59,28 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
+    data.rememberMe = rememberMe
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log('Login data:', data);
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const response = await res.json();
+
+      if(res.status === 200){
+        router.push('/admin/dashboard')
+      }
+
+      if(res.status === 404){
+        toast.error(response.error);
+        
+      }
+
+      if(res.status === 500){
+        toast.error(response.error);
+      }
+
     setIsLoading(false);
   };
 

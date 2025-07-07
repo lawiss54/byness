@@ -5,7 +5,8 @@ import {
   Settings, 
   ShoppingCart,
   Users,
-  TrendingUp
+  TrendingUp,
+  Tag
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -16,7 +17,8 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'branches', label: 'Branches', icon: Store },
+  { id: 'branches', label: 'Products', icon: Store },
+  { id: 'categories', label: 'Categories', icon: Tag },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
