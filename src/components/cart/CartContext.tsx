@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { Product } from '../Boutique/types/product.types';
+import { Product } from '../boutique/types/product.types';
 
 interface CartItem extends Omit<Product, 'description' | 'features' | 'stockQuantity' | 'sku' | 'status' | 'heroSection'> {
   quantity: number;

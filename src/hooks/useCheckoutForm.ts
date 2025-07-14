@@ -6,11 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { checkoutSchema, type CheckoutFormData } from '@/components/Checkout/schemas/checkoutSchemas';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
 import { toast } from 'react-toastify';
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+
 
 export const useCheckoutForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { cartItems, total, clearCart } = useCartCheckout();
+  const { track } = useFacebookPixelEvent();
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -46,6 +49,16 @@ export const useCheckoutForm = () => {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
+    cartItems?.map((product) => {
+      track('Purchase', {
+        content_name: product.name,
+        content_ids: [product.id],
+        content_type: 'product',
+        value: product.price,
+        currency: 'DZD',
+      });
+    })
+    
     setIsSubmitting(true);
 
     try {

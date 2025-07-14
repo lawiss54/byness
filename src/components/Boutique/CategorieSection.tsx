@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { Filter } from "lucide-react";
 import { containerVariants, itemVariants } from "./CategorieSection/animations/variants";
 import { CategoryButton } from "./CategorieSection/CategoryButton";
-import { Category, Product } from "@/components/Boutique/types/product.types";
+import { Category, Product } from "@/components/boutique/types/product.types";
 
 interface CategoriesSectionProps {
   categories: Category[];

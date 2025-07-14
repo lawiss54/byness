@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCheckoutForm } from '@/hooks/useCheckoutForm';
@@ -9,15 +9,33 @@ import CustomerInfoStep from './steps/CustomerInfoStep';
 import OrderSummaryStep from './steps/OrderSummaryStep';
 import SuccessStep from './steps/SuccessStep';
 import { useRouter } from 'next/navigation';
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
 const CheckoutPage: React.FC = () => {
   const router = useRouter();
+  const { track } = useFacebookPixelEvent();
   const { form, currentStep, isSubmitting, nextStep, prevStep, onSubmit } = useCheckoutForm();
-
+   const { cartItems } = useCartCheckout();
   const steps = [
     { id: 1, title: 'Informations', description: 'Vos coordonnées' },
     { id: 2, title: 'Confirmation', description: 'Récapitulatif' }
   ];
+  useEffect(() => {
+    if(cartItems?.length > 0){
+      cartItems?.map((product) => {
+        track('InitiateCheckout', {
+          content_name: product?.name,
+          content_ids: product?.id,
+          content_type: 'product',
+          value: product?.price * product?.quantity,
+          currency: 'DZD',
+        });
+      });
+    }
+    
+  }, [cartItems, track]);
+  
 
   const renderStep = () => {
     switch (currentStep) {

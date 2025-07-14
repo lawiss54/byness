@@ -8,9 +8,10 @@ import { ShoppingBag } from 'lucide-react';
 import { useCart } from '@/components/cart/CartContext';
 import Badge from './ui/Badge';
 import {Button} from './ui/Button';
-import type { Product } from '@/components/Boutique/types/product.types';
+import type { Product } from '@/components/boutique/types/product.types';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
 import { CartItem } from '@/lib/CartCheckoutContextType';
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 
 interface ProductCardProps {
   product: Product;
@@ -26,10 +27,19 @@ const ProductCard = memo<ProductCardProps>(({
   className = ""
 }) => {
   const { addToCart } = useCartCheckout();
+  const { track } = useFacebookPixelEvent();
 
   const handleAddToCart = (e: React.MouseEvent) => {
+
     e.preventDefault();
     e.stopPropagation();
+    track('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'DZD',
+    });
     
     const cartProduct: CartItem = {
       id: product.id,

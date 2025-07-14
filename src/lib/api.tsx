@@ -67,6 +67,5 @@ export const products = async () => {
     },
   });
   const data = await res.json();
-  console.log(data.data.filter(item => item.hero_section = true))
   return data.data.filter(item => item.hero_section = true)
 }

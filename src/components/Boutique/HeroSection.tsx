@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
 import HeroHeading from "./HeroSection/HeroHeading";
 import HeroBackground from "./HeroSection/HeroBackground";
 import HeroProductCard from "./HeroSection/HeroProductCard";
 import { containerVariants } from "./HeroSection/animations/variants";
-import type { Product } from "@/components/Boutique/types/product.types";
+import type { Product } from "@/components/boutique/types/product.types";
 
 interface HeroSectionProps {
   heroProducts?: Product[];
@@ -21,9 +21,9 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
   const carousel = useRef<HTMLDivElement>(null);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleUserInteraction = (pause: boolean) => {
+  const handleUserInteraction = useCallback((pause: boolean) => {
     setIsAutoScrolling(!pause);
-  };
+  }, []);
 
   // Calculate carousel width
   useEffect(() => {
@@ -37,59 +37,69 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
 
     // Initial calculation
     updateCarouselWidth();
-    
+
     // Recalculate on window resize
     window.addEventListener('resize', updateCarouselWidth);
-    
+
     // Recalculate when products change
     const timer = setTimeout(updateCarouselWidth, 100);
-    
+
     return () => {
       window.removeEventListener('resize', updateCarouselWidth);
       clearTimeout(timer);
     };
   }, [products]);
 
-  // Auto-scroll effect
+  // Auto-scroll effect - Fixed version
   useEffect(() => {
-    if (!isAutoScrolling || width <= 0 || products.length <= 1) return;
+    if (!isAutoScrolling || width <= 0 || products.length <= 1) {
+      if (animationRef.current) {
+        clearInterval(animationRef.current);
+        animationRef.current = null;
+      }
+      return;
+    }
 
-    const startAutoScroll = () => {
-      animationRef.current = setInterval(() => {
-        setCurrentX(prev => {
-          const newX = prev - 1; // Vitesse de défilement
-          
-          // Reset à la position initiale quand on atteint la fin
-          if (Math.abs(newX) >= width + 100) {
-            return 0;
-          }
-          
-          return newX;
-        });
-      }, 20); // Intervalle d'animation
-    };
+    // Clear any existing interval
+    if (animationRef.current) {
+      clearInterval(animationRef.current);
+    }
 
-    startAutoScroll();
+    animationRef.current = setInterval(() => {
+      setCurrentX(prev => {
+        const newX = prev - 1; // Vitesse de défilement
 
+        // Reset à la position initiale quand on atteint la fin
+        if (Math.abs(newX) >= width + 100) {
+          return 0;
+        }
+
+        return newX;
+      });
+    }, 20); // Intervalle d'animation
+
+    // Cleanup function
     return () => {
       if (animationRef.current) {
         clearInterval(animationRef.current);
+        animationRef.current = null;
       }
     };
-  }, [isAutoScrolling, width, products.length]);
+  }, [isAutoScrolling, width, products.length]); // Keep only stable dependencies
 
   // Cleanup animation on unmount
   useEffect(() => {
     return () => {
       if (animationRef.current) {
         clearInterval(animationRef.current);
+        animationRef.current = null;
       }
     };
   }, []);
 
-  return(
+  return (
     <>
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-darkGreen-50 via-brand-sage-50 to-brand-camel-50 py-24 min-h-full">
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-darkGreen-50 via-brand-sage-50 to-brand-camel-50 py-24 min-h-full">
         <HeroBackground />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -102,7 +112,7 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
             initial="hidden"
             animate="visible"
           >
-            <NeonGradientCard neonColors={ {firstColor: "#0f3a37", secondColor: "#7d583a"} }>
+            <NeonGradientCard neonColors={{ firstColor: "#0f3a37", secondColor: "#7d583a" }}>
               <div className="w-full overflow-hidden">
                 <motion.div
                   ref={carousel}
@@ -123,17 +133,17 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
                   onHoverEnd={() => handleUserInteraction(false)}
                 >
                   {products.map((product, index) => (
-                      <motion.div key={product?.id} className="min-w-[20rem] min-h-[25rem] p-2 flex-shrink-0">
-                          <HeroProductCard
-                            key={product?.id}
-                            product={product}
-                            index={index}
-                          />
-                      </motion.div>
-                ))}
+                    <motion.div key={product?.id} className="min-w-[20rem] min-h-[25rem] p-2 flex-shrink-0">
+                      <HeroProductCard
+                        key={product?.id}
+                        product={product}
+                        index={index}
+                      />
+                    </motion.div>
+                  ))}
                 </motion.div>
               </div>
-              
+
             </NeonGradientCard>
           </motion.div>
         </div>

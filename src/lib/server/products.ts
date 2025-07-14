@@ -1,4 +1,4 @@
-import { Product } from '@/components/Boutique/types/product.types';
+import { Product } from '@/components/boutique/types/product.types';
 
 const API_URL = process.env.NEXT_PUBLIC_LOCAL_URL || 'http://localhost:3000';
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {

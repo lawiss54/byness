@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingCart, Package, CreditCard } from "lucide-react";
-import { Product } from "@/components/Boutique/types/product.types";
+import { Product } from "@/components/boutique/types/product.types";
 import { useCart } from "./cart/CartContext";
 import { useRouter } from "next/navigation";
 import { Button } from "./shared/ui";
 import { useCartCheckout } from "@/lib/CartCheckoutContext";
 import { CartItem } from "@/lib/CartCheckoutContextType";
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 
 
 
@@ -17,13 +18,20 @@ interface AddToCartButtonsProps {
 }
 
 export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) => {
+  const { track } = useFacebookPixelEvent();
   const [isAdded, setIsAdded] = useState(false);
 
   const { addToCart } = useCartCheckout()
 
   const handleAddToCart = () => {
 
-
+    track('AddToCart', {
+      content_name: product?.name,
+      content_ids: [product?.id],
+      content_type: 'product',
+      value: product?.price,
+      currency: 'DZD',
+    });
     addToCart(product);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
@@ -48,9 +56,17 @@ interface BuyNowButtonsProps {
 
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
   const { addToCart } = useCartCheckout();
+  const { track } = useFacebookPixelEvent();
   const router = useRouter();
 
   const handleBuyNow = () => {
+    track('AddToCart', {
+      content_name: product?.name,
+      content_ids: [product?.id],
+      content_type: 'product',
+      value: product?.price,
+      currency: 'DZD',
+    });
 
     const cartProduct: CartItem = {
       id: product.id,

@@ -1,5 +1,5 @@
 import { Branch, Order, SiteSettings, Category } from '../types';
-import { Product } from '@/components/Boutique/types/product.types';
+import { Product } from '@/components/boutique/types/product.types';
 
 export const branches: Branch[] = [
   {

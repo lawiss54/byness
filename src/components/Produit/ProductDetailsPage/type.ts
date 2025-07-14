@@ -1,4 +1,4 @@
-import { Product } from '@/components/Boutique/types/product.types';
+import { Product } from '@/components/boutique/types/product.types';
 
 interface ProductDetailsPageProps {
   product: Product;

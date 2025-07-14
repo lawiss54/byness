@@ -1,6 +1,6 @@
 'use client';
 
-import { Category, Product } from '@/components/Boutique/types/product.types';
+import { Category, Product } from '@/components/boutique/types/product.types';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { categories } from './../app/boutique/api';
 import { toast } from 'react-toastify';

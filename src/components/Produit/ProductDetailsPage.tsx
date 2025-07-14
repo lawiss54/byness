@@ -12,6 +12,7 @@ import TrustSignals from './ProductDetailsPage/TrustSignals';
 import type {ProductDetailsPageProps } from './ProductDetailsPage/type';
 import {ANIMATION_VARIANTS} from './ProductDetailsPage/animation';
 import { Loader } from '../shared';
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 
 // Lazy load heavy components to improve initial page load
 const SimilarProducts = dynamic(() => import('./SimilarProducts'), {
@@ -38,6 +39,8 @@ export default function ProductDetailsPage({
 
   const {similerProductsFinder } = useApi();
   const similarProducts =  similerProductsFinder(product.category)
+
+  const { track } = useFacebookPixelEvent();
   
 
  
@@ -85,6 +88,16 @@ export default function ProductDetailsPage({
     totalPrice: pricingData?.totalPrice
   }), [selectedColor, selectedSize, quantity, pricingData?.totalPrice]);
 
+  useEffect(() => {
+    track('ViewContent', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'DZD',
+    });
+  }, [product, track]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
       {/* Hero Section - Main product display */}
