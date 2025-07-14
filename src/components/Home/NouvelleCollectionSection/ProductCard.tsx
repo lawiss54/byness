@@ -22,6 +22,7 @@ export default function ProductCard({
   onHoverStart, 
   onHoverEnd 
 }: ProductCardProps) {
+
   return (
     <>
       <motion.div
@@ -79,7 +80,7 @@ export default function ProductCard({
               />
               
               <Image
-                src={product?.images[0]}
+                src={product?.images[0]['image_path']}
                 alt={product?.name}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -88,11 +89,7 @@ export default function ProductCard({
 
               <ProductBadges badge={product?.badge} index={index} />
               
-              <ProductStats 
-                rating={product?.rating} 
-                reviews={product?.reviews} 
-                isHovered={isHovered} 
-              />
+             
             </div>
 
             <ProductContent product={product} />

@@ -2,7 +2,6 @@ import { Product } from '@/components/Boutique/types/product.types';
 
 interface ProductDetailsPageProps {
   product: Product;
-  similarProducts: Product[];
 }
 
 interface ProductInfoProps {

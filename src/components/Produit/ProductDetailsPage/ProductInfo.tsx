@@ -1,7 +1,7 @@
 import React, { memo, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import namer from "color-namer"
-import { 
+import namer from "color-namer";
+import {
   Check,
   Plus,
   Minus,
@@ -28,33 +28,44 @@ const ProductInfo = memo<ProductInfoProps>(({
     'Beige': '#f5f5dc'
   }), []);
 
-  
 
-  const [nameColor, setNameColor] = useState(namer(selectionData?.selectedColor))
+
+  const [nameColor, setNameColor] = useState()
   useEffect(() => {
-    function changeColor(){
-      setNameColor(namer(selectionData?.selectedColor))
+    function changeColor() {
+      if(!selectionData?.selectedColor){
+        setNameColor()
+      }else{
+        setNameColor(namer(selectionData?.selectedColor))
+      }
     }
+    
     changeColor()
   }, [selectionData?.selectedColor, onColorSelect])
 
   const passProduct = {
     id: product.id,
     name: product.name,
-    price: product.price ,
+    price: product.price,
     originalPrice: product.originalPrice,
-    quantity: selectionData.quantity,
+    quantity: selectionData?.quantity || 1,
     category: product.category,
     images: product.images,
-    colors: product.colors,
-    color: selectionData.selectedSize,
-    colorName: nameColor.html[0]?.name,
+    image: product.images[0],
+    colors: product?.colors,
+    color: selectionData.selectedColor,
+    colorName: nameColor?.html[0]?.name || 'Not have colors',
     sizes: product.sizes,
-    size: selectionData.selectedSize
+    size: selectionData?.selectedSize || 'Not have sizes',
+    slug: product.slug,
+    badge: product.badge,
+    isNew: product.isNew,
+    isSale: product.isSale,
+    discount: product.discount
   }
-  
 
-  
+
+
   return (
     <div className="space-y-8">
       {/* Product Title and Rating Section */}
@@ -92,7 +103,7 @@ const ProductInfo = memo<ProductInfoProps>(({
                 </span>
               )}
             </div>
-            
+
             {/* Savings Information */}
             {pricingData?.savings > 0 && (
               <div className="flex flex-wrap items-center gap-2">
@@ -109,7 +120,7 @@ const ProductInfo = memo<ProductInfoProps>(({
               </div>
             )}
           </div>
-          
+
           {/* Award Icon */}
           <motion.div
             className="text-brand-camel-400/40 hidden sm:block"
@@ -120,9 +131,10 @@ const ProductInfo = memo<ProductInfoProps>(({
           </motion.div>
         </div>
       </motion.div>
-
+      
       {/* Color Selection */}
-      <div className="space-y-4">
+      {product?.colors.length > 0 && (
+        <div className="space-y-4">
         <h3 className="text-lg font-semibold text-brand-darkGreen-500">
           Couleur: <span className="text-brand-camel-500">{nameColor?.html[0]?.name?.charAt(0).toUpperCase() + nameColor?.html[0]?.name?.slice(1)}</span>
         </h3>
@@ -131,11 +143,10 @@ const ProductInfo = memo<ProductInfoProps>(({
             <motion.button
               key={color}
               onClick={() => onColorSelect(color)}
-              className={`relative w-12 h-12 rounded-full border-4 transition-all duration-300 ${
-                selectionData?.selectedColor === color
+              className={`relative w-12 h-12 rounded-full border-4 transition-all duration-300 ${selectionData?.selectedColor === color
                   ? 'border-brand-camel-500 shadow-lg scale-110'
                   : 'border-white hover:border-brand-camel-300 shadow-md'
-              }`}
+                }`}
               style={{ backgroundColor: colorMap[color] || color }}
               whileHover={{ scale: selectionData?.selectedColor === color ? 1.1 : 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -155,9 +166,11 @@ const ProductInfo = memo<ProductInfoProps>(({
           ))}
         </div>
       </div>
-
+      )}
+      
       {/* Size Selection */}
-      <div className="space-y-4">
+      {product?.sizes.length > 0 && (
+        <div className="space-y-4">
         <h3 className="text-lg font-semibold text-brand-darkGreen-500">
           Taille: <span className="text-brand-camel-500">{selectionData?.selectedSize}</span>
         </h3>
@@ -166,11 +179,10 @@ const ProductInfo = memo<ProductInfoProps>(({
             <motion.button
               key={size}
               onClick={() => onSizeSelect(size)}
-              className={`w-12 h-12 rounded-xl border-2 font-semibold transition-all duration-300 ${
-                selectionData?.selectedSize === size
+              className={`w-12 h-12 rounded-xl border-2 font-semibold transition-all duration-300 ${selectionData?.selectedSize === size
                   ? 'border-brand-camel-500 bg-brand-camel-50 text-brand-camel-600'
                   : 'border-gray-200 hover:border-brand-camel-300 text-brand-darkGreen-500'
-              }`}
+                }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label={`Sélectionner la taille ${size}`}
@@ -180,6 +192,9 @@ const ProductInfo = memo<ProductInfoProps>(({
           ))}
         </div>
       </div>
+      )}
+      
+      
 
       {/* Quantity Selection */}
       <div className="space-y-4">
@@ -196,11 +211,11 @@ const ProductInfo = memo<ProductInfoProps>(({
             >
               <Minus className="w-4 h-4" />
             </motion.button>
-            
+
             <span className="px-6 py-3 font-semibold text-brand-darkGreen-500 bg-white min-w-[60px] text-center">
               {selectionData?.quantity}
             </span>
-            
+
             <motion.button
               onClick={() => onQuantityChange(selectionData?.quantity + 1)}
               className="p-3 text-brand-darkGreen-500 hover:bg-brand-sage-50 rounded-r-2xl transition-colors disabled:opacity-50"
@@ -212,7 +227,7 @@ const ProductInfo = memo<ProductInfoProps>(({
               <Plus className="w-4 h-4" />
             </motion.button>
           </div>
-          
+
           {/* Total Price Display */}
           <span className="text-brand-darkGreen-400">
             Total: <span className="font-semibold text-brand-camel-500 text-lg">
@@ -228,18 +243,18 @@ const ProductInfo = memo<ProductInfoProps>(({
           <div className="flex-1">
             <AddToCartButtons product={passProduct} />
           </div>
-          
-           {/* Buy Now Button */}
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <BuyNowButtons items={passProduct} />
-            </motion.div>
-         
+
+          {/* Buy Now Button */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <BuyNowButtons product={passProduct} />
+          </motion.div>
+
         </div>
-        
-       
+
+
       </div>
     </div>
   );

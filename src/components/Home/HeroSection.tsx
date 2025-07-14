@@ -71,7 +71,7 @@ const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
         alt={slide?.title}
         fill
         className="object-cover"
-        priority={true} // تحميل أولوية عالية للصورة الأولى
+        priority={true} 
         quality={100}
         sizes="100"
         placeholder="blur"
@@ -233,7 +233,7 @@ const HeroSection = memo(({ slides }) => {
         onTouchEnd={dragHandlers.handleTouchEnd}
       >
         <AnimatePresence mode="wait">
-          <React.Fragment key={currentSlideData.id}>
+          <React.Fragment key={currentSlideData.order}>
             <OptimizedSlideImage
               slide={currentSlideData}
               isActive={true}

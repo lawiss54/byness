@@ -6,9 +6,11 @@ const nextConfig: NextConfig = {
     domains: [
       'images.pexels.com',
       'images.unsplash.com',
-      'unsplash.com'
+      'unsplash.com',
+      'localhost',
+      'site.test'
     ],
-    unoptimized: false,
+
   },
 
   experimental: {

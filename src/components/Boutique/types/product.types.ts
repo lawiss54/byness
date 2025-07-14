@@ -10,21 +10,24 @@ export interface Product {
   colors: string[];
   sizes: string[];
   category: string;
-  features: string[];
   stockQuantity: number;
   isNew: boolean;
   isSale: boolean;
   discount: number;
-  sku: string;
-  status: 'active' | 'inactive' | 'out-of-stock';
+  status: 'active' | 'inactive';
   heroSection: boolean;
+  quantity?: number;
+  colorName?: string;
 }
 
 export interface Category {
   name: string;
+  slug: string;
+  description: string;
   icon: string;
   color: string;
-  count?: number;
+  status: string
+  productsCount?: number;
   id?: string;
 }
 

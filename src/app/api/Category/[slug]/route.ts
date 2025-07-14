@@ -7,7 +7,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export async function PUT(request: NextRequest, { params }: { params: { slug: string } }) {
     const { slug } = params;
     const cookieStore = cookies();
-    const token = cookieStore.get('access_token')?.value;
+    const token = (await cookieStore).get('access_token')?.value;
 
     return withAuthMiddleware(request, async (req) => {
         if (!API_URL) {
@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
 export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
   const { slug } = params;
   const cookieStore = cookies();
-  const token = cookieStore.get('access_token')?.value;
+  const token = (await cookieStore).get('access_token')?.value;
 
   return withAuthMiddleware(request, async () => {
     if (!API_URL) {

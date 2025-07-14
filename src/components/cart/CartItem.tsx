@@ -4,16 +4,16 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus, Trash2, Tag } from 'lucide-react';
 import Image from 'next/image';
-import { useUnifiedCart } from '../shared/UnifiedCartContext';
-import type { CartItem as CartItemType } from '../shared/UnifiedCartContext';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
+import { CartItem } from '@/lib/CartCheckoutContextType';
 
 interface CartItemProps {
-  item: CartItemType;
+  item: CartItem;
   index: number;
 }
 
 export default function CartItem({ item, index }: CartItemProps) {
-  const { updateQuantity, removeItem, moveToWishlist } = useUnifiedCart();
+  const { updateQuantity, removeItem } = useCartCheckout();
   const [isRemoving, setIsRemoving] = useState(false);
 
   const handleRemove = () => {
@@ -23,9 +23,7 @@ export default function CartItem({ item, index }: CartItemProps) {
     }, 300);
   };
 
-  const handleMoveToWishlist = () => {
-    moveToWishlist(item.id);
-  };
+  
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -66,9 +64,10 @@ export default function CartItem({ item, index }: CartItemProps) {
             {/* Product Image */}
             <div className="relative w-full sm:w-32 sm:h-32 aspect-square sm:aspect-auto flex-shrink-0 rounded-xl overflow-hidden bg-white shadow-lg">
               <Image
-                src={item.image}
+                src={item.images[0]['image_path'] || '/placeholder.png'}
                 alt={item.name}
-                fill
+                width={640}
+                height={640}
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                 sizes="(max-width: 640px) 100vw, 128px"
               />
@@ -106,9 +105,9 @@ export default function CartItem({ item, index }: CartItemProps) {
                     <span className="flex items-center gap-1">
                       <div
                         className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-                        style={{ backgroundColor: item.color.toLowerCase() }}
+                        style={{ backgroundColor: item?.color?.toLowerCase() }}
                       />
-                      {item.color}
+                      {item.colorName}
                     </span>
                     <span>Taille: {item.size}</span>
                     <span className="bg-brand-camel-100 text-brand-camel-600 px-2 py-1 rounded-full text-xs font-semibold">
@@ -137,7 +136,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     <span className="text-lg sm:text-xl font-bold text-brand-camel-500">
                       {item.price.toLocaleString()} DA
                     </span>
-                    {item.originalPrice && (
+                    {item.originalPrice > 0 || item.originalPrice === undefined && (
                       <span className="text-sm sm:text-lg text-brand-sage-400 line-through">
                         {item.originalPrice.toLocaleString()} DA
                       </span>
@@ -189,7 +188,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     <div className="text-base sm:text-xl font-bold text-brand-darkGreen-500">
                       {(item.price * item.quantity).toLocaleString()} DA
                     </div>
-                    {item.originalPrice && (
+                    {item.originalPrice > 0 || item.originalPrice === undefined && (
                       <div className="text-sm text-brand-sage-400 line-through">
                         {(item.originalPrice * item.quantity).toLocaleString()} DA
                       </div>

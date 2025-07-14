@@ -22,7 +22,7 @@ export default function HeroProductCard({ product, index }: Props) {
   return (
     <motion.div
       variants={itemVariants}
-      className="group relative overflow-hidden rounded-3xl bg-white/90 backdrop-blur-sm shadow-2xl border border-brand-camel-100 h-[40rem] flex flex-col transition-all duration-700"
+      className="group relative overflow-hidden rounded-3xl bg-white/90 backdrop-blur-sm shadow-2xl border border-brand-camel-100 h-[40rem] w-[25rem] flex flex-col transition-all duration-700"
       whileHover={{ y: -8, rotateY: 2, rotateX: 2 }}
       style={{ transformStyle: "preserve-3d", perspective: "1000px" }}
     >

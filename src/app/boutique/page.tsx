@@ -1,38 +1,47 @@
 "use client";
-import HeroSection from "@/components/Boutique/HeroSection";
+import { useEffect } from "react";
 import ProductsSection from "@/components/Boutique/ProductsSection";
-import { products, categories, heroProducts } from "./api";
-
-
-
+import { Loader } from "@/components/shared";
+import HeroSection from "@/components/Boutique/HeroSection";
+import { useApi } from "@/lib/apiContext";
+import { Product } from "@/components/Boutique/types/product.types";
 
 const Boutique = () => {
-  
-  
+  const { activeCategory, activeProduct, loading, fatchRessorce } = useApi()
+
+
+
+  useEffect(() => {
+    fatchRessorce()
+  }, [])
+
+  const heroProducts = () => {
+    const filterHero = activeProduct()
+    return filterHero.filter(products => products?.heroSection === true);
+  }
+ 
+ 
+
+  if (loading) {
+    return <Loader
+      type="fashion"
+      size="lg"
+      text="Chargement..."
+    />
+  }
+
+
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-brand-ivory-50 via-white to-brand-sage-50">
-      {/* Hero Section - Enhanced */}
-      <HeroSection heroProducts={heroProducts(products)} />
-
-      {/* Enhanced Search & Filter Bar 
-      <SearchFilterSection />
-      */}
-
-      {/* Enhanced Categories Section 
-      <CategorieSection
-        categories={categories}
-        products={products}
-        setfilteredProducts={setfilteredProducts}
-        setSelectedCategoryCallBack={setSelectedCategoryCallBack}
-      />
-      */}
-       
-
-      {/* Enhanced Products Section */}
+    <div className="min-h-screen bg-gradient-to-br from-brand-ivory-50 via-white to-brand-sage-50">
       
-      <ProductsSection products={products} categories={categories} />
-      
+        {/* Hero Section - Enhanced */}
+        <HeroSection heroProducts={heroProducts()} />
+
+        {/* Enhanced Products Section */}
+
+        <ProductsSection products={activeProduct()} categories={activeCategory()} />
+     
     </div>
   );
 };

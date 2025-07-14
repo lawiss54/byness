@@ -1,10 +1,10 @@
 'use client';;
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
-import { useUnifiedCart } from '../shared/UnifiedCartContext';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
 export default function CartActions() {
-  const { clearCart, cartItems } = useUnifiedCart();
+  const { clearCart, cartItems } = useCartCheckout();
 
   const handleClearCart = () => {
     if (window.confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {

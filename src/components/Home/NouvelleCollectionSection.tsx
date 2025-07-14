@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ProductCard, SectionHeader } from '@/components/shared';
+import {SectionHeader } from '@/components/shared';
+import ProductCard from './NouvelleCollectionSection/ProductCard'
 import { useCountdownTimer, useProductHover } from './NouvelleCollectionSection/hooks';
 import { containerVariants, itemVariants, backgroundVariants } from './NouvelleCollectionSection/animations';
 import dynamic from 'next/dynamic';
@@ -70,7 +71,7 @@ export default function NouvelleCollectionSection({ products }: ExclusiveProduct
           initial="hidden"
           whileInView="visible"
         >
-          {products.map((product, index) => (
+          {products?.slice(0, 4).map((product, index) => (
             <motion.div
               key={product.id}
               variants={itemVariants}
@@ -88,7 +89,7 @@ export default function NouvelleCollectionSection({ products }: ExclusiveProduct
               <ProductCard
                 product={product}
                 index={index}
-                showAddToCart={false}
+                
                 className="h-[700px] bg-white/95 backdrop-blur-sm"
               />
             </motion.div>

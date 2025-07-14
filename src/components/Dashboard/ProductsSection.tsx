@@ -10,7 +10,8 @@ import {
   Package,
   AlertCircle,
   CheckCircle,
-  XCircle
+  XCircle,
+  Loader2
 } from 'lucide-react';
 
 import { Button, Input, Select, Card, Badge } from '@/components/shared/ui';
@@ -19,9 +20,10 @@ import ProductDetails from './Products/ProductDetails';
 import BulkActions from './Products/BulkActions';
 import type { Category, Product } from '@/app/admin/types';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 type ViewMode = 'grid' | 'table';
-type ProductStatus = 'all' | 'active' | 'inactive' | 'out-of-stock';
+type ProductStatus = 'all' | 'active' | 'inactive';
 
 export default function ProductsSection() {
   // State Management
@@ -39,6 +41,12 @@ export default function ProductsSection() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null);
   const [getCategories, setCategories] = useState([])
+  const [deletingSlug, setDeletingSlug] = useState<string | null>(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkStatus, setBulkStatus] = useState(false);
+
+
+
 
   const fetchProducts = async () => {
     try {
@@ -51,7 +59,6 @@ export default function ProductsSection() {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const data = await res.json();
-      type RawProduct = any; // النوع الأصلي من الـ API
 
       function transformProduct(raw): Product {
         return {
@@ -84,6 +91,7 @@ export default function ProductsSection() {
       setLoading(false);
     }
   }
+
   const fetchCategories = async () => {
     try {
       const res = await fetch('/api/Category');
@@ -144,7 +152,6 @@ export default function ProductsSection() {
     total: products?.length,
     active: products?.filter(p => p.status === 'active').length,
     inactive: products?.filter(p => p.status === 'inactive').length,
-    outOfStock: products?.filter(p => p.status === 'out-of-stock').length,
     lowStock: products?.filter(p => p.stockQuantity < 10).length
   }), [products]);
 
@@ -159,11 +166,90 @@ export default function ProductsSection() {
     setShowProductForm(true);
   };
 
-  const handleDeleteProduct = (productId: string) => {
+  const handleDeleteProduct = async (productSlug: string) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      setProducts(prev => prev.filter(p => p.id !== productId));
+      setDeletingSlug(productSlug);
+      const res = await fetch(`/api/products/${productSlug}`, {
+        method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Erreur lors de la suppression du produit');
+        setDeletingSlug(null);
+        throw new Error(errorData.error || 'Erreur lors de la suppression du produit');
+      } else {
+        toast.success('Produit supprimé avec succès');
+        setProducts(prev => prev.filter(p => p.slug !== productSlug));
+        setDeletingSlug(null);
+      }
     }
   };
+
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Supprimer ${selectedProducts.length} produit(s) ?`)) {
+      setBulkDeleting(true);
+      let successCount = 0;
+      for (const slug of selectedProducts) {
+        try {
+          const res = await fetch(`/api/products/${slug}`, {
+            method: "DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            }
+          });
+          if (res.ok) {
+            successCount++;
+          } else {
+            const errorData = await res.json();
+            toast.error(errorData.error || `Erreur lors de la suppression du produit (${slug})`);
+          }
+        } catch (err) {
+          toast.error(`Erreur lors de la suppression du produit (${slug})`);
+        }
+      }
+      setProducts(prev => prev.filter(p => !selectedProducts.includes(p.slug)));
+      setSelectedProducts([]);
+      setBulkDeleting(false);
+      if (successCount > 0) toast.success(`${successCount} produit(s) supprimé(s) avec succès`);
+    }
+  }
+
+  const handleStatusBulk = async (status) => {
+    setBulkStatus(true);
+    const data = { status: status }
+    let successCount = 0;
+    for (const slug of selectedProducts) {
+      try {
+        const res = await fetch(`/api/products/${slug}/status`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          successCount++;
+        } else {
+          const errorData = await res.json();
+          toast.error(errorData.error || `Erreur lors du changement de statut du produit (${slug})`);
+        }
+      } catch (err) {
+        toast.error(`Erreur lors du changement de statut du produit (${slug})`);
+      }
+    }
+    setProducts(prev => prev.map(p =>
+      selectedProducts.includes(p.slug) ? { ...p, status } : p
+    ));
+    setSelectedProducts([]);
+    setBulkStatus(false);
+    if (successCount > 0) toast.success(`${successCount} produit(s) mis à jour avec succès`);
+  }
 
   const handleViewProduct = (product: Product) => {
     setEditingProduct(product);
@@ -180,7 +266,6 @@ export default function ProductsSection() {
       // Create new product
       const newProduct: Product = {
         id: Date.now().toString(),
-        sku: `SKU-${Date.now()}`,
         status: 'active',
         stockQuantity: 0,
         ...productData
@@ -234,7 +319,7 @@ export default function ProductsSection() {
     );
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
@@ -259,7 +344,6 @@ export default function ProductsSection() {
           { label: 'Total', value: stats.total, color: 'bg-blue-500', icon: Package },
           { label: 'Actifs', value: stats.active, color: 'bg-green-500', icon: CheckCircle },
           { label: 'Inactifs', value: stats.inactive, color: 'bg-red-500', icon: XCircle },
-          { label: 'Rupture', value: stats.outOfStock, color: 'bg-orange-500', icon: AlertCircle },
           { label: 'Stock Faible', value: stats.lowStock, color: 'bg-yellow-500', icon: AlertCircle }
         ].map((stat, index) => (
           <Card key={index} className="p-4">
@@ -331,18 +415,10 @@ export default function ProductsSection() {
       {selectedProducts.length > 0 && (
         <BulkActions
           selectedCount={selectedProducts.length}
-          onDelete={() => {
-            if (window.confirm(`Supprimer ${selectedProducts.length} produit(s) ?`)) {
-              setProducts(prev => prev.filter(p => !selectedProducts.includes(p.id)));
-              setSelectedProducts([]);
-            }
-          }}
-          onStatusChange={(status) => {
-            setProducts(prev => prev.map(p =>
-              selectedProducts.includes(p.id) ? { ...p, status } : p
-            ));
-            setSelectedProducts([]);
-          }}
+          onDelete={handleBulkDelete}
+          bulkStatusLoading={bulkStatus}
+          bulkDeleteLoading={bulkDeleting}
+          onStatusChange={(status) => handleStatusBulk(status)}
         />
       )}
 
@@ -366,8 +442,8 @@ export default function ProductsSection() {
                     <div className="absolute top-3 left-3 z-10">
                       <input
                         type="checkbox"
-                        checked={selectedProducts.includes(product.id)}
-                        onChange={() => handleSelectProduct(product.id)}
+                        checked={selectedProducts.includes(product.slug)}
+                        onChange={() => handleSelectProduct(product.slug)}
                         className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                       />
                     </div>
@@ -485,9 +561,10 @@ export default function ProductsSection() {
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <Image
-                          fill
                           src={product.images?.[0] || '/placeholder.jpg'}
                           alt={product.name}
+                          width={40}
+                          height={40}
                           className="w-10 h-10 rounded-lg object-cover mr-3"
                         />
                         <div>
@@ -529,9 +606,10 @@ export default function ProductsSection() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          icon={<Trash2 className="w-4 h-4" />}
-                          onClick={() => handleDeleteProduct(product.id)}
+                          icon={deletingSlug === product.slug ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                          onClick={() => handleDeleteProduct(product.slug)}
                           className="text-red-600 hover:text-red-700"
+                          disabled={deletingSlug === product.slug}
                         />
                       </div>
                     </td>

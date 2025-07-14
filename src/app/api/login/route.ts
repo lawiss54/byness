@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set("access_token", data.data.access_token, {
       httpOnly: true,
       secure: false, // اجعلها true في الإنتاج مع HTTPS
-      maxAge: 15 * 60, // 15 دقيقة
+      maxAge: 4 * 60 * 60,
       sameSite: "lax",
       path: "/",
     });

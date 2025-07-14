@@ -23,7 +23,7 @@ export interface Product {
   category: string;
   features?: string[];
   stockQuantity: number;
-  status: 'active' | 'inactive' | 'out-of-stock';
+  status: 'active' | 'inactive';
   slug?: string;
   isNew?: boolean;
   isSale?: boolean;

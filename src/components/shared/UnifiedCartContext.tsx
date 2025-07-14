@@ -71,40 +71,7 @@ export const useUnifiedCart = () => {
 
 export const UnifiedCartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Cart Items State
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: '1',
-      name: 'Robe Élégante Automne',
-      price: 15900,
-      originalPrice: 19900,
-      image: 'https://images.pexels.com/photos/1462637/pexels-photo-1462637.jpeg?auto=compress&cs=tinysrgb&w=400',
-      color: 'Noir',
-      size: 'M',
-      quantity: 1,
-      category: 'Robes'
-    },
-    {
-      id: '2',
-      name: 'Blazer Signature',
-      price: 22500,
-      image: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=400',
-      color: 'Camel',
-      size: 'L',
-      quantity: 2,
-      category: 'Vestes'
-    },
-    {
-      id: '3',
-      name: 'Pantalon Tailleur',
-      price: 12900,
-      originalPrice: 16900,
-      image: 'https://images.pexels.com/photos/1536619/pexels-photo-1536619.jpeg?auto=compress&cs=tinysrgb&w=400',
-      color: 'Sage',
-      size: 'M',
-      quantity: 1,
-      category: 'Pantalons'
-    }
-  ]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   // Shipping Information State
   const [shippingInfo, setShippingInfo] = useState<ShippingInfo>({

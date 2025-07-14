@@ -7,37 +7,24 @@ import { Product } from "@/components/Boutique/types/product.types";
 import { useCart } from "./cart/CartContext";
 import { useRouter } from "next/navigation";
 import { Button } from "./shared/ui";
+import { useCartCheckout } from "@/lib/CartCheckoutContext";
+import { CartItem } from "@/lib/CartCheckoutContextType";
+
+
 
 interface AddToCartButtonsProps {
-  product: Product;
+  product: CartItem;
 }
 
 export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) => {
   const [isAdded, setIsAdded] = useState(false);
-  const { addToCart } = useCart();
+
+  const { addToCart } = useCartCheckout()
 
   const handleAddToCart = () => {
-    const cartProduct = {
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      originalPrice: product.originalPrice,
-      quantity: 1,
-      category: product.category,
-      images: product.images,
-      colors: product.colors,
-      color: product.colors?.[0] || null,
-      colorName: product.colors?.[0] || null,
-      sizes: product.sizes,
-      size: product.sizes?.[0] || null,
-      slug: product.slug,
-      badge: product.badge,
-      isNew: product.isNew,
-      isSale: product.isSale,
-      discount: product.discount
-    };
-    
-    addToCart(cartProduct);
+
+
+    addToCart(product);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -45,7 +32,7 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
   return (
     <Button
       onClick={handleAddToCart}
-      variant={isAdded ? "secondary" : "primary"}
+      variant="secondary"
       size="md"
       icon={isAdded ? <Package className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
       iconPosition="left"
@@ -60,32 +47,33 @@ interface BuyNowButtonsProps {
 }
 
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
-  const { addToCart, isProductInCart } = useCart();
+  const { addToCart } = useCartCheckout();
   const router = useRouter();
 
   const handleBuyNow = () => {
-    if (!isProductInCart(product)) {
-      const cartProduct = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        originalPrice: product.originalPrice,
-        quantity: 1,
-        category: product.category,
-        images: product.images,
-        colors: product.colors,
-        color: product.colors?.[0] || null,
-        colorName: product.colors?.[0] || null,
-        sizes: product.sizes,
-        size: product.sizes?.[0] || null,
-        slug: product.slug,
-        badge: product.badge,
-        isNew: product.isNew,
-        isSale: product.isSale,
-        discount: product.discount
-      };
-      addToCart(cartProduct);
-    }
+
+    const cartProduct: CartItem = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      image: product.images?.[0],
+      quantity: product.quantity ?? 1,
+      category: product.category,
+      images: product.images,
+      colors: product.colors,
+      color: product.colors?.[0],
+      colorName: product.colorName ?? null,
+      sizes: product.sizes,
+      size: product.size ,
+      slug: product.slug,
+      badge: product.badge,
+      isNew: product.isNew,
+      isSale: product.isSale,
+      discount: product.discount
+    };
+    addToCart(cartProduct);
+
     router.push('/checkout');
   };
 

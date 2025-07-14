@@ -5,9 +5,10 @@ import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useUnifiedCart } from '../shared/UnifiedCartContext';
 import { useRouter } from 'next/navigation';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
 export default function CartHeader() {
-  const { itemCount } = useUnifiedCart();
+  const { itemCount } = useCartCheckout();
   const router = useRouter();
   const goShop = () => {
     router.push('/boutique')

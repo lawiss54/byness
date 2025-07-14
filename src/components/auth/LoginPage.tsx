@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50 relative overflow-auto">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
         {isClient && positions.map((position, i) => (

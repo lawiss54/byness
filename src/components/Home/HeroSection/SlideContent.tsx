@@ -68,31 +68,31 @@ const SlideContent = ({ slide, isActive, animationType }) => {
 
   return (
     <m.div
-      className="absolute relative inset-0 flex items-center justify-center z-10"
+      className="absolute inset-0 flex items-center justify-center z-10"
       variants={contentVariants[animationType]}
       initial="hidden"
       animate={isActive ? "visible" : "hidden"}
       exit="exit"
     >
-      <div className={`${slide?.className} text-center mt-[15rem] xs:mt-[9rem] px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto`}>
+      <div className={`text-center  px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto`}>
         <m.div variants={itemVariants}>
           <span className="inline-block px-4 py-2 bg-accent/20 backdrop-blur-soft text-accent font-body font-body-medium text-sm rounded-full mb-4 border border-accent/30">
-            {slide?.category}
+            {slide?.badge}
           </span>
         </m.div>
         
         <m.h2 
           variants={itemVariants}
-          className={`text-3xl xs:text-2xl sm:text-2xl lg:text-7xl font-heading font-heading-bold text-shadow text-shadow-y-2 text-shadow-x-3 text-shadow-blur-[13px] text-shadow-md text-shadow-white/40 text-brand-darkGreen-900 mb-6 leading-tight`}
+          className={`text-3xl xs:text-2xl sm:text-2xl lg:text-7xl font-heading font-heading-boldtext-shadow-y-2 text-shadow-x-3 text-shadow-blur-[13px] text-shadow-md text-shadow-white/40 text-brand-darkGreen-900 mb-6 leading-tight`}
         >
-          {slide?.title}
+          {slide?.mainTitle}
         </m.h2>
         
         <m.p 
           variants={itemVariants}
           className="text-lg sm:text-xl lg:text-2xl text-brand-sage-200 mb-8 max-w-2xl mx-auto leading-relaxed"
         >
-          {slide?.subtitle}
+          {slide?.description}
         </m.p>
         
         <m.div 
@@ -101,7 +101,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
         >
           
           <Link
-            href="/boutique"
+            href={slide?.buttonLink ? slide?.buttonLink : '/boutique'}
           >
             <Button
               variant="ghost"
@@ -110,7 +110,7 @@ const SlideContent = ({ slide, isActive, animationType }) => {
               iconPosition="left"
               className="text-brand-greenBlack-600 border-brand-sage-300/30 hover:bg-white/10 hover:border-white/50 px-8 py-4 text-lg transition-spring hover:scale-105"
             >
-              Voir la Collection
+              {slide?.buttonText}
             </Button>
           </Link>
         </m.div>

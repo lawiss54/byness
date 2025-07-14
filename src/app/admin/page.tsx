@@ -1,8 +1,6 @@
-'use client'
+'use client';
 import LoginPage from "@/components/auth/LoginPage";
-import { FullScreenLoader, Loader } from "@/components/shared";
-import { useSimulatedLoader } from "@/hooks/useLoader";
-import { request } from "http";
+import { Loader } from "@/components/shared";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 

@@ -9,7 +9,8 @@ import {
   Truck,
   Package,
 } from "lucide-react";
-import { useUnifiedCart } from "./UnifiedCartContext";
+import { useCartCheckout } from "@/lib/CartCheckoutContext";
+
 
 export default function OrderSummary() {
   const {
@@ -25,7 +26,7 @@ export default function OrderSummary() {
     giftWrapCost,
     promoDiscount,
     total,
-  } = useUnifiedCart();
+  } = useCartCheckout();
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },

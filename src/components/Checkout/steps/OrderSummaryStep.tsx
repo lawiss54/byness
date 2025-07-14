@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { Package, Truck, MapPin, User, Phone } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import Image from 'next/image';
-import { useCart } from '@/components/cart/CartContext';
 import { Card, Button } from '@/components/shared/ui';
-import { CheckoutFormData } from '@/lib/validations/checkout';
+import { CheckoutFormData } from '@/components/Checkout/schemas/checkoutSchemas';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
 interface OrderSummaryStepProps {
   form: UseFormReturn<CheckoutFormData>;
@@ -20,7 +20,7 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
   onSubmit, 
   isSubmitting 
 }) => {
-  const { cartItems, subtotal, shippingCost, total } = useCart();
+  const { cartItems, subtotal, shippingCost, total } = useCartCheckout();
   const formData = form.getValues();
 
   return (
@@ -104,7 +104,7 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
               <div key={item.id} className="flex gap-4 p-4 bg-brand-sage-50 rounded-xl">
                 <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src={item.images[0]}
+                    src={item.images?.[0]}
                     alt={item.name}
                     fill
                     className="object-cover"
@@ -156,18 +156,6 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
             </div>
           </div>
         </Card>
-      </div>
-
-      {/* Confirm Button */}
-      <div className="text-center">
-        <Button
-          onClick={onSubmit}
-          loading={isSubmitting}
-          size="lg"
-          className="px-12"
-        >
-          {isSubmitting ? 'Traitement en cours...' : 'Confirmer la commande'}
-        </Button>
       </div>
     </motion.div>
   );

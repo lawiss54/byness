@@ -1,11 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Heart, Sparkles, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function EmptyCart() {
+  const [isClient, setIsClient] = useState(false);
+  const [floatingElements, setFloatingElements] = useState([]);
+
+  useEffect(() => {
+    setIsClient(true);
+    // Generate floating elements positions only on client side
+    const elements = [...Array(6)].map((_, i) => ({
+      id: i,
+      left: 20 + Math.random() * 60,
+      top: 20 + Math.random() * 60,
+      delay: Math.random() * 2,
+      duration: 2 + Math.random() * 2,
+    }));
+    setFloatingElements(elements);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -61,14 +77,14 @@ export default function EmptyCart() {
           <ShoppingBag className="w-16 h-16 text-brand-camel-500" />
         </motion.div>
         
-        {/* Floating Elements */}
-        {[...Array(6)].map((_, i) => (
+        {/* Floating Elements - Only render on client side */}
+        {isClient && floatingElements.map((element) => (
           <motion.div
-            key={i}
+            key={element.id}
             className="absolute w-4 h-4 bg-brand-camel-200 rounded-full"
             style={{
-              left: `${20 + Math.random() * 60}%`,
-              top: `${20 + Math.random() * 60}%`,
+              left: `${element.left}%`,
+              top: `${element.top}%`,
             }}
             animate={{
               y: [0, -20, 0],
@@ -76,9 +92,9 @@ export default function EmptyCart() {
               scale: [1, 1.2, 1],
             }}
             transition={{
-              duration: 2 + Math.random() * 2,
+              duration: element.duration,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: element.delay,
             }}
           />
         ))}

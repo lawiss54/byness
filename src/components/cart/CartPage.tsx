@@ -1,15 +1,27 @@
 'use client';
 
-import React from 'react';
+import React,{useState} from 'react';
 import { motion } from 'framer-motion';
-import { UnifiedCartProvider, useUnifiedCart } from '../shared/UnifiedCartContext';
 import CartHeader from './CartHeader';
 import CartContent from './CartContent';
 import OrderSummary from '../shared/OrderSummary';
 import EmptyCart from './EmptyCart';
+import { useRouter } from "next/navigation";
+import { Heart, Sparkles  } from 'lucide-react';
+import { CartCheckoutProvider, useCartCheckout } from '@/lib/CartCheckoutContext';
 
 function CartPageContent() {
-  const { cartItems } = useUnifiedCart();
+
+  const { cartItems } = useCartCheckout();
+
+  const [isPress, setIsPress] = useState(false)
+   const router = useRouter();
+
+  const goShop = () => {
+    setIsPress(true)
+    router.push('/checkout');
+  }
+  
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -39,19 +51,41 @@ function CartPageContent() {
         <CartHeader />
 
         <motion.div
-          className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-12"
+          className="flex flex-col gap-8  lg:gap-12"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Cart Items */}
-          <div className="lg:col-span-2">
+          <div className="">
             <CartContent />
           </div>
 
           {/* Cart Summary */}
-          <div className="lg:col-span-1">
-            <OrderSummary />
+          <div className="flex justify-center">
+            <motion.button
+              className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-brand-darkGreen-500 to-brand-darkGreen-600 hover:from-brand-darkGreen-600 hover:to-brand-darkGreen-700 text-white font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-brand-camel-300"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={goShop}
+              disable={isPress}
+            >
+              <Heart className="w-5 h-5" />
+              <span> Acheter maintenant </span>
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <Sparkles className="w-5 h-5" />
+              </motion.div>
+            </motion.button>
           </div>
         </motion.div>
       </div>
@@ -61,8 +95,9 @@ function CartPageContent() {
 
 export default function CartPage() {
   return (
-    <UnifiedCartProvider>
+    <CartCheckoutProvider>
       <CartPageContent />
-    </UnifiedCartProvider>
+    </CartCheckoutProvider>
+    
   );
 }

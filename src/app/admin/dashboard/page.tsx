@@ -9,6 +9,7 @@ import ProductsSection from '@/components/Dashboard/ProductsSection';
 import CategoriesSection from '@/components/Dashboard/CategoriesSection';
 import OrdersSection from '@/components/Dashboard/OrdersSection';
 import SettingsSection from '@/components/Dashboard/SettingsSection';
+import HomepageContentManager from '@/components/Dashboard/HomepageContentManager';
 
 function AdminPage() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -26,13 +27,15 @@ function AdminPage() {
         return <OrdersSection />;
       case 'settings':
         return <SettingsSection />;
+      case 'homepage':
+        return <HomepageContentManager />
       default:
         return <Dashboard />;
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50">
       <div className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
         <Sidebar 
           activeSection={activeSection} 

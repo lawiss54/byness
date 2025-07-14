@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import { useCart } from "@/components/cart/CartContext";
+import { useCartCheckout } from "@/lib/CartCheckoutContext";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
 
 
-  const { itemCount } = useCart();
+  const { itemCount } = useCartCheckout()
   const router = useRouter();
 
   const goHome = () => {

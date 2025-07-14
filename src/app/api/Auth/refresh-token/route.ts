@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function GET() {
   const cookieStore = cookies();
-  const refreshToken = cookieStore.get('refresh_token')?.value;
+  const refreshToken = (await cookieStore).get('refresh_token')?.value;
 
   if (!refreshToken) {
     return NextResponse.json({ error: 'Refresh token not found' }, { status: 401 });
@@ -39,7 +39,7 @@ export async function GET() {
     response.cookies.set('access_token', accessToken, {
       httpOnly: true,
       secure: false,
-      maxAge: 15 * 60,
+      maxAge: 4 * 60 * 60,
       sameSite: 'lax',
       path: '/',
     });

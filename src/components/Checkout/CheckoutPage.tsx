@@ -104,6 +104,18 @@ const CheckoutPage: React.FC = () => {
                 Continuer
               </Button>
             )}
+
+            {currentStep === 2 && (
+              <Button
+                onClick={onSubmit}
+                disabled={isSubmitting}
+                size="lg"
+                icon={<ArrowRight className="w-5 h-5" />}
+                iconPosition="right"
+              >
+                {isSubmitting ? 'Traitement...' : 'Confirmer ma commande'}
+              </Button>
+            )}
           </motion.div>
         )}
       </div>

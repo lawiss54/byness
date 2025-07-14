@@ -9,8 +9,8 @@ export async function withAuthMiddleware(
   handler: (req: NextRequest) => Promise<NextResponse>
 ): Promise<NextResponse> {
   const cookieStore = cookies();
-  const accessToken = cookieStore.get("access_token")?.value;
-  const refreshToken = cookieStore.get("refresh_token")?.value;
+  const accessToken = (await cookieStore).get("access_token")?.value;
+  const refreshToken = (await cookieStore).get("refresh_token")?.value;
 
   // إذا لم يكن هناك access token ولكن يوجد refresh token
   if (!accessToken && refreshToken) {
@@ -24,7 +24,7 @@ export async function withAuthMiddleware(
       response.cookies.set('access_token', refreshResult.accessToken, {
         httpOnly: true,
         secure: false,
-        maxAge: 15 * 60, // 15 دقيقة
+        maxAge: 4 * 60 * 60,
         sameSite: 'lax',
         path: '/',
       });

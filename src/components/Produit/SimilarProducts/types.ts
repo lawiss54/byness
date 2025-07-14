@@ -19,7 +19,8 @@ export interface SimilarProduct {
   isNew?: boolean;
   isSale?: boolean;
   discount?: number;
-  status?: 'active' | 'inactive' | 'out-of-stock';
+  status?: 'active' | 'inactive';
+  heroSection: boolean;
 }
 
 /**

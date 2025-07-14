@@ -9,6 +9,8 @@ import { useCart } from '@/components/cart/CartContext';
 import Badge from './ui/Badge';
 import {Button} from './ui/Button';
 import type { Product } from '@/components/Boutique/types/product.types';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
+import { CartItem } from '@/lib/CartCheckoutContextType';
 
 interface ProductCardProps {
   product: Product;
@@ -23,13 +25,13 @@ const ProductCard = memo<ProductCardProps>(({
   showAddToCart = true,
   className = ""
 }) => {
-  const { addToCart } = useCart();
+  const { addToCart } = useCartCheckout();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
-    const cartProduct = {
+    const cartProduct: CartItem = {
       id: product.id,
       name: product.name,
       price: product.price,

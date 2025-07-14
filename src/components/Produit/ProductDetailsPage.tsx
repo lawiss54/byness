@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-
+import {useApi} from '@/lib/apiContext'
 // Components - Split into separate files for better code splitting
 import ProductImageGallery from './ProductDetailsPage/ProductImageGallery';
 import ProductInfo from './ProductDetailsPage/ProductInfo';
@@ -11,6 +11,7 @@ import TrustSignals from './ProductDetailsPage/TrustSignals';
 
 import type {ProductDetailsPageProps } from './ProductDetailsPage/type';
 import {ANIMATION_VARIANTS} from './ProductDetailsPage/animation';
+import { Loader } from '../shared';
 
 // Lazy load heavy components to improve initial page load
 const SimilarProducts = dynamic(() => import('./SimilarProducts'), {
@@ -26,8 +27,7 @@ const ImageModal = dynamic(() => import('./ProductDetailsPage/ImageModal'), {
 
 
 export default function ProductDetailsPage({ 
-  product, 
-  similarProducts, 
+  product,
 }: ProductDetailsPageProps) {
   // State management - Keep related state together
   const [selectedImage, setSelectedImage] = useState(0);
@@ -36,6 +36,14 @@ export default function ProductDetailsPage({
   const [quantity, setQuantity] = useState(1);
   const [showImageModal, setShowImageModal] = useState(false);
 
+  const {similerProductsFinder } = useApi();
+  const similarProducts =  similerProductsFinder(product.category)
+  
+
+ 
+
+  
+  
   // Memoized calculations to prevent unnecessary re-calculations
   const pricingData = useMemo(() => {
     const discountPercentage = product?.originalPrice 
@@ -78,7 +86,7 @@ export default function ProductDetailsPage({
   }), [selectedColor, selectedSize, quantity, pricingData?.totalPrice]);
 
   return (
-    <div className="min-h-full bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
+    <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
       {/* Hero Section - Main product display */}
       <motion.section 
         className="py-8"
@@ -120,7 +128,7 @@ export default function ProductDetailsPage({
      
 
       {/* Lazy-loaded sections for better performance */}
-      <SimilarProducts products={similarProducts} />
+      <SimilarProducts products={similarProducts.slice(0, 4)} />
 
       {/* Image Modal - Only rendered when needed */}
       {showImageModal && (

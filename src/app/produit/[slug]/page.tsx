@@ -1,6 +1,7 @@
+
 import ProductDetailsPage from '@/components/Produit/ProductDetailsPage';
-import { similerProducts, productFinder } from '@/app/boutique/api';
 import { notFound } from 'next/navigation';
+import { fetchProductBySlug } from '@/lib/server/products';
 
 interface ProductPageProps {
   params: {
@@ -11,19 +12,27 @@ interface ProductPageProps {
 
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const {slug} = await params ;
+  const { slug } = await params;
 
-  const products = productFinder(slug);
-  const product = products[0];
+
+  
+
+  
+
+  
+  const product = await fetchProductBySlug(slug);
+
  
-  if(!product){
+
+ 
+  if (!product) {
     return notFound();
   }
 
+
   return (
-    <ProductDetailsPage 
+    <ProductDetailsPage
       product={product}
-      similarProducts={similerProducts(product.category)}
     />
   );
 }

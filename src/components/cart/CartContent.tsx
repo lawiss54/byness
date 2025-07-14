@@ -2,10 +2,11 @@
 import { motion } from 'framer-motion';
 import CartItem from './CartItem';
 import CartActions from './CartActions';
-import { useUnifiedCart } from '../shared/UnifiedCartContext';
+import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
 export default function CartContent() {
-  const { cartItems } = useUnifiedCart();
+
+  const { cartItems } = useCartCheckout();
 
   const containerVariants = {
     hidden: { opacity: 0 },

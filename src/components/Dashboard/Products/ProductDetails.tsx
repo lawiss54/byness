@@ -21,6 +21,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
       default: return <Badge variant="default">{status}</Badge>;
     }
   };
+  console.log(product.images)
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -66,15 +67,17 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
             {/* Images */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-900">Images</h3>
-              {product.images && product.images.length > 0 ? (
+              {product.images && product?.images?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4">
                   {product.images.map((image, index) => (
+                    <div >
                     <img
                       key={index}
                       src={image}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-48 object-cover rounded-lg border border-gray-200"
                     />
+                   </div>
                   ))}
                 </div>
               ) : (
@@ -96,10 +99,6 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
                 <p className="text-gray-600 mb-4">{product.description}</p>
                 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-500">SKU:</span>
-                    <span className="ml-2 font-medium">{product.sku}</span>
-                  </div>
                   <div>
                     <span className="text-gray-500">Catégorie:</span>
                     <span className="ml-2 font-medium">{product.category}</span>
@@ -132,7 +131,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
                       {product.price?.toLocaleString()} DA
                     </span>
                   </div>
-                  {product.originalPrice && product.originalPrice > product.price && (
+                  {product.originalPrice > 0 && product.originalPrice > product.price && (
                     <>
                       <div className="flex items-center justify-between">
                         <span>Prix original:</span>

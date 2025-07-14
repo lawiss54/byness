@@ -13,6 +13,7 @@ export default function ProductsSection({
   products, 
   categories 
 }: ProductsSectionProps) {
+  
   // STATE MANAGEMENT
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState<SortType>('default');
@@ -58,7 +59,8 @@ export default function ProductsSection({
           title="Notre collection de produits"
           subtitle="Soyez à la pointe de la mode féminine avec notre sélection exclusive"
         />
-
+        
+        {/* */}
         <FilterSection
           categories={categories}
           selectedCategory={selectedCategory}
@@ -68,6 +70,7 @@ export default function ProductsSection({
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
         />
+        
 
         <AnimatePresence mode="wait">
           <motion.div

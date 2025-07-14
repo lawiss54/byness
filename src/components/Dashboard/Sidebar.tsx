@@ -20,6 +20,7 @@ const menuItems = [
   { id: 'branches', label: 'Products', icon: Store },
   { id: 'categories', label: 'Categories', icon: Tag },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
+  { id: 'homepage', label: 'Homepage Manager', icon: Settings },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
