@@ -1,10 +1,10 @@
 "use client";
 import { useEffect } from "react";
-import ProductsSection from "@/components/boutique/ProductsSection";
+import ProductsSection from "@/components/Boutique/ProductsSection";
 import { Loader } from "@/components/shared";
-import HeroSection from "@/components/boutique/HeroSection";
+import HeroSection from "@/components/Boutique/HeroSection";
 import { useApi } from "@/lib/apiContext";
-import { Product } from "@/components/boutique/types/product.types";
+import { Product } from "@/components/Boutique/types/product.types";
 
 const Boutique = () => {
   const { activeCategory, activeProduct, loading, fatchRessorce } = useApi()
