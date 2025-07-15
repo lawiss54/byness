@@ -15,6 +15,8 @@ interface ApiContextType {
   setLoading: (status: boolean) => void;
   loading: boolean;
   fatchRessorce: () => void;
+  orders: array;
+  products: array;
 
   
 
@@ -32,9 +34,56 @@ export const useApi = () => {
 
 export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [IsFetched, setIsFetched] = useState(false)
+
+    const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/orders');
+      if (!res.ok) {
+        toast.error('Erreur lors du chargement des orders');
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+      
+      function transformProduct(raw) {
+       
+        return {
+          id: raw.order_number,
+          customer_first_name: raw.customer_first_name,
+          customer_last_name: raw.customer_last_name,
+          customerPhone: raw.customer_phone,
+          shippingType: raw.shipping_type,
+          customerAddress: raw.shipping_address,
+          municipality: raw.city,
+          wilaya: raw.wilaya,
+          status: raw.status,
+          total: raw.total,
+          orderDate: raw.created_at,
+          items: Array.isArray(raw.items) ? raw.items.map(item => ({
+            id: item.product_id,
+            name: item.product_name,
+            quantity: item.quantity,
+            price: item.price,
+            color: item.color,
+            size: item.size,
+            image: item.product_img
+          })) : [],
+        };
+      }
+      setOrders(data.data.map(transformProduct));
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   async function fatchRessorce() {
     if (IsFetched) return;
@@ -116,7 +165,9 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setLoading,
     loading,
     fatchRessorce,
-    similerProductsFinder
+    similerProductsFinder,
+    orders,
+    products
  
 
   };

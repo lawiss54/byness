@@ -12,7 +12,9 @@ import {
   Mail,
   MapPin
 } from 'lucide-react';
+import { SiTiktok } from 'react-icons/si';
 import Link from 'next/link';
+
 
 interface SocialLink {
   icon: React.ComponentType<{ className?: string }>;
@@ -21,43 +23,49 @@ interface SocialLink {
   color: string;
 }
 
-export default function Footer() {
+export default function Footer({data}) {
   // يمكن جلب هذه البيانات من الإعدادات أو API
   const socialLinks: SocialLink[] = [
     {
       icon: Facebook,
-      href: "https://facebook.com/bynes",
+      href: data?.socialmedia?.facebook,
       label: "Facebook",
       color: "hover:text-blue-400"
     },
     {
       icon: Instagram,
-      href: "https://instagram.com/bynes",
+      href: data?.socialmedia?.instagram,
       label: "Instagram", 
       color: "hover:text-pink-400"
     },
     {
       icon: MessageCircle,
-      href: "https://wa.me/213794547080",
+      href: data?.socialmedia?.whatsapp,
       label: "WhatsApp",
       color: "hover:text-green-400"
+    },
+    {
+      icon: SiTiktok,
+      href: data?.socialmedia?.tiktok,
+      label: "TikTok",
+      color: "hover:text-darkGreen-400"
     }
   ];
 
   const contactInfo = [
     {
       icon: Phone,
-      text: "+213 794 547 080",
-      href: "tel:+213794547080"
+      text: data?.settings?.contactPhone,
+      href: data?.settings?.contactPhone
     },
     {
       icon: Mail,
-      text: "contact@bynes.dz",
-      href: "mailto:contact@bynes.dz"
+      text: data?.settings?.contactMail,
+      href: `mailto:${data?.settings?.contactPhone}`
     },
     {
       icon: MapPin,
-      text: "Algérie",
+      text: "Algérie, Skikda",
       href: "#"
     }
   ];

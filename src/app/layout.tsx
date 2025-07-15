@@ -3,6 +3,7 @@ import Header from '@/components/Layout/Header';
 
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
+import { cache } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ApiProvider } from '@/lib/apiContext';
@@ -24,7 +25,6 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: settings?.keywords || ['luxury', 'premium', 'brand', 'elegant', 'quality'],
     authors: [{ name: settings?.author || 'By Ness' }],
     robots: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
-    viewport: 'width=device-width, initial-scale=1',
     icons: {
       icon: settings?.data?.settings?.siteIcon || '/favicon.ico',
       shortcut: settings?.data?.settings?.siteIcon || '/favicon.ico',
@@ -71,6 +71,7 @@ export default async function RootLayout({
 }>) {
   const settingsData = await getSiteSettings();
   const pixelSettings = settingsData?.data?.pixel;
+  const dataSettings = settingsData?.data;
 
   return (
     <html lang="fr" className="scroll-smooth">
@@ -79,7 +80,7 @@ export default async function RootLayout({
           <Analytics />
           <ApiProvider>
             <CartCheckoutProvider>
-              {/* ✅ السكربتات الإعلانية */}
+              {/*  السكربتات الإعلانية */}
               <TrackingScripts settings={pixelSettings} />
 
               <Header />
@@ -87,7 +88,7 @@ export default async function RootLayout({
                 <ApiBootstrap />
                 {children}
               </main>
-              <Footer />
+              <Footer data={dataSettings} />
             </CartCheckoutProvider>
           </ApiProvider>
           <ToastContainer position="top-right" autoClose={3000} />
