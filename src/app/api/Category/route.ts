@@ -97,7 +97,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     const cookieStore = cookies();
-    const token = cookieStore.get('access_token')?.value;
+    const token = (await cookieStore).get('access_token')?.value;
 
     try {
       if (!API_URL) {

@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
       'images.unsplash.com',
       'unsplash.com',
       'localhost',
-      'site.test'
+      'site.test',
+      'res.cloudinary.com'
     ],
 
   },
@@ -17,7 +18,6 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: false,
     optimizePackageImports: ['lucide-react'],
-    serverSourceMaps: true,
 
   },
 

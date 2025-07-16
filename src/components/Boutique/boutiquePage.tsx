@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Loader } from "@/components/shared";
 
 import { useApi } from "@/lib/apiContext";
-import { Product } from "@/components/Boutique/types/product.types";
 import dynamic from 'next/dynamic'
 
 
