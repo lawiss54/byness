@@ -150,7 +150,7 @@ export default function Footer({data}) {
                   className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-sage-500 focus:border-transparent"
                 />
                 <motion.button
-                  className="w-full px-4 py-3 bg-brand-sage-500 text-white rounded-lg text-sm font-medium hover:bg-brand-sage-600 transition-colors duration-200"
+                  className="w-full px-4 py-3 bg-brand-darkGreen-800 text-sage-500 rounded-lg text-sm font-medium hover:bg-brand-greenBlack-800 transition-colors duration-200"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -213,7 +213,7 @@ export default function Footer({data}) {
 
       {/* Scroll to Top Button */}
       <motion.button
-        className="fixed bottom-6 right-6 w-12 h-12 bg-brand-sage-500 text-white rounded-full shadow-lg hover:bg-brand-sage-600 transition-colors duration-200 z-50"
+        className="fixed bottom-6 right-6 w-12 h-12 bg-brand-darkGreen-800 text-sage-500 rounded-full shadow-lg hover:bg-brand-greenBlack-800 transition-colors duration-200 z-50"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
