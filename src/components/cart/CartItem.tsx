@@ -23,8 +23,9 @@ export default function CartItem({ item, index }: CartItemProps) {
     }, 300);
   };
 
-  console.log(item);
+  console.log(item)
 
+ 
   
 
   const itemVariants = {
@@ -66,7 +67,7 @@ export default function CartItem({ item, index }: CartItemProps) {
             {/* Product Image */}
             <div className="relative w-full sm:w-32 sm:h-32 aspect-square sm:aspect-auto flex-shrink-0 rounded-xl overflow-hidden bg-white shadow-lg">
               <Image
-                src={item.images[0]['image_path'] || '/placeholder.png'}
+                src={item.images[0] || '/placeholder.png'}
                 alt={item.name}
                 width={640}
                 height={640}
