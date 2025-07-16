@@ -29,7 +29,21 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
       value: product?.price,
       currency: 'DZD',
     });
-    addToCart(product);
+    const cartProduct: CartItem = {
+      id: product?.id,
+      name: product?.name,
+      price: product?.price,
+      originalPrice: product?.originalPrice,
+      quantity: 1,
+      category: product?.category,
+      images: product?.images,
+      colors: product?.colors,
+      color: product?.colors?.[0] || null,
+      colorName: product?.colors?.[0] || null,
+      sizes: product?.sizes,
+      size: product?.sizes?.[0] || null
+    };
+    addToCart(cartProduct);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -78,7 +92,7 @@ export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
       color: product.colors?.[0],
       colorName: product.colorName ?? null,
       sizes: product.sizes,
-      size: product.size ,
+      size: product.size,
       slug: product.slug,
       badge: product.badge,
       isNew: product.isNew,

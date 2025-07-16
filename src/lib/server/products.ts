@@ -1,9 +1,11 @@
 import { Product } from '@/components/boutique/types/product.types';
 
-const API_URL = process.env.NEXT_PUBLIC_LOCAL_URL || 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_LOCAL_URL || 'https://byness.vercel.app';
+
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
   const res = await fetch(`${API_URL}/api/products/${slug}`, {
     headers: {
+      "Content-Type": "application/json",
       Accept: 'application/json',
     },
   });
