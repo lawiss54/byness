@@ -116,7 +116,7 @@ const orderSchema = z.object({
   customerFirstName: z.string().min(1, 'Prénom requis'),
   customerLastName: z.string().min(1, 'Nom requis'),
   customerPhone: z.string().min(10, 'Le numéro de téléphone doit être valide'),
-  customerAddress: z.string().min(1, 'Adresse requise'),
+  customerAddress: z.string().optional(),
   wilaya: z.string().min(1, 'Wilaya requise'),
   municipality: z.string().optional(),
   shippingType: z.enum(['home', 'desk'], {
@@ -507,7 +507,6 @@ export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
                           {...field}
                           label="Adresse"
                           rows={3}
-                          required
                           error={errors.customerAddress?.message}
                         />
                       )}
