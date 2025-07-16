@@ -3,15 +3,15 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { useApi } from '@/lib/apiContext';
+import { Loader } from "@/components/shared";
 
 const HeroSection = dynamic(() => import('@/components/Home/HeroSection'), { ssr: false });
 const NouvelleCollectionSection = dynamic(() => import('@/components/Home/NouvelleCollectionSection'), { ssr: false });
 const FeaturesSection = dynamic(() => import('@/components/Home/FeaturesSection'), { ssr: false });
 
 export default function Home() {
-  const { fetchContent, contant, products } = useApi();
+  const { fetchContent, contant, products, loading } = useApi();
 
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -22,7 +22,11 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return <div className="text-center py-10 text-gray-500">Chargement...</div>;
+    return return <Loader
+      type="fashion"
+      size="lg"
+      text="Chargement..."
+    />
   }
 
   return (
