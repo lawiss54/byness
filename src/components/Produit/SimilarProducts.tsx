@@ -69,12 +69,14 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
               product={product}
               index={index}
               showAddToCart={true}
-              className="h-[520px]"
+              className="h-[700px] backdrop-blur-sm"
             />
           ))}
         </motion.div>
-
-        <ViewAllButton onClick={handleViewAllClick} />
+          {memoizedProducts.lenght > 6 && (
+            <ViewAllButton onClick={handleViewAllClick} />
+          )}
+        
       </div>
     </section>
   );
