@@ -1,4 +1,3 @@
-
 import ProductDetailsPage from '@/components/Produit/ProductDetailsPage';
 import { notFound } from 'next/navigation';
 import { fetchProductBySlug } from '@/lib/server/products';
@@ -9,30 +8,14 @@ interface ProductPageProps {
   };
 }
 
-
-
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = await params;
+  const { slug } = params;
 
-
-  
-
-  
-
-  
   const product = await fetchProductBySlug(slug);
 
- 
-
- 
   if (!product) {
     return notFound();
   }
 
-
-  return (
-    <ProductDetailsPage
-      product={product}
-    />
-  );
+  return <ProductDetailsPage product={product} />;
 }
