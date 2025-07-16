@@ -22,7 +22,7 @@ export default function Home() {
   }, []);
 
   if (loading) {
-    return return <Loader
+    return <Loader
       type="fashion"
       size="lg"
       text="Chargement..."
