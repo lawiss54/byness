@@ -26,10 +26,10 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div className="min-h-screen">
       <HeroSection slides={contant} />
       <FeaturesSection />
       <NouvelleCollectionSection products={products} />
-    </>
+    </div>
   );
 }
