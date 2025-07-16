@@ -31,21 +31,23 @@ export default function Terms() {
       title: 'Description des services',
       icon: FileText,
       content: [
-        'ByNes fournit des solutions digitales incluant le développement web, l\'e-commerce et le marketing digital.',
-        'Nos services sont destinés aux entreprises et aux particuliers souhaitant développer leur présence en ligne.',
-        'La disponibilité des services peut varier selon les régions et les circonstances techniques.'
+        'ByNes est une boutique en ligne spécialisée dans la vente de vêtements féminins.',
+        'Nos produits s’adressent aux femmes souhaitant adopter un style moderne et raffiné, tout en profitant d’une expérience d’achat fluide et sécurisée.',
+        'La disponibilité des articles peut varier selon les stocks, les collections en cours et les contraintes logistiques.'
       ]
+
     },
     {
       id: 'user-obligations',
       title: 'Obligations de l\'utilisateur',
       icon: Users,
       content: [
-        'Vous vous engagez à utiliser nos services de manière légale et éthique.',
-        'Il est interdit d\'utiliser nos services pour des activités illégales ou nuisibles.',
-        'Vous êtes responsable de maintenir la confidentialité de vos informations de compte.',
-        'Toute utilisation abusive peut entraîner la suspension de votre accès.'
+        'Vous vous engagez à utiliser nos services de manière légale, respectueuse et conforme aux présentes conditions.',
+        'Toute utilisation de nos services à des fins illégales, frauduleuses ou nuisibles est strictement interdite.',
+        'Vous êtes seul responsable de la sécurité et de la confidentialité de votre compte et de vos identifiants.',
+        'En cas d’utilisation abusive ou non conforme, votre accès pourra être suspendu ou résilié sans préavis.'
       ]
+
     },
     {
       id: 'intellectual-property',
@@ -63,11 +65,12 @@ export default function Terms() {
       title: 'Limitation de responsabilité',
       icon: Scale,
       content: [
-        'ByNes ne peut être tenu responsable des dommages indirects ou consécutifs.',
-        'Notre responsabilité est limitée au montant payé pour nos services.',
-        'Nous ne garantissons pas l\'absence d\'interruptions ou d\'erreurs.',
-        'Les utilisateurs utilisent nos services à leurs propres risques.'
+        'ByNes ne pourra être tenu responsable des dommages indirects, consécutifs ou imprévus résultant de l’utilisation du site.',
+        'Notre responsabilité est strictement limitée au montant effectivement payé par l’utilisateur pour les services concernés.',
+        'Nous ne garantissons pas l’absence totale d’interruptions, de bugs ou d’erreurs techniques.',
+        'L’utilisation de nos services se fait aux risques et périls de l’utilisateur.'
       ]
+
     },
     {
       id: 'termination',
