@@ -58,7 +58,7 @@ export default function RootLayout({
             <CartCheckoutProvider>
                <TrackingScripts settings={null} />
                <Header /> 
-              <main className="flex-1 flex-grow">
+              <main className="min-h-screen flex-1 flex-grow">
                   <ApiBootstrap /> 
                 {children}
               </main>
