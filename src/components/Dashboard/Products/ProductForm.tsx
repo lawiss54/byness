@@ -198,7 +198,7 @@ export default function ProductForm({ getCategories, product, onSave, onClose }:
     
     try{
       // تحديد المسار والطريقة بناءً على نوع العملية
-      const url = product ? `/api/products/${product.slug}` : '/api/products';
+      const url = product ? `/api/products/${product?.slug}` : '/api/products';
       const method = product ? "PUT" : "POST";
       
       const res = await fetch(url, {

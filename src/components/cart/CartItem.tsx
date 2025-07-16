@@ -23,6 +23,8 @@ export default function CartItem({ item, index }: CartItemProps) {
     }, 300);
   };
 
+  console.log(item);
+
   
 
   const itemVariants = {
