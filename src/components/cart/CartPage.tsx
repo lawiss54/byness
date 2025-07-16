@@ -2,13 +2,24 @@
 
 import React,{useState} from 'react';
 import { motion } from 'framer-motion';
-import CartHeader from './CartHeader';
-import CartContent from './CartContent';
-import OrderSummary from '../shared/OrderSummary';
-import EmptyCart from './EmptyCart';
 import { useRouter } from "next/navigation";
 import { Heart, Sparkles  } from 'lucide-react';
 import { CartCheckoutProvider, useCartCheckout } from '@/lib/CartCheckoutContext';
+import dynamic from 'next/dynamic'
+
+
+const EmptyCart = dynamic(
+  () => import('./EmptyCart'),
+  { ssr: false }
+)
+const CartContent = dynamic(
+  () => import('./CartContent'),
+  { ssr: false }
+)
+const CartHeader = dynamic(
+  () => import('./CartHeader'),
+  { ssr: false }
+)
 
 function CartPageContent() {
 

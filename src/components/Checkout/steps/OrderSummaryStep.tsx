@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Package, Truck, MapPin, User, Phone } from 'lucide-react';
+import { Package, Truck, User } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import Image from 'next/image';
-import { Card, Button } from '@/components/shared/ui';
+import { Card } from '@/components/shared/ui';
 import { CheckoutFormData } from '@/components/Checkout/schemas/checkoutSchemas';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
 

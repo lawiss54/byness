@@ -11,6 +11,7 @@ interface Props {
 
 export default function ModalTéléchargementPDF({ onClose, pdfUrl }: Props) {
   const handleDownload = () => {
+      if (typeof window === 'undefined') return;
         window.open(pdfUrl, '_blank'); 
         onClose();
     };

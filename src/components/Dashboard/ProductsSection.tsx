@@ -13,14 +13,25 @@ import {
   XCircle,
   Loader2
 } from 'lucide-react';
-
 import { Button, Input, Select, Card, Badge } from '@/components/shared/ui';
-import ProductForm from './Products/ProductForm';
-import ProductDetails from './Products/ProductDetails';
-import BulkActions from './Products/BulkActions';
 import type { Category, Product } from '@/app/admin/types';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
+import dynamic from 'next/dynamic'
+
+
+const ProductForm = dynamic(
+  () => import('./Products/ProductForm'),
+  { ssr: false }
+)
+const ProductDetails = dynamic(
+  () => import('./Products/ProductDetails'),
+  { ssr: false }
+)
+const BulkActions = dynamic(
+  () => import('./Products/BulkActions'),
+  { ssr: false }
+)
 
 type ViewMode = 'grid' | 'table';
 type ProductStatus = 'all' | 'active' | 'inactive';
@@ -80,9 +91,6 @@ export default function ProductsSection() {
           discount: raw.discount ? parseFloat(raw.discount) : undefined,
         };
       }
-
-
-
       setProducts(data.data.map(transformProduct));
     } catch (error) {
       setError(error instanceof Error ? err.message : "Erreur lors du chargement des données");
@@ -117,6 +125,7 @@ export default function ProductsSection() {
   }
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     fetchProducts()
     fetchCategories()
   }, []);

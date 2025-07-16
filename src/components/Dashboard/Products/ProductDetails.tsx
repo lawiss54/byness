@@ -21,7 +21,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
       default: return <Badge variant="default">{status}</Badge>;
     }
   };
-  console.log(product.images)
+  
 
   const discountPercentage = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)

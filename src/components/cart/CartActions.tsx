@@ -7,12 +7,14 @@ export default function CartActions() {
   const { clearCart, cartItems } = useCartCheckout();
 
   const handleClearCart = () => {
+    if (typeof window === 'undefined') return;
     if (window.confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {
       clearCart();
     }
   };
 
   const handleMoveAllToWishlist = () => {
+    if (typeof window === 'undefined') return;
     if (window.confirm('Déplacer tous les articles vers la liste de souhaits ?')) {
       // Logic to move all items to wishlist
       clearCart();

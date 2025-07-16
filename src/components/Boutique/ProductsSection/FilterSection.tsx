@@ -1,4 +1,4 @@
-
+'use client'
 import { memo } from 'react';
 import { Grid, List } from 'lucide-react';
 import { Category, ViewMode, SortType } from '../types/product.types';

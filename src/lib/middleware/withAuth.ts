@@ -1,86 +1,49 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from 'next/headers';
+import { cache } from 'react';
+import { Product } from '@/components/boutique/types/product.types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_LOCAL_URL || 'http://localhost:3000';
 
-// Middleware API wrapper
-export async function withAuthMiddleware(
-  req: NextRequest, 
-  handler: (req: NextRequest) => Promise<NextResponse>
-): Promise<NextResponse> {
-  const cookieStore = cookies();
-  const accessToken = (await cookieStore).get("access_token")?.value;
-  const refreshToken = (await cookieStore).get("refresh_token")?.value;
+const headers = {
+  Accept: 'application/json',
+};
 
-  // إذا لم يكن هناك access token ولكن يوجد refresh token
-  if (!accessToken && refreshToken) {
-    const refreshResult = await refreshAccessToken(refreshToken);
-    
-    if (refreshResult.success) {
-      // إذا تم تحديث التوكن بنجاح، نفذ المعالج
-      const response = await handler(req);
-      
-      // أضف التوكن الجديد إلى الـ response
-      response.cookies.set('access_token', refreshResult.accessToken, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 4 * 60 * 60,
-        sameSite: 'lax',
-        path: '/',
-      });
-      
-      return response;
-    } else {
-      // إذا فشل تحديث التوكن
-      return NextResponse.json(
-        { error: "Session expirée. Veuillez vous reconnecter." }, 
-        { status: 401 }
-      );
-    }
-  }
-
-  // إذا لم يكن هناك أي توكن
-  if (!accessToken) {
-    return NextResponse.json(
-      { error: "Token d'authentification manquant" }, 
-      { status: 401 }
-    );
-  }
-
-  // إذا كان هناك access token، نفذ المعالج
-  return handler(req);
+// ✅ تحويل البيانات الخام
+export function transformProduct(raw: any): Product {
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    name: raw.name,
+    description: raw.description,
+    price: parseFloat(raw.price),
+    originalPrice: parseFloat(raw.original_price),
+    images: raw.images?.map((img: any) => img.image_path) || [],
+    badge: raw.badge || undefined,
+    colors: raw.colors?.map((color: any) => color.hex_code) || [],
+    sizes: raw.sizes?.map((size: any) => size.name) || [],
+    category: raw.category?.name || 'Inconnu',
+    stockQuantity: raw.stock_quantity,
+    isNew: raw.is_new,
+    isSale: raw.is_sale,
+    discount: raw.discount ? parseFloat(raw.discount) : 0,
+    status: raw.status,
+    heroSection: raw.hero_section,
+  };
 }
 
-async function refreshAccessToken(refreshToken: string): Promise<{ success: boolean; accessToken?: string }> {
+// ✅ جلب المنتج من خلال slug مع تفعيل الكاش
+export const fetchProductBySlug = cache(async (slug: string): Promise<Product | null> => {
   try {
-    const res = await fetch(`${API_URL}/api/auth/refresh-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
+    const res = await fetch(`${API_URL}/api/products/${slug}`, { headers });
 
     if (!res.ok) {
-      return { success: false };
+      console.error('Erreur lors de la récupération du produit:', res.statusText);
+      return null;
     }
 
-    const data = await res.json();
-    const accessToken = data.data?.access_token;
-
-    if (!accessToken) {
-      return { success: false };
-    }
-
-    return { success: true, accessToken };
-  } catch (err) {
-    console.error("Erreur de renouvellement du token:", err);
-    return { success: false };
+    const json = await res.json();
+    return transformProduct(json.data);
+  } catch (error) {
+    console.error('Erreur fetchProductBySlug:', error);
+    return null;
   }
-}
-
-
-
-
-
+});

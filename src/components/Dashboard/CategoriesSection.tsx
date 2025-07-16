@@ -15,12 +15,24 @@ import {
 } from 'lucide-react';
 
 import { Button, Input, Select, Card, Badge } from '@/components/shared/ui';
-import CategoryForm from './Categories/CategoryForm';
-import CategoryDetails from './Categories/CategoryDetails';
-import BulkActions from './Categories/BulkActions';
 import type { Category } from '@/app/admin/types';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import dynamic from 'next/dynamic'
+
+
+const BulkActions = dynamic(
+  () => import('./Categories/BulkActions'),
+  { ssr: false }
+)
+const CategoryDetails = dynamic(
+  () => import('./Categories/CategoryDetails'),
+  { ssr: false }
+)
+const CategoryForm = dynamic(
+  () => import('./Categories/CategoryForm'),
+  { ssr: false }
+)
 
 type ViewMode = 'grid' | 'table';
 type CategoryStatus = 'all' | 'active' | 'inactive';
@@ -66,6 +78,7 @@ export default function CategoriesSection() {
 
   // Fetch categories on component mount only
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     fetchCategories();
   }, []); // Empty dependency array - runs only once on mount
 

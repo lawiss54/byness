@@ -1,11 +1,11 @@
-import { withAuthMiddleware } from "@/lib/middleware/withAuth";
+
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  return withAuthMiddleware(request, async (req) => {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+ 
     const cookieStore = cookies();
     const token = (await cookieStore).get('access_token')?.value;
 
@@ -77,11 +77,9 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     } catch (error) {
       return handleApiError(error, "mise à jour");
     }
-  });
 }
 
-export async function DELETE(request: NextRequest,  { params }: { params: { id: string } }) {
-  return withAuthMiddleware(request, async (req) => {
+export async function DELETE(req: NextRequest,  { params }: { params: { id: string } }) {
     const cookieStore = cookies();
     const token = (await cookieStore).get('access_token')?.value;
 
@@ -150,7 +148,6 @@ export async function DELETE(request: NextRequest,  { params }: { params: { id: 
     } catch (error) {
       return handleApiError(error, "suppression");
     }
-  });
 }
 
 // دالة مساعدة لتحليل الاستجابة

@@ -62,12 +62,14 @@ export default function CategoryForm({ category, onSave, onClose }: CategoryForm
 
   // Update form values when selections change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     setValue('icon', selectedIcon, { shouldValidate: true });
     setValue('color', selectedColor, { shouldValidate: true });
   }, [selectedIcon, selectedColor, setValue]);
 
   // Set manual color mode if existing color isn't predefined
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (category?.color && !predefinedColors.includes(category.color)) {
       setIsManualColor(true);
     }

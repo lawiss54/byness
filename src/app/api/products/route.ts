@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { withAuthMiddleware } from "@/lib/middleware/withAuth";
+
 
 
 
@@ -86,8 +86,8 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
-  return withAuthMiddleware(request, async (req) => {
+export async function POST(req: NextRequest) {
+  
     const cookieStore = cookies();
     const token = (await cookieStore).get('access_token')?.value;
 
@@ -157,7 +157,5 @@ export async function POST(request: NextRequest) {
         {status: 500}
       );
     }
-
-  });
 }
 

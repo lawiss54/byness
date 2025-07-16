@@ -8,6 +8,7 @@ interface AutoDownloadProps {
 
 const AutoDownload: React.FC<AutoDownloadProps> = ({ fileUrl }) => {
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (!fileUrl) return;
 
     const link = document.createElement('a');

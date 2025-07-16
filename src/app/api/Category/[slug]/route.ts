@@ -1,15 +1,16 @@
-import { withAuthMiddleware } from '@/lib/middleware/withAuth';
+
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function PUT(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { slug: string } }) {
     const { slug } = params;
     const cookieStore = cookies();
     const token = (await cookieStore).get('access_token')?.value;
 
-    return withAuthMiddleware(request, async (req) => {
+    
         if (!API_URL) {
             console.error("API_URL is not defined in environment variables");
             return NextResponse.json(
@@ -40,8 +41,6 @@ export async function PUT(request: NextRequest, { params }: { params: { slug: st
 
         return NextResponse.json(data.message, {status: res.status})
 
-    })
-
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: { slug: string } }) {
@@ -49,7 +48,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
   const cookieStore = cookies();
   const token = (await cookieStore).get('access_token')?.value;
 
-  return withAuthMiddleware(request, async () => {
+ 
     if (!API_URL) {
       console.error("API_URL is not defined in environment variables");
       return NextResponse.json(
@@ -85,5 +84,5 @@ export async function DELETE(request: NextRequest, { params }: { params: { slug:
         { status: 500 }
       );
     }
-  });
+
 }

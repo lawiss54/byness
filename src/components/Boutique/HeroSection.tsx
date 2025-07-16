@@ -1,32 +1,50 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
-import HeroHeading from "./HeroSection/HeroHeading";
-import HeroBackground from "./HeroSection/HeroBackground";
-import HeroProductCard from "./HeroSection/HeroProductCard";
 import { containerVariants } from "./HeroSection/animations/variants";
-import type { Product } from "@/components/boutique/types/product.types";
+import dynamic from 'next/dynamic'
+import { Product } from "./types/product.types";
+
+
+const HeroHeading = dynamic(
+  () => import('./HeroSection/HeroHeading'),
+  { ssr: false }
+)
+const HeroBackground = dynamic(
+  () => import('./HeroSection/HeroBackground'),
+  { ssr: false }
+)
+const HeroProductCard = dynamic(
+  () => import('./HeroSection/HeroProductCard'),
+  { ssr: false }
+)
 
 interface HeroSectionProps {
   heroProducts?: Product[];
 }
 
-export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
-  const products = heroProducts.length > 0 ? heroProducts : [];
+export default function HeroSection({ heroProducts, }: HeroSectionProps) {
+  
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const [currentX, setCurrentX] = useState(0);
   const [width, setWidth] = useState(0);
   const carousel = useRef<HTMLDivElement>(null);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
 
+
   const handleUserInteraction = useCallback((pause: boolean) => {
     setIsAutoScrolling(!pause);
   }, []);
+  const products = useMemo(() => {
+    return heroProducts?.length > 0 ? heroProducts : [];
+  }, [heroProducts]);
+
 
   // Calculate carousel width
   useEffect(() => {
+    if(typeof window === undefined) return;
     const updateCarouselWidth = () => {
       if (carousel?.current) {
         const scrollWidth = carousel.current.scrollWidth;
@@ -35,20 +53,16 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
       }
     };
 
-    // Initial calculation
     updateCarouselWidth();
-
-    // Recalculate on window resize
     window.addEventListener('resize', updateCarouselWidth);
-
-    // Recalculate when products change
     const timer = setTimeout(updateCarouselWidth, 100);
 
     return () => {
       window.removeEventListener('resize', updateCarouselWidth);
       clearTimeout(timer);
     };
-  }, [products]);
+  }, [carousel.current, heroProducts]); 
+
 
   // Auto-scroll effect - Fixed version
   useEffect(() => {
@@ -85,7 +99,7 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
         animationRef.current = null;
       }
     };
-  }, [isAutoScrolling, width, products.length]); // Keep only stable dependencies
+  }, [isAutoScrolling, width, heroProducts]); // Keep only stable dependencies
 
   // Cleanup animation on unmount
   useEffect(() => {
@@ -123,7 +137,7 @@ export default function HeroSection({ heroProducts = [] }: HeroSectionProps) {
                   dragTransition={{ bounceDamping: 30 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="flex will-change-transform cursor-grab active:cursor-grabbing gap-2 sm:gap-3 md:gap-4"
-                  animate={{ x: currentX }}
+                  style={{ x: currentX }}
                   onDragStart={() => handleUserInteraction(true)}
                   onDragEnd={() => {
                     // Reprendre l'auto-scroll après 3 secondes

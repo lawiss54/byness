@@ -28,6 +28,7 @@ const Loader: React.FC<LoaderProps> = ({
   const [currentProgress, setCurrentProgress] = useState(0);
 
   useEffect(() => {
+    if(typeof window === undefined) return;
     if (showProgress) {
       const timer = setInterval(() => {
         setCurrentProgress(prev => {

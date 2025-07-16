@@ -92,7 +92,7 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
 
   const handleAddProduct = (product) => {
     // Ici on peut ajouter le produit au panier
-    console.log(product)
+    
     append({
       id: product.id.toLocaleString(),
       name: product.name,

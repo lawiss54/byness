@@ -1,15 +1,15 @@
-import { withAuthMiddleware } from '@/lib/middleware/withAuth';
+
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function POST(request: NextRequest, { params }: { params: { slug: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { slug: string } }) {
     const { slug } = params;
     const cookieStore = cookies();
     const token = cookieStore.get('access_token')?.value;
 
-    return withAuthMiddleware(request, async (req) => {
+  
         if (!API_URL) {
             console.error("API_URL is not defined in environment variables");
             return NextResponse.json(
@@ -39,7 +39,5 @@ export async function POST(request: NextRequest, { params }: { params: { slug: s
         const data = await res.json();
 
         return NextResponse.json(data.message, {status: res.status})
-
-    })
 
 }

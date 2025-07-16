@@ -1,9 +1,11 @@
+'use client';
+
 import ReactPixel from 'react-facebook-pixel';
 
 let isInitialized = false;
 
 export const initFacebookPixel = (pixelId: string) => {
-    if (!isInitialized) {
+    if (typeof window !== 'undefined' && !isInitialized) {
         ReactPixel.init(pixelId);
         ReactPixel.pageView();
         isInitialized = true;
@@ -11,5 +13,7 @@ export const initFacebookPixel = (pixelId: string) => {
 };
 
 export const fbTrackEvent = (event: string, data?: Record<string, any>) => {
-    ReactPixel.track(event, data);
+    if (typeof window !== 'undefined') {
+        ReactPixel.track(event, data);
+    }
 };

@@ -2,9 +2,23 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import LoginForm from './LoginForm';
-import LoginHeader from './LoginHeader';
-import LoginFeatures from './LoginFeatures';
+import dynamic from 'next/dynamic'
+
+
+
+
+const LoginFeatures = dynamic(
+  () => import('./LoginFeatures'),
+  { ssr: false }
+)
+const LoginHeader = dynamic(
+  () => import('./LoginHeader'),
+  { ssr: false }
+)
+const LoginForm = dynamic(
+  () => import('./LoginForm'),
+  { ssr: false }
+)
 
 export default function LoginPage() {
   const [positions, setPositions] = useState([]);
@@ -12,6 +26,7 @@ export default function LoginPage() {
 
   // إنشاء المواضع العشوائية بعد تحميل العميل
   useEffect(() => {
+    if(typeof window === undefined) return;
     const randomPositions = [...Array(6)].map(() => ({
       left: Math.random() * 100,
       top: Math.random() * 100,

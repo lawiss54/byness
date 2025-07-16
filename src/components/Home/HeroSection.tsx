@@ -193,6 +193,7 @@ const HeroSection = memo(({ slides }) => {
   // Memoize current slide data
   const currentSlideData = useMemo(() => slides[currentSlide], [slides, currentSlide]);
 
+ 
   // Memoize container variants
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
@@ -204,6 +205,7 @@ const HeroSection = memo(({ slides }) => {
 
   // Preload next images
   useEffect(() => {
+    if (typeof window === undefined) return null;
     const nextIndex = (currentSlide + 1) % slides.length;
     const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
     
@@ -233,16 +235,16 @@ const HeroSection = memo(({ slides }) => {
         onTouchEnd={dragHandlers.handleTouchEnd}
       >
         <AnimatePresence mode="wait">
-          <React.Fragment key={currentSlideData.order}>
+          <React.Fragment key={currentSlideData?.order}>
             <OptimizedSlideImage
               slide={currentSlideData}
               isActive={true}
-              animationType={currentSlideData.animationType}
+              animationType={currentSlideData?.animationType}
             />
             <SlideContent
               slide={currentSlideData}
               isActive={true}
-              animationType={currentSlideData.animationType}
+              animationType={currentSlideData?.animationType}
             />
             <ProgressBar
               progress={0}
@@ -253,7 +255,7 @@ const HeroSection = memo(({ slides }) => {
         </AnimatePresence>
 
         <NavigationArrows
-          onPrevious={slideActions.prevSlide}
+          onPrevious={slideActions?.prevSlide}
           onNext={slideActions.nextSlide}
           canNavigate={!isTransitioning}
         />
@@ -261,12 +263,12 @@ const HeroSection = memo(({ slides }) => {
         <DotNavigation
           slides={slides}
           currentSlide={currentSlide}
-          onSlideChange={slideActions.goToSlide}
+          onSlideChange={slideActions?.goToSlide}
         />
 
         <SlideIndicator
           currentSlide={currentSlide}
-          totalSlides={slides.length}
+          totalSlides={slides?.length}
           isAutoPlaying={isAutoPlaying}
         />
 

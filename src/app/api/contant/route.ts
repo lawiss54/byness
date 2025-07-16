@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { withAuthMiddleware } from "@/lib/middleware/withAuth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -148,8 +147,8 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
-  return withAuthMiddleware(request, async (req) => {
+export async function POST(req: NextRequest) {
+  
     const cookieStore = cookies();
     const token = (await cookieStore).get('access_token')?.value;
 
@@ -271,7 +270,6 @@ export async function POST(request: NextRequest) {
 
       return handleApiError(error, "création");
     }
-  });
 }
 
 

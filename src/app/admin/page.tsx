@@ -1,49 +1,12 @@
-'use client';
-import LoginPage from "@/components/auth/LoginPage";
-import { Loader } from "@/components/shared";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+'use client'
+import dynamic from 'next/dynamic'
 
 
+const AdminPage = dynamic(
+    () => import('@/components/Admin/adminPage'),
+    { ssr: false }
+)
 
-
-export default function adminPage() {
-
-  const router = useRouter()
-  const [isChecking, setIsChecking] = useState(true);
- 
-
- useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/Auth/refresh-token');
-        if (res.ok) {
-          router.replace('/admin/dashboard');
-        } else {
-          setIsChecking(false); // السماح بعرض الفورم
-        }
-      } catch (err) {
-        console.error('Erreur de vérification:', err);
-        setIsChecking(false);
-      }
-    };
-
-    checkAuth();
-  }, [router]);
-
-  
-
-   if (isChecking) {
-    return <Loader
-        type="fashion"
-        size="lg"
-        text="Chargement..."
-      />
-  
-  }
-
-  return(
-    <LoginPage />
-  )
+export default function Admin() {
+  return <AdminPage />
 }
-  

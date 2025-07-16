@@ -1,24 +1,12 @@
 'use client'
+import dynamic from 'next/dynamic'
 
-import { useEffect } from "react";
-import { useApi } from "@/lib/apiContext";
-import { Loader } from "./shared";
+
+const RequestApi = dynamic(
+    () => import('@/components/Layout/requestApi'),
+    { ssr: false }
+)
 
 export default function ApiBootstrap() {
-    const { fatchRessorce, loading } = useApi();
-    useEffect(() => {
-        fatchRessorce()
-
-    }, []);
-
-    if (loading) {
-        return <Loader
-            type="fashion"
-            size="lg"
-            text="Chargement..."
-        />
-    }
-
-    return null;
-
+    return <RequestApi />
 }

@@ -5,12 +5,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCheckoutForm } from '@/hooks/useCheckoutForm';
 import { StepIndicator, Button } from '@/components/shared/ui';
-import CustomerInfoStep from './steps/CustomerInfoStep';
-import OrderSummaryStep from './steps/OrderSummaryStep';
-import SuccessStep from './steps/SuccessStep';
 import { useRouter } from 'next/navigation';
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
+
+import dynamic from 'next/dynamic'
+
+
+
+
+const SuccessStep = dynamic(
+  () => import('./steps/SuccessStep'),
+  { ssr: false }
+)
+const OrderSummaryStep = dynamic(
+  () => import('./steps/OrderSummaryStep'),
+  { ssr: false }
+)
+const CustomerInfoStep = dynamic(
+  () => import('./steps/CustomerInfoStep'),
+  { ssr: false }
+)
 
 const CheckoutPage: React.FC = () => {
   const router = useRouter();

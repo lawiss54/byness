@@ -81,6 +81,7 @@ export default function SettingsSection() {
 
   // Load settings on component mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     loadSettings();
   }, []);
 

@@ -138,6 +138,7 @@ export default function HomepageContentManager() {
 
   // Load sections on component mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     loadSections();
   }, []);
 

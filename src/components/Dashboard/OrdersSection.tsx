@@ -17,12 +17,26 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { Button, Input, Select, Card, Badge } from '@/components/shared/ui';
-import OrderDetails from './Orders/OrderDetails';
-import OrderEdit from './Orders/OrderEdit';
-import BulkActions from './Orders/BulkActions';
 import { toast } from 'react-toastify';
-import ModalTéléchargementPDF from './Orders/ModalTéléchargementPDF';
+import dynamic from 'next/dynamic'
 
+
+const ModalTéléchargementPDF = dynamic(
+  () => import('./Orders/ModalTéléchargementPDF'),
+  { ssr: false }
+)
+const BulkActions = dynamic(
+  () => import('./Orders/BulkActions'),
+  { ssr: false }
+)
+const OrderEdit = dynamic(
+  () => import('./Orders/OrderEdit'),
+  { ssr: false }
+)
+const OrderDetails = dynamic(
+  () => import('./Orders/OrderDetails'),
+  { ssr: false }
+)
 
 
 type OrderStatus = 'all' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
@@ -73,6 +87,7 @@ export default function OrdersManagement() {
 
   const fetchOrders = async () => {
     try {
+      if (typeof window === 'undefined') return;
       setLoading(true);
       const res = await fetch('/api/orders');
       if (!res.ok) {
@@ -117,6 +132,7 @@ export default function OrdersManagement() {
   };
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     fetchOrders()
   }, []);
 

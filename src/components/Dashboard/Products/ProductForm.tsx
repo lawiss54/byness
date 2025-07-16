@@ -97,6 +97,7 @@ export default function ProductForm({ getCategories, product, onSave, onClose }:
 
   // Calculate discount percentage when prices change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (watchedOriginalPrice && watchedPrice && watchedOriginalPrice > watchedPrice) {
       const discount = ((watchedOriginalPrice - watchedPrice) / watchedOriginalPrice) * 100;
       setDiscountPercentage(Math.round(discount));
@@ -231,6 +232,7 @@ export default function ProductForm({ getCategories, product, onSave, onClose }:
 
   // Update form values when arrays change
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     setValue('colors', colors);
     setValue('sizes', sizes);
   }, [colors, sizes, setValue]);

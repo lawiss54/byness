@@ -114,6 +114,7 @@ export default function Dashboard() {
 
   // ✅ Load on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     fetchOrders();
     fetchProducts();
     fetchCategories();
@@ -121,6 +122,7 @@ export default function Dashboard() {
 
   // ✅ Compute stats
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (products.length === 0 && orders.length === 0) return;
 
     const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);

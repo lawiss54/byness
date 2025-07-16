@@ -1,8 +1,17 @@
 'use client';;
 import { motion } from 'framer-motion';
-import CartItem from './CartItem';
-import CartActions from './CartActions';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
+import dynamic from 'next/dynamic'
+
+
+const CartActions = dynamic(
+  () => import('./CartActions'),
+  { ssr: false }
+)
+const CartItem = dynamic(
+  () => import('./CartItem'),
+  { ssr: false }
+)
 
 export default function CartContent() {
 

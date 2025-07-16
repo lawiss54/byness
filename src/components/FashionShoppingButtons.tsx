@@ -1,10 +1,7 @@
-'use client';
-
+'use client';;
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { ShoppingCart, Package, CreditCard } from "lucide-react";
 import { Product } from "@/components/boutique/types/product.types";
-import { useCart } from "./cart/CartContext";
 import { useRouter } from "next/navigation";
 import { Button } from "./shared/ui";
 import { useCartCheckout } from "@/lib/CartCheckoutContext";

@@ -6,11 +6,10 @@ import { Analytics } from '@vercel/analytics/next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ApiProvider } from '@/lib/apiContext';
-import ApiBootstrap from '@/components/apiBootstrap';
 import { CartCheckoutProvider } from '@/lib/CartCheckoutContext';
 import TrackingScripts from '@/components/shared/TrackingScripts';
-
 import { Metadata } from 'next';
+import ApiBootstrap from '@/components/apiBootstrap';
 
 export const metadata: Metadata = {
   title: 'By Ness - Boutique premium pour femmes',
@@ -57,14 +56,14 @@ export default function RootLayout({
           <Analytics />
           <ApiProvider>
             <CartCheckoutProvider>
-              <TrackingScripts settings={null} />
-              <Header />
+               <TrackingScripts settings={null} />
+               <Header /> 
               <main className="flex-1 flex-grow">
-                <ApiBootstrap />
+                  <ApiBootstrap /> 
                 {children}
               </main>
               {/* تمرير بيانات ثابتة إلى Footer */}
-              <Footer
+               <Footer
                 data={{
                   settings: {
                     contactPhone: '+213 555 00 00 00',
@@ -77,7 +76,7 @@ export default function RootLayout({
                     whatsapp: 'https://wa.me/213555000000',
                   },
                 }}
-              />
+              /> 
             </CartCheckoutProvider>
           </ApiProvider>
           <ToastContainer position="top-right" autoClose={3000} />
