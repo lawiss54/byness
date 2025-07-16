@@ -11,7 +11,7 @@ interface OrderDetailsProps {
 }
 
 export default function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
-  console.log(order);
+  
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending': return <Badge variant="warning">En attente de confirmation</Badge>;
@@ -120,7 +120,7 @@ export default function OrderDetails({ order, onEdit, onClose }: OrderDetailsPro
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Nom :</span>
-                    <span className="font-semibold text-gray-900">{order.customerName}</span>
+                    <span className="font-semibold text-gray-900">{[order.customer_first_name, order.customer_last_name].filter(Boolean).join(' ')}</span>
                   </div>
                   
                   <div className="flex justify-between items-center">
