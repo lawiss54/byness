@@ -32,7 +32,9 @@ const ProgressBar = dynamic(() => import('./HeroSection/ProgressBar'), {
 });
 
 // مكون الصورة محسن
-const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
+const OptimizedSlideImage = memo(({ slides, isActive, animationType }) => {
+
+  
   const imageVariants = useMemo(() => ({
     enter: {
       opacity: 0,
@@ -213,7 +215,7 @@ const HeroSection = memo(({ slides }) => {
     [nextIndex, prevIndex].forEach(index => {
       const link = document.createElement('link');
       link.rel = 'prefetch';
-      link.href = slides[index].image;
+      link.href = slides[index]?.images;
       document.head.appendChild(link);
     });
   }, [currentSlide, slides]);
