@@ -11,10 +11,9 @@ import TrackingScripts from '@/components/shared/TrackingScripts';
 import { Metadata } from 'next';
 import ApiBootstrap from '@/components/apiBootstrap';
 
-// دالة لجلب إعدادات الموقع
+
 async function getSettings() {
   try {
-    // يمكنك استبدال هذا بـ API call حقيقي
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`, {
       cache: 'force-cache',
     });
@@ -25,8 +24,7 @@ async function getSettings() {
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching settings:', error);
-    // إرجاع بيانات افتراضية في حالة الخطأ
+   
     return {
       siteName: 'By Ness',
       title: 'By Ness - Boutique premium pour femmes',
@@ -46,7 +44,7 @@ async function getSettings() {
   }
 }
 
-// دالة لتوليد metadata ديناميكية
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
   console.log(settings)
@@ -78,6 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: settings.locale || 'fr',
     },
   };
+
 }
 
 export const viewport = {
