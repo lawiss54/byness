@@ -21,14 +21,6 @@ export default function Home() {
   }, []);
 
 
-  if (loading) {
-    return <Loader
-      type="fashion"
-      size="lg"
-      text="Chargement..."
-    />
-  }
-
   return (
     <div className="min-h-screen">
       <HeroSection slides={contant} />
