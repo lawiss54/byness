@@ -207,11 +207,11 @@ const HeroSection = memo(({ slides }) => {
 
   // Preload next images
   useEffect(() => {
-    if (typeof window === undefined) return null;
+    if (typeof window === "undefined") return;
+
     const nextIndex = (currentSlide + 1) % slides.length;
     const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
-    
-    // Preload adjacent images
+
     [nextIndex, prevIndex].forEach(index => {
       const link = document.createElement('link');
       link.rel = 'prefetch';
