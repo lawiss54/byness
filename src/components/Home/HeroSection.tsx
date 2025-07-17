@@ -32,7 +32,7 @@ const ProgressBar = dynamic(() => import('./HeroSection/ProgressBar'), {
 });
 
 // مكون الصورة محسن
-const OptimizedSlideImage = memo(({ slides, isActive, animationType }) => {
+const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
 
   
   const imageVariants = useMemo(() => ({

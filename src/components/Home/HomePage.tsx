@@ -19,14 +19,14 @@ export default function Home() {
     load();
   }, []);
 
-  console.log(contant)
+  
 
-  {/* <HeroSection slides={contant: any[]} /> */}
+  
   return (
     <div className="min-h-screen">
-      
+      <HeroSection slides={contant: any[]} />
       <FeaturesSection />
-      <NouvelleCollectionSection products={products} />
+      <NouvelleCollectionSection products={products } />
     </div>
   );
 }
