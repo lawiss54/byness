@@ -16,7 +16,7 @@ async function getSettings() {
   try {
     // يمكنك استبدال هذا بـ API call حقيقي
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`, {
-      cache: 'no-store', // أو 'force-cache' حسب الحاجة
+      cache: 'force-cache',
     });
 
     if (!response.ok) {
@@ -30,7 +30,7 @@ async function getSettings() {
     return {
       siteName: 'By Ness',
       title: 'By Ness - Boutique premium pour femmes',
-      description: 'Découvrez le luxe et l'élégance avec notre collection de marques premium.',
+      description: "Découvrez le luxe et l'élégance avec notre collection de marques premium.",
       keywords: ['byness', 'vêtements femme', 'algérie', 'premium', 'mode', 'luxe'],
       ogImage: '/og-image.jpg',
       locale: 'fr',
