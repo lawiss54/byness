@@ -21,10 +21,10 @@ export default function Home() {
 
   console.log(contant)
 
-
+  {/* <HeroSection slides={contant: any[]} /> */}
   return (
     <div className="min-h-screen">
-      {/* <HeroSection slides={contant: any[]} /> */}
+      
       <FeaturesSection />
       <NouvelleCollectionSection products={products} />
     </div>
