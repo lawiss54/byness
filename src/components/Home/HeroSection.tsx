@@ -215,7 +215,7 @@ const HeroSection = memo(({ slides }) => {
     [nextIndex, prevIndex].forEach(index => {
       const link = document.createElement('link');
       link.rel = 'prefetch';
-      link.href = slides[index]?.images;
+      link.href = slides[index]?.image;
       document.head.appendChild(link);
     });
   }, [currentSlide, slides]);
