@@ -15,11 +15,11 @@ export default function Home() {
 
   useEffect(() => {
     const load = async () => {
-      await fetchContent(); // لا نحتاج قيمة راجعة
-      setLoading(false);
+      await fetchContent(); 
     };
     load();
   }, []);
+
 
   if (loading) {
     return <Loader
