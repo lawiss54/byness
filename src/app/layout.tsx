@@ -115,7 +115,7 @@ export default async function RootLayout({
           <Analytics />
           <ApiProvider>
             <CartCheckoutProvider>
-              <TrackingScripts settings={settings?.pixel} />
+              <TrackingScripts settings={settings.settings?.pixel} />
               <Header image={{logo: settings.settings?.siteLogo || '/logo.png'}} />
               <ScrollToTop />
               <main className="min-h-screen flex-1 flex-grow">
