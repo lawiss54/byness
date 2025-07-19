@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useCartCheckout } from "@/lib/CartCheckoutContext";
 import { useRouter } from "next/navigation";
 
-export default function Header() {
+export default function Header({image}) {
 
 
   const { itemCount } = useCartCheckout()
@@ -24,7 +24,7 @@ export default function Header() {
         <div className="flex items-center gap-3 h-full cursor-pointer" onClick={goHome}>
           <div className="text-lg font-bold flex items-center h-full">
             <Image
-              src="/logo.png"
+              src={image?.logo}
               alt="Logo ByNess Store"
               width="50"
               height="50"

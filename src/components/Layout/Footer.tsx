@@ -24,6 +24,7 @@ interface SocialLink {
 }
 
 export default function Footer({data}) {
+
   // يمكن جلب هذه البيانات من الإعدادات أو API
   const socialLinks: SocialLink[] = [
     {
@@ -65,7 +66,7 @@ export default function Footer({data}) {
     },
     {
       icon: MapPin,
-      text: "Algérie, Skikda",
+      text: "Algérie, Skikda, El Harrouch",
       href: "#"
     }
   ];

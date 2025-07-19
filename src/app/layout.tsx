@@ -8,24 +8,22 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ApiProvider } from '@/lib/apiContext';
 import { CartCheckoutProvider } from '@/lib/CartCheckoutContext';
 import TrackingScripts from '@/components/shared/TrackingScripts';
+import ScrollToTop from '@/components/shared/ScrollToTop';
 import { Metadata } from 'next';
 import ApiBootstrap from '@/components/apiBootstrap';
-
 
 async function getSettings() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`, {
       cache: 'force-cache',
     });
-
     if (!response.ok) {
-      throw new Error('Failed to fetch settings');
+      throw new Error(`Failed to fetch settings: ${response.status}`);
     }
-
-    return await response.json();
+    const data = await response.json();
+    return data.data;
   } catch (error) {
-   
-    return {
+    const fallbackSettings = {
       siteName: 'By Ness',
       title: 'By Ness - Boutique premium pour femmes',
       description: "Découvrez le luxe et l'élégance avec notre collection de marques premium.",
@@ -41,42 +39,55 @@ async function getSettings() {
         whatsapp: 'https://wa.me/213555000000',
       },
     };
+    return fallbackSettings;
   }
 }
 
-
 export async function generateMetadata(): Promise<Metadata> {
+ 
   const settings = await getSettings();
-  console.log(settings)
-
-  return {
-    title: settings.title || "By Ness - Boutique premium pour femmes",
-    description: settings.description || "Découvrez le luxe et l'élégance avec notre collection de marques premium.",
-    keywords: settings.keywords || ['byness', 'vêtements femme', 'algérie', 'premium', 'mode', 'luxe'],
-    authors: [{ name: settings.siteName || 'By Ness' }],
-    robots: 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
+  const metadata = {
+    title: settings.settings?.siteName || "By Ness - Boutique premium pour femmes",
+    description: settings.settings?.siteDescription || "Découvrez le luxe et l'élégance avec notre collection de marques premium.",
+    keywords: settings.settings?.keywords || ['byness', 'vêtements femme', 'algérie', 'premium', 'mode', 'luxe'],
+    authors: [{ name: settings.settings?.siteName || 'By Ness' }],
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        noimageindex: false,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+     category: 'Store',
     icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon.ico',
-      apple: '/apple-touch-icon.png',
+      icon: settings.settings?.siteIcon,
+      shortcut: settings.settings?.siteIcon,
+      apple: settings.settings?.siteIcon,
     },
     openGraph: {
-      title: settings.title || 'By Ness - Boutique premium pour femmes',
-      description: settings.description || 'Explorez les tendances féminines haut de gamme avec By Ness.',
-      siteName: settings.siteName || 'By Ness',
+      title: settings.settings?.siteName || 'By Ness - Boutique premium pour femmes',
+      description: settings.settings?.siteDescription || 'Explorez les tendances féminines haut de gamme avec By Ness.',
+      siteName: settings.settings?.siteName || 'By Ness',
       images: [
         {
-          url: settings.ogImage || '/og-image.jpg',
+          url: settings.settings?.siteLogo || '/logo.png',
           width: 1200,
           height: 630,
-          alt: settings.siteName || 'By Ness',
+          alt: settings.settings?.siteName || 'By Ness',
         },
       ],
       type: 'website',
-      locale: settings.locale || 'fr',
+      locale: settings.settings?.locale || 'fr',
     },
   };
 
+  return metadata;
 }
 
 export const viewport = {
@@ -89,9 +100,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // جلب الإعدادات للـ Footer
   const settings = await getSettings();
-
+ 
   return (
     <html lang="fr" className="scroll-smooth">
       <body className="min-h-screen font-secondary antialiased bg-brand-ivory-200 text-brand-greenBlack-500 selection:bg-brand-sage-200 selection:text-brand-greenBlack-700">
@@ -99,8 +109,9 @@ export default async function RootLayout({
           <Analytics />
           <ApiProvider>
             <CartCheckoutProvider>
-              <TrackingScripts settings={null} />
-              <Header />
+              <TrackingScripts settings={settings?.pixel} />
+              <Header image={{logo: settings.settings?.siteLogo || '/logo.png'}} />
+              <ScrollToTop />
               <main className="min-h-screen flex-1 flex-grow">
                 <ApiBootstrap />
                 {children}
@@ -109,10 +120,10 @@ export default async function RootLayout({
               <Footer
                 data={{
                   settings: {
-                    contactPhone: settings.contactPhone || '+213 555 00 00 00',
-                    contactMail: settings.contactMail || 'contact@byness.dz',
+                    contactPhone: settings?.settings?.contactPhone || '+213 555 00 00 00',
+                    contactMail: settings?.settings?.contactEmail || 'contact@byness.dz',
                   },
-                  socialmedia: settings.socialmedia || {
+                  socialmedia: settings?.socialmedia || {
                     facebook: 'https://facebook.com/bynessdz',
                     instagram: 'https://instagram.com/byness.dz',
                     tiktok: 'https://tiktok.com/@bynessdz',

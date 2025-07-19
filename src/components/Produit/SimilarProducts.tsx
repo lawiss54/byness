@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from 'react';
+import React, { memo, useMemo, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ProductCard, SectionHeader } from '@/components/shared';
 import ViewAllButton from './SimilarProducts/ViewAllButton';
@@ -12,14 +12,33 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
 }) => {
   const { containerVariants, itemVariants } = useAnimationVariants();
   const memoizedProducts = useMemo(() => products, [products]);
+  
+  // حالة لتتبع عدد المنتجات المعروضة
+  const [displayedCount, setDisplayedCount] = useState(4);
+  
+  // عدد المنتجات لكل مجموعة
+  const PRODUCTS_PER_LOAD = 4;
 
   const handleProductClick = useCallback((productId: string) => {
     onProductClick?.(productId);
   }, [onProductClick]);
 
+  const handleShowMore = useCallback(() => {
+    setDisplayedCount(prev => Math.min(prev + PRODUCTS_PER_LOAD, memoizedProducts.length));
+  }, [memoizedProducts.length]);
+
   const handleViewAllClick = useCallback(() => {
     onViewAllClick?.();
   }, [onViewAllClick]);
+
+  // حساب المنتجات المعروضة حالياً
+  const displayedProducts = useMemo(() => 
+    memoizedProducts.slice(0, displayedCount), 
+    [memoizedProducts, displayedCount]
+  );
+
+  // تحديد ما إذا كان هناك منتجات أكثر لعرضها
+  const hasMoreProducts = displayedCount < memoizedProducts.length;
 
   if (!memoizedProducts?.length) {
     return (
@@ -54,7 +73,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
         />
 
         <motion.div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -63,7 +82,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
             margin: "-10% 0px -10% 0px"
           }}
         >
-          {memoizedProducts.slice(0, 6).map((product, index) => (
+          {displayedProducts.map((product, index) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -73,10 +92,25 @@ const SimilarProducts: React.FC<SimilarProductsProps> = memo(({
             />
           ))}
         </motion.div>
-          {memoizedProducts.lenght > 6 && (
-            <ViewAllButton onClick={handleViewAllClick} />
-          )}
-        
+
+        {/* زر إظهار المزيد - يظهر فقط إذا كان هناك منتجات أكثر */}
+        {hasMoreProducts && (
+          <div className="text-center mt-12">
+            <motion.button
+              onClick={handleShowMore}
+              className="inline-flex items-center px-8 py-3 bg-brand-camel-500 text-white font-medium rounded-lg hover:bg-brand-camel-600 transition-colors duration-200"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              إظهار المزيد ({Math.min(PRODUCTS_PER_LOAD, memoizedProducts.length - displayedCount)} منتجات)
+            </motion.button>
+          </div>
+        )}
+
+        {/* زر عرض الكل - يظهر إذا تم عرض جميع المنتجات */}
+        {!hasMoreProducts && memoizedProducts.length > PRODUCTS_PER_LOAD && (
+          <ViewAllButton onClick={handleViewAllClick} />
+        )}
       </div>
     </section>
   );

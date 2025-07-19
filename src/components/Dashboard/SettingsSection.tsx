@@ -20,8 +20,6 @@ import { Button, Input, Card, Badge } from '@/components/shared/ui';
 import { toast } from 'react-toastify';
 import { SiTiktok, SiWhatsapp } from 'react-icons/si';
 
-
-
 interface SiteSettings {
   siteName: string;
   siteDescription: string;
@@ -47,37 +45,42 @@ interface PixelSettings {
   snapchatPixel: string;
 }
 
+// Default values to ensure inputs are always controlled
+const defaultSiteSettings: SiteSettings = {
+  siteName: '',
+  siteDescription: '',
+  siteLogo: '',
+  siteIcon: '',
+  contactEmail: '',
+  contactPhone: '',
+  address: ''
+};
+
+const defaultSocialLinks: SocialLinks = {
+  facebook: '',
+  instagram: '',
+  tiktok: '',
+  whatsapp: ''
+};
+
+const defaultPixelSettings: PixelSettings = {
+  facebookPixel: '',
+  googleAnalytics: '',
+  googleAds: '',
+  tiktokPixel: '',
+  snapchatPixel: ''
+};
+
 export default function SettingsSection() {
   // State Management
   const [activeTab, setActiveTab] = useState('general');
   const [loading, setLoading] = useState(false);
   const [showPixels, setShowPixels] = useState(false);
 
-  // Settings States
-  const [siteSettings, setSiteSettings] = useState<SiteSettings>({
-    siteName: '',
-    siteDescription: '',
-    siteLogo: '',
-    siteIcon: '',
-    contactEmail: '',
-    contactPhone: '',
-    address: ''
-  });
-
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>({
-    facebook: '',
-    instagram: '',
-    tiktok: '',
-    whatsapp: ''
-  });
-
-  const [pixelSettings, setPixelSettings] = useState<PixelSettings>({
-    facebookPixel: '',
-    googleAnalytics: '',
-    googleAds: '',
-    tiktokPixel: '',
-    snapchatPixel: ''
-  });
+  // Settings States with default values
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(defaultSiteSettings);
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>(defaultSocialLinks);
+  const [pixelSettings, setPixelSettings] = useState<PixelSettings>(defaultPixelSettings);
 
   // Load settings on component mount
   useEffect(() => {
@@ -105,15 +108,39 @@ export default function SettingsSection() {
         
         const response = await res.json();
         
+        // Ensure all values are strings and merge with defaults
+        const settings = { ...defaultSiteSettings, ...response.data.settings };
+        const socialmedia = { ...defaultSocialLinks, ...response.data.socialmedia };
+        const pixel = { ...defaultPixelSettings, ...response.data.pixel };
+        
+        // Convert any null/undefined values to empty strings
+        Object.keys(settings).forEach(key => {
+          if (settings[key as keyof SiteSettings] == null) {
+            settings[key as keyof SiteSettings] = '';
+          }
+        });
+        
+        Object.keys(socialmedia).forEach(key => {
+          if (socialmedia[key as keyof SocialLinks] == null) {
+            socialmedia[key as keyof SocialLinks] = '';
+          }
+        });
+        
+        Object.keys(pixel).forEach(key => {
+          if (pixel[key as keyof PixelSettings] == null) {
+            pixel[key as keyof PixelSettings] = '';
+          }
+        });
+        
         // Save data to localStorage
-        localStorage.setItem('siteSettings', JSON.stringify(response.data.settings));
-        localStorage.setItem('socialLinks', JSON.stringify(response.data.socialmedia));
-        localStorage.setItem('pixelSettings', JSON.stringify(response.data.pixel));
+        localStorage.setItem('siteSettings', JSON.stringify(settings));
+        localStorage.setItem('socialLinks', JSON.stringify(socialmedia));
+        localStorage.setItem('pixelSettings', JSON.stringify(pixel));
         
         // Update state after saving
-        setSiteSettings(response.data.settings);
-        setSocialLinks(response.data.socialmedia);
-        setPixelSettings(response.data.pixel);
+        setSiteSettings(settings);
+        setSocialLinks(socialmedia);
+        setPixelSettings(pixel);
       };
 
       // First read data from localStorage
@@ -123,13 +150,39 @@ export default function SettingsSection() {
 
       // If data exists in localStorage, use it
       if (savedSiteSettings) {
-        setSiteSettings(JSON.parse(savedSiteSettings));
+        const parsed = JSON.parse(savedSiteSettings);
+        const settings = { ...defaultSiteSettings, ...parsed };
+        // Ensure no null/undefined values
+        Object.keys(settings).forEach(key => {
+          if (settings[key as keyof SiteSettings] == null) {
+            settings[key as keyof SiteSettings] = '';
+          }
+        });
+        setSiteSettings(settings);
       }
+      
       if (savedSocialLinks) {
-        setSocialLinks(JSON.parse(savedSocialLinks));
+        const parsed = JSON.parse(savedSocialLinks);
+        const socialmedia = { ...defaultSocialLinks, ...parsed };
+        // Ensure no null/undefined values
+        Object.keys(socialmedia).forEach(key => {
+          if (socialmedia[key as keyof SocialLinks] == null) {
+            socialmedia[key as keyof SocialLinks] = '';
+          }
+        });
+        setSocialLinks(socialmedia);
       }
+      
       if (savedPixelSettings) {
-        setPixelSettings(JSON.parse(savedPixelSettings));
+        const parsed = JSON.parse(savedPixelSettings);
+        const pixel = { ...defaultPixelSettings, ...parsed };
+        // Ensure no null/undefined values
+        Object.keys(pixel).forEach(key => {
+          if (pixel[key as keyof PixelSettings] == null) {
+            pixel[key as keyof PixelSettings] = '';
+          }
+        });
+        setPixelSettings(pixel);
       }
 
       // If data doesn't exist in localStorage, fetch from API
@@ -190,7 +243,7 @@ export default function SettingsSection() {
     reader.onload = (e) => {
       setSiteSettings(prev => ({
         ...prev,
-        [field]: e.target?.result as string
+        [field]: e.target?.result as string || ''
       }));
     };
     reader.readAsDataURL(file);

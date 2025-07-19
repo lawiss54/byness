@@ -33,8 +33,6 @@ const ProgressBar = dynamic(() => import('./HeroSection/ProgressBar'), {
 
 // مكون الصورة محسن
 const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
-
-  
   const imageVariants = useMemo(() => ({
     enter: {
       opacity: 0,
@@ -58,7 +56,8 @@ const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
     }
   }), [animationType]);
 
-  if (!isActive) return null;
+  // التحقق من وجود الشريحة والصورة
+  if (!isActive || !slide || !slide.image) return null;
 
   return (
     <m.div
@@ -69,13 +68,13 @@ const OptimizedSlideImage = memo(({ slide, isActive, animationType }) => {
       exit="exit"
     >
       <Image
-        src={slide?.image}
-        alt={slide?.title}
+        src={slide.image}
+        alt={slide.title || 'Hero slide'}
         fill
         className="object-cover"
         priority={true} 
         quality={100}
-        sizes="100"
+        sizes="100vw"
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
       />
@@ -161,8 +160,13 @@ const HeroSection = memo(({ slides }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef(null);
 
+  console.log(slides)
+
   // Memoize slide functions
-  const slideActions = useMemo(() => ({
+  const slideActions = useMemo(() => {
+    if (!slides || slides.length === 0) return {};
+    
+    return {
     nextSlide: () => {
       if (isTransitioning) return;
       setIsTransitioning(true);
@@ -180,8 +184,8 @@ const HeroSection = memo(({ slides }) => {
       setIsTransitioning(true);
       setCurrentSlide(index);
       setTimeout(() => setIsTransitioning(false), 500);
-    }
-  }), [slides.length, isTransitioning, currentSlide]);
+    }}
+  }, [slides.length, isTransitioning, currentSlide]);
 
   // Custom hooks
   useAutoPlay(slideActions.nextSlide, isAutoPlaying, isDragging);
@@ -193,9 +197,11 @@ const HeroSection = memo(({ slides }) => {
   );
 
   // Memoize current slide data
-  const currentSlideData = useMemo(() => slides[currentSlide], [slides, currentSlide]);
+  const currentSlideData = useMemo(() => 
+    slides && slides.length > 0 ? slides[currentSlide] : null, 
+    [slides, currentSlide]
+  );
 
- 
   // Memoize container variants
   const containerVariants = useMemo(() => ({
     hidden: { opacity: 0 },
@@ -205,20 +211,46 @@ const HeroSection = memo(({ slides }) => {
     }
   }), []);
 
-  // Preload next images
+  // Preload next images - مع التحقق من وجود الصور
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !slides || slides.length === 0) return;
 
     const nextIndex = (currentSlide + 1) % slides.length;
     const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
 
     [nextIndex, prevIndex].forEach(index => {
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = slides[index]?.image;
-      document.head.appendChild(link);
+      const slide = slides[index];
+      if (slide && slide.image && slide.image.trim() !== '') {
+        // استخدام ReactDOM.preload بدلاً من إنشاء عنصر link يدوياً
+        if (typeof window.ReactDOM !== 'undefined' && window.ReactDOM.preload) {
+          window.ReactDOM.preload(slide.image, { as: 'image' });
+        } else {
+          // الطريقة التقليدية كـ fallback
+          const link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = slide.image;
+          link.as = 'image';
+          document.head.appendChild(link);
+          
+          // إزالة الرابط بعد فترة لتجنب تراكم العناصر
+          setTimeout(() => {
+            if (document.head.contains(link)) {
+              document.head.removeChild(link);
+            }
+          }, 5000);
+        }
+      }
     });
   }, [currentSlide, slides]);
+
+  // التحقق من وجود الشرائح بعد تعريف جميع الـ Hooks
+  if (!slides || slides.length === 0) {
+    return (
+      <div className="relative w-full h-screen overflow-hidden bg-background flex items-center justify-center">
+        <p className="text-white text-xl">لا توجد شرائح للعرض</p>
+      </div>
+    );
+  }
 
   return (
     <LazyMotion features={domAnimation} strict>
@@ -237,7 +269,7 @@ const HeroSection = memo(({ slides }) => {
         onTouchEnd={dragHandlers.handleTouchEnd}
       >
         <AnimatePresence mode="wait">
-          <React.Fragment key={currentSlideData?.order}>
+          <React.Fragment key={currentSlideData?.order || currentSlide}>
             <OptimizedSlideImage
               slide={currentSlideData}
               isActive={true}
