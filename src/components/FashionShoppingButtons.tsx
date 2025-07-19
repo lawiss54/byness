@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "./shared/ui";
 import { useCartCheckout } from "@/lib/CartCheckoutContext";
 import { CartItem } from "@/lib/CartCheckoutContextType";
+
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent'
 
 
 
@@ -16,6 +18,7 @@ interface AddToCartButtonsProps {
 
 export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) => {
   const { track } = useFacebookPixelEvent();
+  const { trackTiktok } = useTiktokPixelEvent();
   const [isAdded, setIsAdded] = useState(false);
 
   const { addToCart } = useCartCheckout()
@@ -23,6 +26,13 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
   const handleAddToCart = () => {
 
     track('AddToCart', {
+      content_name: product?.name,
+      content_ids: [product?.id],
+      content_type: 'product',
+      value: product?.price,
+      currency: 'DZD',
+    });
+    trackTiktok('AddToCart', {
       content_name: product?.name,
       content_ids: [product?.id],
       content_type: 'product',
@@ -68,10 +78,18 @@ interface BuyNowButtonsProps {
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
   const { addToCart } = useCartCheckout();
   const { track } = useFacebookPixelEvent();
+  const { trackTiktok } = useTiktokPixelEvent();
   const router = useRouter();
 
   const handleBuyNow = () => {
-    track('AddToCart', {
+    track('InitiateCheckout', {
+      content_name: product?.name,
+      content_ids: [product?.id],
+      content_type: 'product',
+      value: product?.price,
+      currency: 'DZD',
+    });
+    trackTiktok('InitiateCheckout', {
       content_name: product?.name,
       content_ids: [product?.id],
       content_type: 'product',

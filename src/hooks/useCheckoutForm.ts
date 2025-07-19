@@ -7,6 +7,7 @@ import { checkoutSchema, type CheckoutFormData } from '@/components/Checkout/sch
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
 import { toast } from 'react-toastify';
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent';
 
 
 export const useCheckoutForm = () => {
@@ -14,6 +15,7 @@ export const useCheckoutForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { cartItems, total, clearCart } = useCartCheckout();
   const { track } = useFacebookPixelEvent();
+  const { trackTiktok } = useTiktokPixelEvent();
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
@@ -31,7 +33,7 @@ export const useCheckoutForm = () => {
     }
   });
 
-  // حساب الإجمالي مع الشحن
+ 
   const shippingPrice = form.watch('shippingPrice') || 0;
   const totalWithShipping = total + shippingPrice;
 
@@ -49,15 +51,32 @@ export const useCheckoutForm = () => {
   };
 
   const onSubmit = async (data: CheckoutFormData) => {
-    cartItems?.map((product) => {
-      track('Purchase', {
-        content_name: product.name,
-        content_ids: [product.id],
-        content_type: 'product',
-        value: product.price,
-        currency: 'DZD',
-      });
+
+    if (!cartItems || cartItems.length === 0) return
+
+    const totalValue = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+    const contents = cartItems.map((product) => ({
+      content_id: product.id,
+      content_name: product.name,
+      quantity: product.quantity,
+      price: product.price,
+    }))
+
+     track('InitiateCheckout', {
+      value: totalValue,
+      currency: 'DZD',
+      contents,
+      content_type: 'product',
     })
+
+    trackTiktok('InitiateCheckout', {
+      value: totalValue,
+      currency: 'DZD',
+      contents,
+      content_type: 'product',
+    })
+   
     
     setIsSubmitting(true);
 
@@ -102,6 +121,7 @@ export const useCheckoutForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   return {

@@ -19,7 +19,7 @@ export default function Header({image}) {
 
   return (
     <header className="h-16 w-full bg-brand-greenBlack-500 text-white sticky top-0 z-50">
-      <div className="flex items-center justify-between h-full px-4 max-w-7xl mx-auto">
+      <div className="flex items-center place-content-center justify-between h-full px-4 max-w-7xl mx-auto">
         {/* Logo Section */}
         <div className="flex items-center gap-3 h-full cursor-pointer" onClick={goHome}>
           <div className="text-lg font-bold flex items-center h-full">

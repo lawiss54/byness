@@ -14,31 +14,7 @@ import { Input } from "@/components/shared/ui/Input";
 import { User, Truck, Phone, MapPin, Building, Check, Clock, Package } from "lucide-react";
 import type { CheckoutFormData } from "../schemas/checkoutSchemas";
 
-const wilayas = [
-  "Alger",
-  "Oran",
-  "Constantine",
-  "Annaba",
-  "Blida",
-  "Batna",
-  "Djelfa",
-  "Sétif",
-  "Sidi Bel Abbès",
-  "Biskra",
-  "Tébessa",
-  "El Oued",
-  "Skikda",
-  "Tiaret",
-  "Béjaïa",
-  "Tlemcen",
-  "Ouargla",
-  "Bouira",
-  "Tizi Ouzou",
-  "Médéa",
-  "El Bayadh",
-  "Bordj Bou Arréridj",
-];
-const shippingMethods = [
+
       {
         id: 'bureau',
         name: 'Trouvez votre colis au bureau',
@@ -53,17 +29,43 @@ const shippingMethods = [
         time: '1-2 jours ouvrables',
         price: 800,
         icon: Package,
-        description: 'Livraison jusqu’à votre porte avec suivi'
+        description: 'Livraison jusqu'à votre porte avec suivi'
       }
   
     ];
 
 export default function ShippingForm() {
   const { control, watch } = useFormContext<CheckoutFormData>();
-    const subtotal = 45000; // Mock subtotal
-    const selectedMethod = watch('shippingMethod');
-  
-    
+  const selectedMethod = watch('shippingMethod');
+  const shippingFields = watch("shipping");
+  const { trackTiktok } = useTiktokPixelEvent();
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    const { firstName, lastName, phone, wilaya, city, address } =
+      shippingFields || {};
+
+    const isCompleted =
+      firstName?.trim() &&
+      lastName?.trim() &&
+      phone?.trim() &&
+      wilaya?.trim() &&
+      city?.trim() &&
+      address?.trim();
+
+    if (isCompleted && !hasTracked) {
+      trackTiktok("FormCompleted", {
+        wilaya,
+        city,
+        phone,
+      });
+      setHasTracked(true);
+    }
+
+    if (!isCompleted && hasTracked) {
+      setHasTracked(false);
+    }
+  }, [shippingFields, hasTracked, trackTiktok]);
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -102,7 +104,7 @@ export default function ShippingForm() {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className=" grid md:grid-cols-2 gap-6">
         {/* First Name */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -110,28 +112,26 @@ export default function ShippingForm() {
           transition={{ delay: 0.1 }}
         >
           <FormField
-            control={control}
-            name="shipping.firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-brand-camel-500" />
-                  Prénom *
-                </FormLabel>
-                <FormControl>
-                  <motion.div className="relative" whileFocus={{ scale: 1.02 }}>
+              control={control}
+              name="shipping.firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    <User className="inline w-4 h-4 mr-1 text-brand-camel-500" />
+                    Prénom *
+                  </FormLabel>
+                  <FormControl>
                     <Input
                       placeholder="Votre prénom"
                       {...field}
-                      className="pl-12"
+                      value={field.value || ""}
                     />
-                    <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-sage-400" />
-                  </motion.div>
-                </FormControl>
+                  </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
         </motion.div>
 
         {/* Last Name */}
@@ -153,7 +153,9 @@ export default function ShippingForm() {
                   <motion.div className="relative" whileFocus={{ scale: 1.02 }}>
                     <Input
                       placeholder="Votre nom"
+                      type="text"
                       {...field}
+                      value={field.value || ""}
                       className="pl-12"
                     />
                     <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-sage-400" />
@@ -187,6 +189,7 @@ export default function ShippingForm() {
                       placeholder="0555 123 456"
                       type="tel"
                       {...field}
+                      value={field.value || ""}
                       className="pl-12"
                     />
                     <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-sage-400" />
@@ -218,6 +221,7 @@ export default function ShippingForm() {
                     <Input
                       placeholder="Votre ville"
                       {...field}
+                      value={field.value || ""}
                       className="pl-12"
                     />
                     <Building className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-brand-sage-400" />
@@ -281,6 +285,7 @@ export default function ShippingForm() {
                     <textarea
                       placeholder="Votre adresse complète"
                       {...field}
+                      value={field.value || ""}
                       className="flex min-h-[80px] w-full rounded-xl border-2 border-brand-sage-200 bg-white px-4 py-3 pl-12 text-sm ring-offset-background placeholder:text-brand-sage-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-camel-500 focus-visible:ring-offset-2 focus-visible:border-brand-camel-500 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 resize-none"
                       rows={3}
                     />

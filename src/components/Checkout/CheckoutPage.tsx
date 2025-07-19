@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useCheckoutForm } from '@/hooks/useCheckoutForm';
 import { StepIndicator, Button } from '@/components/shared/ui';
 import { useRouter } from 'next/navigation';
+
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent'
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 import { useCartCheckout } from '@/lib/CartCheckoutContext';
 
@@ -30,26 +32,44 @@ const CustomerInfoStep = dynamic(
 const CheckoutPage: React.FC = () => {
   const router = useRouter();
   const { track } = useFacebookPixelEvent();
+  const { trackTiktok } = useTiktokPixelEvent();
+
   const { form, currentStep, isSubmitting, nextStep, prevStep, onSubmit } = useCheckoutForm();
    const { cartItems } = useCartCheckout();
   const steps = [
     { id: 1, title: 'Informations', description: 'Vos coordonnées' },
     { id: 2, title: 'Confirmation', description: 'Récapitulatif' }
   ];
+  const hasTracked = useRef(false)
+
   useEffect(() => {
-    if(cartItems?.length > 0){
-      cartItems?.map((product) => {
-        track('InitiateCheckout', {
-          content_name: product?.name,
-          content_ids: product?.id,
-          content_type: 'product',
-          value: product?.price * product?.quantity,
-          currency: 'DZD',
-        });
-      });
-    }
-    
-  }, [cartItems, track]);
+    if (!cartItems || cartItems.length === 0) return
+
+    const totalValue = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+    const contents = cartItems.map((product) => ({
+      content_id: product.id,
+      content_name: product.name,
+      quantity: product.quantity,
+      price: product.price,
+    }))
+
+    track('InitiateCheckout', {
+      value: totalValue,
+      currency: 'DZD',
+      contents,
+      content_type: 'product',
+    })
+
+    trackTiktok('InitiateCheckout', {
+      value: totalValue,
+      currency: 'DZD',
+      contents,
+      content_type: 'product',
+    })
+    hasTracked.current = true
+  }, [cartItems])
+
   
 
   const renderStep = () => {

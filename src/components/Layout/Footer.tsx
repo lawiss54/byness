@@ -57,12 +57,12 @@ export default function Footer({data}) {
     {
       icon: Phone,
       text: data?.settings?.contactPhone,
-      href: data?.settings?.contactPhone
+      href: `tel:${data?.settings?.contactPhone}`
     },
     {
       icon: Mail,
       text: data?.settings?.contactMail,
-      href: `mailto:${data?.settings?.contactPhone}`
+      href: `mailto:${data?.settings?.contactMail}`
     },
     {
       icon: MapPin,
@@ -88,7 +88,7 @@ export default function Footer({data}) {
               </p>
             </div>
 
-            {/* Social Media dans نفس العمود */}
+           
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-white">
                 Suivez-nous
@@ -113,7 +113,7 @@ export default function Footer({data}) {
             </div>
           </div>
 
-          {/* Contact Info - Column 2 */}
+          
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white mb-3">
               Contactez-nous
@@ -135,7 +135,7 @@ export default function Footer({data}) {
             </ul>
           </div>
 
-          {/* Newsletter Signup - Column 3 */}
+          
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white mb-3">
               Newsletter
@@ -162,7 +162,7 @@ export default function Footer({data}) {
           </div>
         </div>
 
-        {/* Divider */}
+        
         <div className="border-t border-gray-700 pt-6">
           {/* Bottom Footer */}
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">

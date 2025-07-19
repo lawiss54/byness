@@ -15,6 +15,11 @@ import ApiBootstrap from '@/components/apiBootstrap';
 async function getSettings() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings`, {
+       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       cache: 'force-cache',
     });
     if (!response.ok) {
@@ -101,6 +106,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSettings();
+  console.log(settings)
  
   return (
     <html lang="fr" className="scroll-smooth">

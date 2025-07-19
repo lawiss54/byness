@@ -16,11 +16,6 @@ const DotNavigation = dynamic(() => import('./HeroSection/DotNavigation'), {
   ssr: false
 });
 
-const NavigationArrows = dynamic(() => import('./HeroSection/NavigationArrows'), {
-  loading: () => null,
-  ssr: false
-});
-
 const SlideIndicator = dynamic(() => import('./HeroSection/SlideIndicator'), {
   loading: () => null,
   ssr: false
@@ -160,8 +155,6 @@ const HeroSection = memo(({ slides }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef(null);
 
-  console.log(slides)
-
   // Memoize slide functions
   const slideActions = useMemo(() => {
     if (!slides || slides.length === 0) return {};
@@ -247,7 +240,7 @@ const HeroSection = memo(({ slides }) => {
   if (!slides || slides.length === 0) {
     return (
       <div className="relative w-full h-screen overflow-hidden bg-background flex items-center justify-center">
-        <p className="text-white text-xl">لا توجد شرائح للعرض</p>
+        <p className="text-white text-xl">Aucune slide disponible actuellement</p>
       </div>
     );
   }
@@ -287,12 +280,6 @@ const HeroSection = memo(({ slides }) => {
             />
           </React.Fragment>
         </AnimatePresence>
-
-        <NavigationArrows
-          onPrevious={slideActions?.prevSlide}
-          onNext={slideActions.nextSlide}
-          canNavigate={!isTransitioning}
-        />
 
         <DotNavigation
           slides={slides}

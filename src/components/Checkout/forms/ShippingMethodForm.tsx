@@ -14,28 +14,8 @@ import type { CheckoutFormData } from '../schemas/checkoutSchemas';
 
 export default function ShippingMethodForm() {
   const { control, watch } = useFormContext<CheckoutFormData>();
-  const subtotal = 45000; // Mock subtotal
+  
   const selectedMethod = watch('shippingMethod');
-
-  const shippingMethods = [
-    {
-      id: 'bureau',
-      name: 'Trouvez votre colis au bureau',
-      time: '1-2 jours ouvrables',
-      price: 300,
-      icon: Truck,
-      description: 'Livraison au bureau de la société de transport'
-    },
-    {
-      id: 'domicile',
-      name: 'Livraison à domicile',
-      time: '1-2 jours ouvrables',
-      price: 800,
-      icon: Package,
-      description: 'Livraison jusqu’à votre porte avec suivi'
-    }
-
-  ];
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },

@@ -1,13 +1,50 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import { motion } from 'framer-motion';
 import { Check, Package, Truck, PhoneCall, Home } from 'lucide-react';
 import { Button } from '@/components/shared/ui';
 import { useRouter } from 'next/navigation';
 
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent'
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent'
+import { useCartCheckout } from '@/lib/CartCheckoutContext'
+
 const SuccessStep: React.FC = () => {
   const router = useRouter();
+
+
+  const { cartItems } = useCartCheckout()
+  const { track } = useFacebookPixelEvent()
+  const { trackTiktok } = useTiktokPixelEvent()
+
+  useEffect(() => {
+    if (!cartItems || cartItems.length === 0) return
+
+    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+
+    const contents = cartItems.map((item) => ({
+      content_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+    }))
+
+    track('CompletePayment', {
+      value: total,
+      currency: 'DZD',
+      contents,
+    })
+
+    trackTiktok('CompletePayment', {
+      value: total,
+      currency: 'DZD',
+      contents,
+    })
+  }, [])
+
+
+
+  
 
   const nextSteps = [
     {
