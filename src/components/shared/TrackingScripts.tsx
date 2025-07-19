@@ -7,6 +7,7 @@ const TrackingScriptHelper = dynamic(
     { ssr: false }
 );
 
-export default function TrackingScripts(){
-  return <TrackingScriptHelper />
+export default function TrackingScripts({pixels}){
+  
+  return <TrackingScriptHelper settings={pixels} />
 }

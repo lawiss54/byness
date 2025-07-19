@@ -106,7 +106,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const settings = await getSettings();
-  console.log(settings)
+
  
   return (
     <html lang="fr" className="scroll-smooth">
@@ -115,7 +115,7 @@ export default async function RootLayout({
           <Analytics />
           <ApiProvider>
             <CartCheckoutProvider>
-              <TrackingScripts settings={settings.settings?.pixel} />
+              <TrackingScripts pixels={settings?.pixel} />
               <Header image={{logo: settings.settings?.siteLogo || '/logo.png'}} />
               <ScrollToTop />
               <main className="min-h-screen flex-1 flex-grow">
