@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/shared/ui/Input";
 import { User, Truck, Phone, MapPin, Building, Check, Clock, Package } from "lucide-react";
 import type { CheckoutFormData } from "../schemas/checkoutSchemas";
+import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent';
 
 
       {
@@ -38,6 +40,7 @@ export default function ShippingForm() {
   const { control, watch } = useFormContext<CheckoutFormData>();
   const selectedMethod = watch('shippingMethod');
   const shippingFields = watch("shipping");
+  const { track } = useFacebookPixelEvent();
   const { trackTiktok } = useTiktokPixelEvent();
   const [hasTracked, setHasTracked] = useState(false);
 
@@ -55,6 +58,11 @@ export default function ShippingForm() {
 
     if (isCompleted && !hasTracked) {
       trackTiktok("FormCompleted", {
+        wilaya,
+        city,
+        phone,
+      });
+      track("FormCompleted", {
         wilaya,
         city,
         phone,

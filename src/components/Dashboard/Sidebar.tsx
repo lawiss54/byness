@@ -8,7 +8,8 @@ import {
   ShoppingCart,
   Users,
   TrendingUp,
-  Tag
+  Tag,
+  Home
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -22,7 +23,7 @@ const menuItems = [
   { id: 'branches', label: 'Products', icon: Store },
   { id: 'categories', label: 'Categories', icon: Tag },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
-  { id: 'homepage', label: 'Homepage Manager', icon: Settings },
+  { id: 'homepage', label: 'Homepage Manager', icon: Home },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 

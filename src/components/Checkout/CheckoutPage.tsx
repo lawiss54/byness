@@ -35,7 +35,7 @@ const CheckoutPage: React.FC = () => {
   const { trackTiktok } = useTiktokPixelEvent();
 
   const { form, currentStep, isSubmitting, nextStep, prevStep, onSubmit } = useCheckoutForm();
-   const { cartItems } = useCartCheckout();
+  const { cartItems, clearCart } = useCartCheckout();
   const steps = [
     { id: 1, title: 'Informations', description: 'Vos coordonnées' },
     { id: 2, title: 'Confirmation', description: 'Récapitulatif' }

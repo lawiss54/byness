@@ -63,14 +63,14 @@ export const useCheckoutForm = () => {
       price: product.price,
     }))
 
-     track('InitiateCheckout', {
+     track('Purchase', {
       value: totalValue,
       currency: 'DZD',
       contents,
       content_type: 'product',
     })
 
-    trackTiktok('InitiateCheckout', {
+    trackTiktok('Purchase', {
       value: totalValue,
       currency: 'DZD',
       contents,
