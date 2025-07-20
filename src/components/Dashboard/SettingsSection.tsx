@@ -40,9 +40,7 @@ interface SocialLinks {
 interface PixelSettings {
   facebookPixel: string;
   googleAnalytics: string;
-  googleAds: string;
   tiktokPixel: string;
-  snapchatPixel: string;
 }
 
 // Default values to ensure inputs are always controlled
@@ -66,9 +64,7 @@ const defaultSocialLinks: SocialLinks = {
 const defaultPixelSettings: PixelSettings = {
   facebookPixel: '',
   googleAnalytics: '',
-  googleAds: '',
   tiktokPixel: '',
-  snapchatPixel: ''
 };
 
 export default function SettingsSection() {
@@ -283,26 +279,12 @@ export default function SettingsSection() {
       helpText: 'L\'ID commence par GA- ou G-'
     },
     {
-      key: 'googleAds',
-      label: 'Google Ads',
-      description: 'ID de conversion Google Ads',
-      placeholder: 'AW-XXXXXXXXX',
-      helpText: 'L\'ID commence par AW-'
-    },
-    {
       key: 'tiktokPixel',
       label: 'Pixel TikTok',
       description: 'ID du pixel TikTok pour les publicités',
       placeholder: 'CXXXXXXXXXXXXXXXXX',
       helpText: 'Disponible dans TikTok Ads Manager'
     },
-    {
-      key: 'snapchatPixel',
-      label: 'Pixel Snapchat',
-      description: 'ID du pixel Snapchat',
-      placeholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-      helpText: 'Disponible dans Snapchat Ads Manager'
-    }
   ];
 
   if (loading) {

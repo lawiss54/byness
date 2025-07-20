@@ -11,6 +11,8 @@ import TrackingScripts from '@/components/shared/TrackingScripts';
 import ScrollToTop from '@/components/shared/ScrollToTop';
 import { Metadata } from 'next';
 import ApiBootstrap from '@/components/apiBootstrap';
+import DeleyGoogleAnalytics from '@/components/DeleyGoogleAnalytics';
+
 
 async function getSettings() {
   try {
@@ -20,7 +22,6 @@ async function getSettings() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      cache: 'force-cache',
     });
     if (!response.ok) {
       throw new Error(`Failed to fetch settings: ${response.status}`);
@@ -110,6 +111,9 @@ export default async function RootLayout({
  
   return (
     <html lang="fr" className="scroll-smooth">
+      
+        <DeleyGoogleAnalytics gaId={settings.pixel.googleAnalytics} />
+      
       <body className="min-h-screen font-secondary antialiased bg-brand-ivory-200 text-brand-greenBlack-500 selection:bg-brand-sage-200 selection:text-brand-greenBlack-700">
         <div className="min-h-screen flex flex-col flex-grow">
           <Analytics />

@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { withAuthMiddleware } from "@/lib/middleware/withAuth";
+import { rateLimiter } from "@/utils/rateLimiter";
 
 
 
@@ -90,6 +91,18 @@ export async function POST(req: NextRequest) {
   
 
     try {
+      const ip =req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
+
+      const result = await rateLimiter.limit(ip.toString());
+
+      if (!result.allowed) {
+        return res.status(429).json({
+          message: "Too many requests. Please try again later.",
+          retryAfter: result.retryAfter,
+        });
+      }
+
+
       if (!API_URL) {
         return NextResponse.json(
           { error: "Configuration serveur manquante" },
