@@ -1,8 +1,19 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const securityHeaders = [
+  {
+    key: 'Content-Security-Policy',
+    value: `
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://analytics.tiktok.com https://ads.tiktok.com;
+      connect-src 'self' https://analytics.tiktok.com https://ads.tiktok.com;
+      img-src * data: blob:;
+      frame-src https://analytics.tiktok.com https://ads.tiktok.com;
+    `.replace(/\n/g, ''),
+  },
+];
 
+const nextConfig: NextConfig = {
   images: {
     domains: [
       'images.pexels.com',
@@ -10,22 +21,29 @@ const nextConfig: NextConfig = {
       'unsplash.com',
       'localhost',
       'site.test',
-      'res.cloudinary.com'
+      'res.cloudinary.com',
     ],
-
   },
 
   experimental: {
     optimizeCss: false,
     optimizePackageImports: ['lucide-react'],
-
   },
 
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // ⛔ تجاهل TypeScript وقت الـ build
+    ignoreBuildErrors: true,
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/(.*)', // جميع الصفحات
+        headers: securityHeaders,
+      },
+    ];
   },
 };
 
