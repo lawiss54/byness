@@ -43,7 +43,9 @@ const CheckoutPage: React.FC = () => {
   const hasTracked = useRef(false)
 
   useEffect(() => {
-    if (!cartItems || cartItems.length === 0) return
+    if (!cartItems || cartItems.length === 0) {
+      router.push('/panier')
+    }
 
     const totalValue = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
 
@@ -70,7 +72,6 @@ const CheckoutPage: React.FC = () => {
     hasTracked.current = true
   }, [cartItems])
 
-  
 
   const renderStep = () => {
     switch (currentStep) {
