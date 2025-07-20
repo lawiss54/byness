@@ -37,8 +37,8 @@ export async function GET() {
 
     // تحديث الـ access_token
     response.cookies.set('access_token', accessToken, {
-      httpOnly: true,
-      secure: false,
+      httpOnly: true,   
+      secure: true,
       maxAge: 4 * 60 * 60,
       sameSite: 'lax',
       path: '/',

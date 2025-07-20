@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     // تعيين access_token في الكوكيز (دائمًا)
     response.cookies.set("access_token", data.data.access_token, {
       httpOnly: true,
-      secure: false, // اجعلها true في الإنتاج مع HTTPS
+      secure: true, // اجعلها true في الإنتاج مع HTTPS
       maxAge: 4 * 60 * 60,
       sameSite: "lax",
       path: "/",
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     if (body.rememberMe && data.data.refresh_token) {
       response.cookies.set("refresh_token", data.data.refresh_token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 60 * 60 * 24 * 15, // 15 يوم
         sameSite: "lax",
         path: "/",
