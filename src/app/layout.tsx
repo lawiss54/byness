@@ -112,7 +112,7 @@ export default async function RootLayout({
   return (
     <html lang="fr" className="scroll-smooth">
       
-        <DeleyGoogleAnalytics gaId={settings.pixel.googleAnalytics} />
+        <DeleyGoogleAnalytics gaId={settings?.pixel?.googleAnalytics} />
       
       <body className="min-h-screen font-secondary antialiased bg-brand-ivory-200 text-brand-greenBlack-500 selection:bg-brand-sage-200 selection:text-brand-greenBlack-700">
         <div className="min-h-screen flex flex-col flex-grow">

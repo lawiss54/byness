@@ -1,8 +1,9 @@
-import { NextResponse, NextRequest } from "next/server";
-import { cookies } from "next/headers";
-import { withAuthMiddleware } from "@/lib/middleware/withAuth";
-import { rateLimiter } from "@/utils/rateLimiter";
 
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { cookies } from "next/headers";
+import { getFingerprint } from "@/lib/getFingerprint";
+import { rateLimiter } from "@/lib/rateLimiter";
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -87,79 +88,71 @@ export async function GET() {
   }
 }
 
+
+
 export async function POST(req: NextRequest) {
-  
+  try {
+    const fingerprint = getFingerprint(req);
+    const { success } = await rateLimiter.limit(fingerprint);
 
-    try {
-      const ip =req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
-
-      const result = await rateLimiter.limit(ip.toString());
-
-      if (!result.allowed) {
-        return res.status(429).json({
-          message: "Too many requests. Please try again later.",
-          retryAfter: result.retryAfter,
-        });
-      }
-
-
-      if (!API_URL) {
-        return NextResponse.json(
-          { error: "Configuration serveur manquante" },
-          { status: 500 }
-        );
-      }
-
-      const body = await req.json();
-
-      const res = await fetch(`${API_URL}/api/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-           Accept: "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      let data;
-      try{
-        data = await res.json();
-      }catch (error) {
-        console.error("Failed to parse JSON response", error);
-        return NextResponse.json(
-          {error: "Réponse serveur invalide"},
-          {status: 502}
-        );
-      }
-
-      if (!res.ok) {
-        const errorMessage =
-          data?.error ||
-          data?.message ||
-          data?.data?.error ||
-          `Erreur ${res.status}: ${res.statusText}`;
-
-        return NextResponse.json(
-          { error: errorMessage },
-          { status: res.status }
-        );
-      }
-
-      return NextResponse.json(data.data || data, {status: res.status});
-
-    }catch (Error) {
-      console.error("Product POST API Error:", Error);
-      if(Error instanceof Error && Error.name === "AbortError"){
-        return NextResponse.json(
-          {error: "Délai d'attente de la requéte dépassé"},
-          {status: 408}
-        );
-      }
+    if (!success) {
       return NextResponse.json(
-        {error: "Erreur lors de la création de la product"},
-        {status: 500}
+        { error: "Trop de requêtes. Veuillez réessayer après quelques secondes." },
+        { status: 429 }
       );
     }
 
+    const body = await req.json();
+
+    const response = await fetch(`${API_URL}/api/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch (error) {
+      console.error('Failed to parse JSON response', error);
+      return NextResponse.json(
+        { error: 'Réponse serveur invalide' },
+        { status: 502 }
+      );
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        data?.error ||
+        data?.message ||
+        data?.data?.error ||
+        `Erreur ${response.status}: ${response.statusText}`;
+
+      return NextResponse.json(
+        { error: errorMessage },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json(data.data || data, { status: response.status });
+  } catch (error: any) {
+    console.error('Product POST API Error:', error);
+
+    if (error?.name === 'AbortError') {
+      return NextResponse.json(
+        { error: "Délai d'attente de la requête dépassé" },
+        { status: 408 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: "Erreur lors de la création de la commande" },
+      { status: 500 }
+    );
+  }
 }
+
 

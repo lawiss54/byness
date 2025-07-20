@@ -100,17 +100,19 @@ export const useCheckoutForm = () => {
         },
         body: JSON.stringify(order)
       });
+      const responseData = await res.json();
 
       if (!res.ok) {
+        toast.error(responseData.error);
         throw new Error('Failed to create order');
       }
-      const responseData = await res.json();
+
       if (responseData.error) {
         toast.error(responseData.error);
       }
+      
       toast.success('Order created successfully!');
 
-      console.log('Order created:', order);
 
       // Clear cart and redirect to success
       clearCart();

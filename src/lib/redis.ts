@@ -6,7 +6,7 @@ function getEnvOrThrow() {
 
   if (!url || !token) {
     throw new Error(
-      "❌ Missing Upstash Redis credentials. Please provide UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN in your environment variables."
+      "❌ Les informations d'identification Redis sont manquantes. Veuillez configurer les variables UPSTASH_REDIS_REST_URL et UPSTASH_REDIS_REST_TOKEN."
     );
   }
 
