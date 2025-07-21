@@ -14,12 +14,13 @@ import {
   XCircle,
   Truck,
   User,
-  ShoppingBag
+  ShoppingBag,
+  Undo2
 } from 'lucide-react';
 import { Button, Input, Select, Card, Badge } from '@/components/shared/ui';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic'
-
+import {TooltipElement} from '@/components/shared/ui/TooltipElement';
 
 const ModalTéléchargementPDF = dynamic(
   () => import('./Orders/ModalTéléchargementPDF'),
@@ -39,7 +40,47 @@ const OrderDetails = dynamic(
 )
 
 
-type OrderStatus = 'all' | 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'all'
+  | 'pending'
+  | 'confirmed'
+  | 'Pas encore expédié'
+  | 'A vérifier'
+  | 'En préparation'
+  | 'Pas encore ramassé'
+  | 'Prêt à expédier'
+  | 'Ramassé'
+  | 'Bloqué'
+  | 'Débloqué'
+  | 'Transfert'
+  | 'Expédié'
+  | 'Centre'
+  | 'En localisation'
+  | 'Vers Wilaya'
+  | 'Reçu à Wilaya'
+  | 'En attente du client'
+  | 'Prêt pour livreur'
+  | 'Sorti en livraison'
+  | 'En attente'
+  | 'En alerte'
+  | 'Tentative échouée'
+  | 'Livré'
+  | 'Echèc livraison'
+  | 'Retour vers centre'
+  | 'Retourné au centre'
+  | 'Retour transfert'
+  | 'Retour groupé'
+  | 'Retour à retirer'
+  | 'Retour vers vendeur'
+  | 'Retourné au vendeur'
+  | 'Echange échoué'
+  | 'shipped'
+  | 'out_for_delivery'
+  | 'delivered'
+  | 'failed_delivery'
+  | 'returned'
+  | 'cancelled';;
+
 
 type OrderItem = {
   id: string;
@@ -60,6 +101,7 @@ type Order = {
   municipality: string;
   wilaya: string;
   status: string;
+  reason?: string | null;
   total: number;
   orderDate: string;
   items: OrderItem[];
@@ -99,6 +141,7 @@ export default function OrdersManagement() {
       const data = await res.json();
       
       function transformProduct(raw) {
+        
        
         return {
           id: raw.order_number,
@@ -110,6 +153,7 @@ export default function OrdersManagement() {
           municipality: raw.city,
           wilaya: raw.wilaya,
           status: raw.status,
+          reason: raw.shipping_reason,
           total: raw.total,
           orderDate: raw.created_at,
           items: Array.isArray(raw.items) ? raw.items.map(item => ({
@@ -135,6 +179,7 @@ export default function OrdersManagement() {
     if (typeof window === 'undefined') return;
     fetchOrders()
   }, []);
+ 
 
   // Filtered and paginated orders
   const filteredOrders = useMemo(() => {
@@ -156,16 +201,71 @@ export default function OrdersManagement() {
   const totalPages = Math.ceil(filteredOrders?.length / itemsPerPage);
 
   // Statistics
-  const stats = useMemo(() => ({
-    total: orders?.length,
-    pending: orders?.filter(o => o.status === 'pending').length,
-    confirmed: orders?.filter(o => o.status === 'confirmed').length,
-    shipped: orders?.filter(o => o.status === 'shipped').length,
-    delivered: orders?.filter(o => o.status === 'delivered').length,
-    retourné: orders?.filter(o => o.status === 'retourné').length,
-    cancelled: orders?.filter(o => o.status === 'cancelled').length,
-    totalRevenue: orders?.filter(o => o.status !== 'cancelled').reduce((sum, o) => sum + o.total, 0)
-  }), [orders]);
+ const stats = useMemo(() => {
+    if (!orders) return {
+      total: 0,
+      pending: 0,
+      confirmed: 0,
+      processing: 0,
+      shipped: 0,
+      delivered: 0,
+      returned: 0,
+      cancelled: 0,
+      totalRevenue: 0
+    };
+
+    return {
+      total: orders.length,
+
+      pending: orders.filter(o => o.status === 'pending').length,
+
+      confirmed: orders.filter(o => o.status === 'confirmed').length,
+
+      processing: orders.filter(o =>
+        ['Pas encore expédié', 'A vérifier', 'En préparation'].includes(o.status)
+      ).length,
+
+      shipped: orders.filter(o =>
+        ['Expédié', 'Sorti en livraison', 'Transfert', 'Vers Wilaya', 'Reçu à Wilaya'].includes(o.status)
+      ).length,
+
+      delivered: orders.filter(o => o.status === 'Livré').length,
+
+      returned: orders.filter(o =>
+        [
+          'Retour vers centre',
+          'Retourné au centre',
+          'Retour transfert',
+          'Retour groupé',
+          'Retour à retirer',
+          'Retour vers vendeur',
+          'Retourné au vendeur'
+        ].includes(o.status)
+      ).length,
+
+      cancelled: orders.filter(o =>
+        ['Echèc livraison', 'Echange échoué', 'Bloqué'].includes(o.status)
+      ).length,
+
+      totalRevenue: orders
+        .filter(o =>
+          ![
+            'Echèc livraison',
+            'Echange échoué',
+            'Retour vers vendeur',
+            'Retourné au vendeur',
+            'Retour vers centre',
+            'Retourné au centre',
+            'Retour transfert',
+            'Retour groupé',
+            'Retour à retirer',
+            'Bloqué'
+          ].includes(o.status)
+        )
+        .reduce((sum, o) => sum + o.total, 0)
+    };
+  }, [orders]);
+
 
   // Handlers
   const handleSelectOrder = (orderId: string) => {
@@ -224,10 +324,6 @@ export default function OrdersManagement() {
     } catch (error) {
       toast.error('Erreur lors de la mise à jour du statut');
     }
-
-
-
-
     setSelectedOrders([]);
   };
 
@@ -256,24 +352,132 @@ export default function OrdersManagement() {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'pending': return <Clock className="w-4 h-4 text-yellow-500" />;
-      case 'confirmed': return <CheckCircle className="w-4 h-4 text-blue-500" />;
-      case 'shipped': return <Truck className="w-4 h-4 text-purple-500" />;
-      case 'delivered': return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'cancelled': return <XCircle className="w-4 h-4 text-red-500" />;
-      default: return <Package className="w-4 h-4 text-gray-500" />;
+      case 'pending':
+        return <Clock className="w-4 h-4 text-yellow-500" />;
+      case 'confirmed':
+        return <CheckCircle className="w-4 h-4 text-blue-500" />;
+      case 'shipped':
+        return <Truck className="w-4 h-4 text-purple-500" />;
+      case 'delivered':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'retourné':
+        return <Undo2 className="w-4 h-4 text-orange-600" />;
+      case 'cancelled':
+        return <XCircle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Package className="w-4 h-4 text-gray-500" />;
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  
+  const getStatusBadge = (status: string, reason?: string) => {
+    const message = reason?.trim() ? reason : 'Aucune raison pour le moment';
+    console.log(message)
+    const renderBadge = (label: string, variant: string) => (
+      <TooltipElement tooltip={message} color={variant}>
+        <Badge variant={variant}>{label}</Badge>
+      </TooltipElement>
+    );
+
     switch (status) {
-      case 'pending': return <Badge variant="warning">En attente de confirmation</Badge>;
-      case 'confirmed': return <Badge variant="info">Confirmée</Badge>;
-      case 'shipped': return <Badge variant="default">Expédiée</Badge>;
-      case 'delivered': return <Badge variant="success">Commande livrée</Badge>;
-      case 'retourné': return <Badge variant="error">Commande retournée </Badge>;
-      case 'cancelled': return <Badge variant="error">Commande annulée</Badge>;
-      default: return <Badge variant="default">{status}</Badge>;
+      case 'pending':
+        return renderBadge('En attente de confirmation', 'warning');
+
+      case 'confirmed':
+        return renderBadge('Commande confirmée', 'info');
+
+      case 'Pas encore expédié':
+        return renderBadge('Pas encore expédiée', 'processing');
+
+      case 'A vérifier':
+        return renderBadge('À vérifier', 'processing');
+
+      case 'En préparation':
+        return renderBadge('Commande en préparation', 'processing');
+
+      case 'Pas encore ramassé':
+        return renderBadge('En attente de ramassage', 'delivery');
+
+      case 'Prêt à expédier':
+        return renderBadge('Prête à expédier', 'delivery');
+
+      case 'Ramassé':
+        return renderBadge('Colis ramassé', 'delivery');
+
+      case 'Bloqué':
+        return renderBadge('Commande bloquée', 'blocked');
+
+      case 'Débloqué':
+        return renderBadge('Commande débloquée', 'info');
+
+      case 'Transfert':
+        return renderBadge('Transfert en cours', 'transit');
+
+      case 'Expédié':
+        return renderBadge('Commande expédiée', 'info');
+
+      case 'Centre':
+        return renderBadge('Au centre logistique', 'transit');
+
+      case 'En localisation':
+        return renderBadge('En cours de localisation', 'transit');
+
+      case 'Vers Wilaya':
+        return renderBadge('En route vers la Wilaya', 'transit');
+
+      case 'Reçu à Wilaya':
+        return renderBadge('Arrivée à la Wilaya', 'transit');
+
+      case 'En attente du client':
+        return renderBadge('En attente du client', 'warning');
+
+      case 'Prêt pour livreur':
+        return renderBadge('Prête pour livraison', 'delivery');
+
+      case 'Sorti en livraison':
+        return renderBadge('Sortie pour livraison', 'delivery');
+
+      case 'En attente':
+        return renderBadge('Commande en attente', 'warning');
+
+      case 'En alerte':
+        return renderBadge('Commande en alerte', 'attention');
+
+      case 'Tentative échouée':
+        return renderBadge('Tentative de livraison échouée', 'attention');
+
+      case 'Livré':
+        return renderBadge('Commande livrée avec succès', 'success');
+
+      case 'Echèc livraison':
+        return renderBadge('Échec de livraison', 'error');
+
+      case 'Retour vers centre':
+        return renderBadge('Retour vers le centre', 'returned');
+
+      case 'Retourné au centre':
+        return renderBadge('Retournée au centre', 'returned');
+
+      case 'Retour transfert':
+        return renderBadge('Retour en transfert', 'returned');
+
+      case 'Retour groupé':
+        return renderBadge('Retour groupé', 'returned');
+
+      case 'Retour à retirer':
+        return renderBadge('Retour à retirer', 'returned');
+
+      case 'Retour vers vendeur':
+        return renderBadge('Retour vers le vendeur', 'returned');
+
+      case 'Retourné au vendeur':
+        return renderBadge('Retournée au vendeur', 'returned');
+
+      case 'Echange échoué':
+        return renderBadge('Échange échoué', 'error');
+
+      default:
+        return renderBadge(status, 'default');
     }
   };
 
@@ -315,8 +519,8 @@ export default function OrdersManagement() {
           { label: 'Expédiées', value: stats?.shipped, color: 'bg-purple-500', icon: Truck },
           { label: 'Livrées', value: stats?.delivered, color: 'bg-green-500', icon: CheckCircle },
           { label: 'Annulées', value: stats?.cancelled, color: 'bg-red-500', icon: XCircle },
-          { label: 'Returne', value: stats?.cancelled, color: 'bg-red-500', icon: XCircle },
-          //{ label: 'Revenu', value: `${stats?.totalRevenue?.toLocaleString()} DA`, color: 'bg-emerald-500', icon: FileText }
+          { label: 'Retournées', value: stats?.returned, color: 'bg-orange-600', icon: Undo2 },
+          // { label: 'Revenu', value: `${stats?.totalRevenue?.toLocaleString()} DA`, color: 'bg-emerald-500', icon: FileText }
         ].map((stat, index) => (
           <Card key={index} className="p-4">
             <div className="flex items-center justify-between">
@@ -352,12 +556,15 @@ export default function OrdersManagement() {
               { value: 'pending', label: 'En attente' },
               { value: 'confirmed', label: 'Confirmée' },
               { value: 'shipped', label: 'Expédiée' },
+              { value: 'out_for_delivery', label: 'Sortie pour livraison' },
               { value: 'delivered', label: 'Livrée' },
+              { value: 'failed_delivery', label: 'Échec de livraison' },
+              { value: 'returned', label: 'Retournée' },
               { value: 'cancelled', label: 'Annulée' },
-              { value: 'retourné', label: 'Retourné' }
             ]}
             aria-label="Filtrer par statut"
           />
+
           <div className="flex items-center gap-2">
             <Button
               variant={viewMode === 'table' ? 'primary' : 'outline'}
@@ -466,7 +673,7 @@ export default function OrdersManagement() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         {getStatusIcon(order.status)}
-                        {getStatusBadge(order.status)}
+                        {getStatusBadge(order.status, order.reason)}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
@@ -542,7 +749,7 @@ export default function OrdersManagement() {
                     </div>
                     <div className="flex items-center gap-2">
                       {getStatusIcon(order.status)}
-                      {getStatusBadge(order.status)}
+                      {getStatusBadge(order.status, order.reason)}
                     </div>
                   </div>
 
@@ -558,7 +765,7 @@ export default function OrdersManagement() {
                     </div>
                     <div className="flex items-center gap-3">
                       <MapPin className="w-4 h-4 text-brand-darkGreen-500" />
-                      <span className="text-sm text-gray-600">{order.wilaya}</span>
+                      <span className="text-sm text-gray-600">Wilaya: {order.wilaya}</span>
                     </div>
                   </div>
 

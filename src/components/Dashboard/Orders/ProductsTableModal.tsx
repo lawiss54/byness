@@ -23,49 +23,6 @@ const Button = ({ variant = 'primary', onClick, icon, children, ...props }) => {
   );
 };
 
-const productsData = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100&h=100&fit=crop",
-    name: "Chaussure de sport classique",
-    price: "299",
-    sizes: ["38", "39", "40", "41", "42", "43"],
-    colors: ["Noir", "Blanc", "Bleu"]
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=100&h=100&fit=crop",
-    name: "Chaussure formelle en cuir",
-    price: "450",
-    sizes: ["39", "40", "41", "42", "43", "44"],
-    colors: ["Marron", "Noir"]
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=100&h=100&fit=crop",
-    name: "Chaussure de course",
-    price: "380",
-    sizes: ["36", "37", "38", "39", "40", "41"],
-    colors: ["Rouge", "Noir", "Gris"]
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=100&h=100&fit=crop",
-    name: "Chaussure décontractée",
-    price: "320",
-    sizes: ["38", "39", "40", "41", "42"],
-    colors: ["Blanc", "Beige", "Bleu clair"]
-  },
-  {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=100&h=100&fit=crop",
-    name: "Chaussure de sport haute",
-    price: "420",
-    sizes: ["37", "38", "39", "40", "41", "42"],
-    colors: ["Noir", "Blanc", "Rouge"]
-  }
-];
-
 interface Props {
   productsData: Array; 
   onClose: () => void;
