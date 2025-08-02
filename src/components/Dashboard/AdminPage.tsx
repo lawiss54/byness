@@ -35,6 +35,10 @@ const SettingsSection = dynamic(
   () => import('@/components/Dashboard/SettingsSection'),
   { ssr: false }
 )
+const Profile = dynamic(
+  () => import('@/components/Dashboard/Profile'),
+  { ssr: false }
+)
 
 
 function AdminPage() {
@@ -57,6 +61,8 @@ function AdminPage() {
         return <OrdersSection />;
       case 'settings':
         return <SettingsSection />;
+      case 'profile':
+        return <Profile />;
       case 'homepage':
         return <HomepageContentManager />
       default:

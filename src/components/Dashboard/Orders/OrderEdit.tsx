@@ -20,10 +20,9 @@ import { Button, Input, Select, Textarea, Card } from '@/components/shared/ui';
 import Image from 'next/image';
 import { useShippingData } from '@/hooks/useShippingData';
 import { toast } from 'react-toastify';
-import ProductsTableModal from './ProductsTableModal';
 import { useApi } from '@/lib/apiContext';
-
-
+import ProductsTableModal from "./ProductsTableModal";
+import { Loader } from "@/components/shared";
 
 const colorMap: { [key: string]: string } = {
   // Couleurs de base
@@ -159,7 +158,7 @@ interface OrderEditProps {
     municipality: string | null; // تعديل هنا
     shippingType: 'home' | 'desk' | null; // تعديل هنا
     deskId?: string | null;      // تعديل هنا
-    status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'; // تعديل هنا
+    status: 'pending' | 'confirmed' | 'cancelled'; // تعديل هنا
     items: {
       id: string | number;
       name: string;
@@ -200,13 +199,14 @@ interface ShippingData {
   };
 }
 
-export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
-  const { data: shippingData } = useShippingData();
+export default function OrderEdit({ order, onSave, onClose, setShowPdfModal, setPdfUrl }: OrderEditProps) {
+  const { data: shippingData, loading } = useShippingData();
   const {activeProduct} = useApi()
 
   const [selectedWilayaId, setSelectedWilayaId] = useState(order.wilaya || "");
   const [addProduct, setAddProduct] = useState({});
   const [openAddProductModel, setOpenAddProductModel] = useState(false);
+ 
 
   
 
@@ -386,9 +386,15 @@ export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
         toast.error("Erreur lors de la mise à jour du statut")
       }
       const response = await res.json();
-        onSave(updatedOrder);
-       
+      if(updatedOrder.status === "cancelled"){
+        toast.success(response.message);
 
+      }else{
+        
+        setPdfUrl(response.data || '');
+        setShowPdfModal(true);
+      }
+      onSave(updatedOrder);
     } catch (error) {
       toast.error('Erreur lors de la mise à jour du statut');
     }
@@ -404,6 +410,15 @@ export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
     { value: "home", label: "Livraison à domicile" },
     { value: "desk", label: "Retrait au bureau" },
   ];
+
+  if (loading) {
+      return <Loader
+          type="fashion"
+          size="lg"
+          text="Chargement..."
+          overlay={true}
+      />
+  }
 
   return (
     <motion.div
@@ -523,6 +538,8 @@ export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
                             required
                             options={
                               shippingData?.map((w) => ({
+                                id: w.id.toString(),
+                                key: w.id.toString(),
                                 value: w.id.toString(),
                                 label: w.name,
                               })) || []
@@ -999,6 +1016,7 @@ export default function OrderEdit({ order, onSave, onClose }: OrderEditProps) {
           
         />
       )}
+      
     </motion.div>
   );
 }

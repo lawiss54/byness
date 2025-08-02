@@ -10,6 +10,9 @@ const FeaturesSection = dynamic(() => import('@/components/Home/FeaturesSection'
 
 export default function Home() {
   const { fetchContent, contant, products } = useApi();
+  const filteredContant = contant.filter(item => item.status);
+  console.log(filteredContant)
+
 
 
   useEffect(() => {
@@ -19,12 +22,13 @@ export default function Home() {
     load();
   }, []);
 
+
   
 
   
   return (
     <div className="min-h-screen">
-      <HeroSection slides={contant} />
+      <HeroSection slides={filteredContant} />
       <FeaturesSection />
       <NouvelleCollectionSection products={products } />
     </div>

@@ -11,6 +11,8 @@ interface OrderDetailsProps {
 }
 
 export default function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
+
+  console.log(order)
   
   const getStatusBadge = (status: string) => {
     switch (status) {

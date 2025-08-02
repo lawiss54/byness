@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-
 interface BadgeProps {
   children: React.ReactNode;
   variant?:
@@ -16,6 +15,7 @@ interface BadgeProps {
   | 'blocked'
   | 'delivery'
   | 'returned'
+  | 'undefined'
   | 'attention';
   size?: 'sm' | 'md' | 'lg';
   className?: string;

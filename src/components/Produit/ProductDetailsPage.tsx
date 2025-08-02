@@ -13,6 +13,8 @@ import type {ProductDetailsPageProps } from './ProductDetailsPage/type';
 import {ANIMATION_VARIANTS} from './ProductDetailsPage/animation';
 import { Loader } from '../shared';
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useRouter } from "next/navigation"
+
 
 // Lazy load heavy components to improve initial page load
 const SimilarProducts = dynamic(() => import('./SimilarProducts'), {
@@ -41,6 +43,7 @@ export default function ProductDetailsPage({
   const similarProducts =  similerProductsFinder(product.category)
 
   const { track } = useFacebookPixelEvent();
+  const router = useRouter()
   
 
  
@@ -98,6 +101,9 @@ export default function ProductDetailsPage({
     });
   }, [product, track]);
   
+  const handleProductClick = (productSlug: string) => {
+    router.push(`/products/${productSlug}`);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">
       {/* Hero Section - Main product display */}
@@ -141,7 +147,13 @@ export default function ProductDetailsPage({
      
 
       {/* Lazy-loaded sections for better performance */}
-      <SimilarProducts products={similarProducts.slice(0, 4)} />
+      
+      <SimilarProducts 
+        products={similarProducts}
+        onProductClick={handleProductClick}
+        initialDisplayCount={3} // اختياري - افتراضي 4
+        productsPerLoad={2} // اختياري - افتراضي 4
+      />
 
       {/* Image Modal - Only rendered when needed */}
       {showImageModal && (

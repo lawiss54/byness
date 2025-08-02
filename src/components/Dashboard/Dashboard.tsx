@@ -1,8 +1,10 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Store, ShoppingCart, Package, DollarSign } from 'lucide-react';
+import { Store, ShoppingCart, Package, DollarSign, Clock, CheckCircle, Truck, Undo2, XCircle} from 'lucide-react';
 import { toast } from 'react-toastify';
+import {TooltipElement} from '@/components/shared/ui/TooltipElement';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Badge } from '@/components/shared/ui';
 
 export default function Dashboard() {
   const [orders, setOrders] = useState([]);
@@ -35,6 +37,7 @@ export default function Dashboard() {
         municipality: raw.city,
         wilaya: raw.wilaya,
         status: raw.status,
+        reason: raw.shipping_reason,
         total: raw.total,
         orderDate: raw.created_at,
         items: Array.isArray(raw.items) ? raw.items.map(item => ({
@@ -162,6 +165,138 @@ export default function Dashboard() {
     ]);
   }, [products, orders]);
 
+
+  
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Clock className="w-4 h-4 text-yellow-500" />;
+      case 'confirmed':
+        return <CheckCircle className="w-4 h-4 text-blue-500" />;
+      case 'shipped':
+        return <Truck className="w-4 h-4 text-purple-500" />;
+      case 'delivered':
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case 'retourné':
+        return <Undo2 className="w-4 h-4 text-orange-600" />;
+      case 'cancelled':
+        return <XCircle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Package className="w-4 h-4 text-gray-500" />;
+    }
+  };
+
+  
+  const getStatusBadge = (status: string, reason?: string) => {
+    const message = reason?.trim() ? reason : 'Aucune raison pour le moment';
+    const renderBadge = (label: string, variant: string) => (
+      <TooltipElement tooltip={message} color={variant}>
+        <Badge variant={variant}>{label}</Badge>
+      </TooltipElement>
+    );
+
+    switch (status) {
+      case 'pending':
+        return renderBadge('En attente de confirmation', 'warning');
+
+      case 'confirmed':
+        return renderBadge('Commande confirmée', 'info');
+
+      case 'Pas encore expédié':
+        return renderBadge('Pas encore expédiée', 'processing');
+
+      case 'A vérifier':
+        return renderBadge('À vérifier', 'processing');
+
+      case 'En préparation':
+        return renderBadge('Commande en préparation', 'processing');
+
+      case 'Pas encore ramassé':
+        return renderBadge('En attente de ramassage', 'delivery');
+
+      case 'Prêt à expédier':
+        return renderBadge('Prête à expédier', 'delivery');
+
+      case 'Ramassé':
+        return renderBadge('Colis ramassé', 'delivery');
+
+      case 'Bloqué':
+        return renderBadge('Commande bloquée', 'blocked');
+
+      case 'Débloqué':
+        return renderBadge('Commande débloquée', 'info');
+
+      case 'Transfert':
+        return renderBadge('Transfert en cours', 'transit');
+
+      case 'Expédié':
+        return renderBadge('Commande expédiée', 'info');
+
+      case 'Centre':
+        return renderBadge('Au centre logistique', 'transit');
+
+      case 'En localisation':
+        return renderBadge('En cours de localisation', 'transit');
+
+      case 'Vers Wilaya':
+        return renderBadge('En route vers la Wilaya', 'transit');
+
+      case 'Reçu à Wilaya':
+        return renderBadge('Arrivée à la Wilaya', 'transit');
+
+      case 'En attente du client':
+        return renderBadge('En attente du client', 'warning');
+
+      case 'Prêt pour livreur':
+        return renderBadge('Prête pour livraison', 'delivery');
+
+      case 'Sorti en livraison':
+        return renderBadge('Sortie pour livraison', 'delivery');
+
+      case 'En attente':
+        return renderBadge('Commande en attente', 'warning');
+
+      case 'En alerte':
+        return renderBadge('Commande en alerte', 'attention');
+
+      case 'Tentative échouée':
+        return renderBadge('Tentative de livraison échouée', 'attention');
+
+      case 'Livré':
+        return renderBadge('Commande livrée avec succès', 'success');
+
+      case 'Echèc livraison':
+        return renderBadge('Échec de livraison', 'error');
+
+      case 'Retour vers centre':
+        return renderBadge('Retour vers le centre', 'returned');
+
+      case 'Retourné au centre':
+        return renderBadge('Retournée au centre', 'returned');
+
+      case 'Retour transfert':
+        return renderBadge('Retour en transfert', 'returned');
+
+      case 'Retour groupé':
+        return renderBadge('Retour groupé', 'returned');
+
+      case 'Retour à retirer':
+        return renderBadge('Retour à retirer', 'returned');
+
+      case 'Retour vers vendeur':
+        return renderBadge('Retour vers le vendeur', 'returned');
+
+      case 'Retourné au vendeur':
+        return renderBadge('Retournée au vendeur', 'returned');
+
+      case 'Echange échoué':
+        return renderBadge('Échange échoué', 'error');
+
+      default:
+        return renderBadge(status, 'default');
+    }
+  };
+  
   return (
     <div className="space-y-6">
       <div>
@@ -226,16 +361,9 @@ export default function Dashboard() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">{order.total} DA</p>
-                    <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                      order.status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-                      order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                      order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {order.status === 'delivered' ? 'Livré' :
-                        order.status === 'shipped' ? 'Expédié' :
-                        order.status === 'processing' ? 'En traitement' :
-                        'Inconnu'}
+                    <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full">
+                        {getStatusIcon(order.status)}
+                        {getStatusBadge(order.status, order.reason)}
                     </span>
                   </div>
                 </motion.div>

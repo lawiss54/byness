@@ -9,7 +9,8 @@ import {
   Users,
   TrendingUp,
   Tag,
-  Home
+  Home,
+  UserRound
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ const menuItems = [
   { id: 'categories', label: 'Categories', icon: Tag },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
   { id: 'homepage', label: 'Homepage Manager', icon: Home },
+  { id: 'profile', label: 'Profile', icon: UserRound },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
@@ -64,17 +66,6 @@ export default function Sidebar({ activeSection, onSectionChange, isOpen }: Side
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center space-x-3 px-4 py-3">
-          <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-            <Users className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-900">Admin User</p>
-            <p className="text-xs text-gray-500">admin@store.com</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

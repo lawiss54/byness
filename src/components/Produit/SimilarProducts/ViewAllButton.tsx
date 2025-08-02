@@ -1,18 +1,17 @@
-import { memo } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+"use client"
 
-interface ViewAllButtonProps {
-  onClick: () => void;
-}
+import type React from "react"
 
-/**
- * ViewAllButton Component
- * 
- * Reusable button component for "View All" functionality.
- * Separated for better maintainability and reusability.
- */
-const ViewAllButton: React.FC<ViewAllButtonProps> = memo(({ onClick }) => {
+import { memo } from "react"
+import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
+import type { ViewAllButtonProps } from "./types"
+
+const ViewAllButton: React.FC<ViewAllButtonProps> = memo(({ onClick, remainingCount, productsPerLoad }) => {
+  // Calculate how many products will be shown next
+  const nextLoadCount = Math.min(productsPerLoad, remainingCount)
+  const remainingProducts = remainingCount // Declare the variable here
+
   return (
     <motion.div
       className="text-center mt-12"
@@ -27,18 +26,17 @@ const ViewAllButton: React.FC<ViewAllButtonProps> = memo(({ onClick }) => {
         whileTap={{ scale: 0.95 }}
         onClick={onClick}
       >
-        <span>Voir tous les produits similaires</span>
-        <motion.div
-          animate={{ x: [0, 5, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
+        <span>
+        Afficher plus ({nextLoadCount} sur {remainingProducts} produits restants)
+        </span>
+        <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}>
           <ArrowRight className="w-5 h-5" />
         </motion.div>
       </motion.button>
     </motion.div>
-  );
-});
+  )
+})
 
-ViewAllButton.displayName = 'ViewAllButton';
+ViewAllButton.displayName = "ViewAllButton"
 
-export default ViewAllButton;
+export default ViewAllButton

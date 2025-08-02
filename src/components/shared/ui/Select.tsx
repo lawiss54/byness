@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 interface SelectOption {
   value: string;
   label: string;
+  id: string;
 }
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
@@ -41,8 +42,8 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
                 {placeholder}
               </option>
             )}
-            {options.map((option) => (
-              <option key={option.key} value={option.value}>
+            {options.map((option, index) => (
+              <option key={index} value={option.value}>
                 {option.label}
               </option>
             ))}

@@ -127,7 +127,6 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
                     <Image
                       width={50}
                       height={50}
-                      filteredProducts
                       src={product.images[0]} 
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-lg shadow-md"

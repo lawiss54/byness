@@ -79,7 +79,8 @@ export type OrderStatus =
   | 'delivered'
   | 'failed_delivery'
   | 'returned'
-  | 'cancelled';;
+  | 'cancelled';
+
 
 
 type OrderItem = {
@@ -140,7 +141,7 @@ export default function OrdersManagement() {
 
       const data = await res.json();
       
-      function transformProduct(raw) {
+      function transformOrders(raw) {
         
        
         return {
@@ -167,7 +168,7 @@ export default function OrdersManagement() {
           })) : [],
         };
       }
-      setOrders(data.data.map(transformProduct));
+      setOrders(data.data.map(transformOrders));
     } catch (err) {
       console.error('Error fetching orders:', err);
     } finally {
@@ -239,12 +240,12 @@ export default function OrdersManagement() {
           'Retour groupé',
           'Retour à retirer',
           'Retour vers vendeur',
-          'Retourné au vendeur'
+          'Retourné au vendeur', 'Echèc livraison', 'Echange échoué', 'Bloqué'
         ].includes(o.status)
       ).length,
 
       cancelled: orders.filter(o =>
-        ['Echèc livraison', 'Echange échoué', 'Bloqué'].includes(o.status)
+        ['cancelled'].includes(o.status)
       ).length,
 
       totalRevenue: orders
@@ -372,7 +373,6 @@ export default function OrdersManagement() {
   
   const getStatusBadge = (status: string, reason?: string) => {
     const message = reason?.trim() ? reason : 'Aucune raison pour le moment';
-    console.log(message)
     const renderBadge = (label: string, variant: string) => (
       <TooltipElement tooltip={message} color={variant}>
         <Badge variant={variant}>{label}</Badge>
@@ -476,6 +476,9 @@ export default function OrdersManagement() {
       case 'Echange échoué':
         return renderBadge('Échange échoué', 'error');
 
+      case 'cancelled':
+        return renderBadge("La commande a été annulée", 'error');
+
       default:
         return renderBadge(status, 'default');
     }
@@ -552,15 +555,15 @@ export default function OrdersManagement() {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as OrderStatus)}
             options={[
-              { value: 'all', label: 'Tous les statuts' },
-              { value: 'pending', label: 'En attente' },
-              { value: 'confirmed', label: 'Confirmée' },
-              { value: 'shipped', label: 'Expédiée' },
-              { value: 'out_for_delivery', label: 'Sortie pour livraison' },
-              { value: 'delivered', label: 'Livrée' },
-              { value: 'failed_delivery', label: 'Échec de livraison' },
-              { value: 'returned', label: 'Retournée' },
-              { value: 'cancelled', label: 'Annulée' },
+              {id: '1', value: 'all', label: 'Tous les statuts' },
+              {id: '2', value: 'pending', label: 'En attente' },
+              {id: '3', value: 'confirmed', label: 'Confirmée' },
+              {id: '4', value: 'shipped', label: 'Expédiée' },
+              {id: '5', value: 'out_for_delivery', label: 'Sortie pour livraison' },
+              {id: '6', value: 'delivered', label: 'Livrée' },
+              {id: '7', value: 'failed_delivery', label: 'Échec de livraison' },
+              {id: '8', value: 'returned', label: 'Retournée' },
+              {id: '9', value: 'cancelled', label: 'Annulée' },
             ]}
             aria-label="Filtrer par statut"
           />
@@ -893,6 +896,7 @@ export default function OrdersManagement() {
             }}
           />
         )}
+
         {showOrderEdit && currentOrder && (
           <OrderEdit
             order={currentOrder}
@@ -907,13 +911,14 @@ export default function OrdersManagement() {
               setShowOrderEdit(false);
               setCurrentOrder(null);
             }}
+            setPdfUrl={(value) => setPdfUrl(value)}
+            setShowPdfModal={(value) => setShowPdfModal(value)}
           />
         )}
         {showPdfModal && (
           <ModalTéléchargementPDF
             onClose={() => setShowPdfModal(false)}
             pdfUrl={pdfUrl}
-            
           />
         )}
 

@@ -1,29 +1,30 @@
+"use client"
 
-import { memo } from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import type React from "react"
 
-
+import { memo } from "react"
+import { motion } from "framer-motion"
+import Image from "next/image"
+import type { SimilarProduct } from "./types"
 
 interface ProductImageProps {
-  product: SimilarProduct;
-  discountPercentage: number;
-  index: number;
+  product: SimilarProduct
+  discountPercentage: number
+  index: number
 }
 
 /**
  * ProductImage Component
- * 
+ *
  * Handles the product image display with overlays and badges.
  * Optimized for loading performance and visual appeal.
  */
-export const ProductImage: React.FC<ProductImageProps> = memo(({ 
-  product, 
-  discountPercentage, 
-  index 
-}) => {
+export const ProductImage: React.FC<ProductImageProps> = memo(({ product, discountPercentage, index }) => {
   return (
-    <div className="h-[320px] relative overflow-hidden rounded-t-3xl flex-shrink-0">
+    <div
+      className="h-[280px] sm:h-[320px] lg:h-[340px] xl:h-[360px] 
+                    relative overflow-hidden rounded-t-3xl flex-shrink-0"
+    >
       {/* Animated Background Gradient */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-br from-brand-sage-100 to-brand-camel-100"
@@ -34,16 +35,16 @@ export const ProductImage: React.FC<ProductImageProps> = memo(({
             "linear-gradient(to bottom right, #e3e7e3, #faf1e1)",
           ],
         }}
-        transition={{ duration: 4, repeat: Infinity }}
+        transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
       />
-      
+
       {/* Optimized Next.js Image with proper loading strategy */}
       <Image
-        src={product.images[0]}
+        src={product.images[0] || "/placeholder.svg"}
         alt={product.name}
         fill
         className="object-cover transition-transform duration-700 group-hover:scale-110"
-        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         priority={index < 3} // Prioritize first 3 images for faster loading
         quality={85} // Optimize quality vs file size
         placeholder="blur"
@@ -53,7 +54,12 @@ export const ProductImage: React.FC<ProductImageProps> = memo(({
       {/* Discount Badge - Only render if there's a discount */}
       {discountPercentage > 0 && (
         <motion.div
-          className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg"
+          className="absolute top-3 left-3 sm:top-4 sm:left-4 
+                     bg-red-500 text-white 
+                     px-2 py-1 sm:px-3 sm:py-1 
+                     rounded-full 
+                     text-xs sm:text-sm 
+                     font-semibold shadow-lg"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ delay: index * 0.1 + 0.5, type: "spring" }}
@@ -61,12 +67,8 @@ export const ProductImage: React.FC<ProductImageProps> = memo(({
           -{discountPercentage}%
         </motion.div>
       )}
-
-      
-
-     
     </div>
-  );
-});
+  )
+})
 
-ProductImage.displayName = 'ProductImage';
+ProductImage.displayName = "ProductImage"
