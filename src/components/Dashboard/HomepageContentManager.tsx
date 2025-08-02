@@ -264,12 +264,12 @@ export default function HomepageContentManager() {
       const sectionData = {
         title: formData.title.trim(),
         badge: formData.badge.trim(),
-        main_title: formData.mainTitle.trim(), // تحويل إلى snake_case
+        mainTitle: formData.mainTitle.trim(), // تحويل إلى snake_case
         description: formData.description.trim(),
-        button_text: formData.buttonText.trim(), // تحويل إلى snake_case
-        button_link: formData.buttonLink.trim(), // تحويل إلى snake_case
+        buttonText: formData.buttonText.trim(), // تحويل إلى snake_case
+        buttonLink: formData.buttonLink.trim(), // تحويل إلى snake_case
         image: formData.image,
-        is_active: formData.isActive, // تحويل إلى snake_case
+        isActive: formData.isActive, // تحويل إلى snake_case
       }
 
       let response
