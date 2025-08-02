@@ -542,7 +542,7 @@ export default function OrdersManagement() {
       {/* Filters and Search */}
       <Card className="p-6">
         <div className="flex flex-col lg:flex-row gap-4">
-          <div className="flex-1">
+         {/*   <div className="flex-1">
             <Input
               placeholder="Recherche par numéro, nom du client ou téléphone..."
               value={searchTerm}
@@ -550,7 +550,7 @@ export default function OrdersManagement() {
               icon={<Search className="w-4 h-4" />}
               aria-label="Recherche de commande"
             />
-          </div>
+          </div>*/}
           <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as OrderStatus)}
