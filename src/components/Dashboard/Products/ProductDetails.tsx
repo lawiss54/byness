@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Package, DollarSign, Palette, Ruler } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import type { Product } from '@/app/admin/types';
+import {getStatusBadge, calculateDiscount} from './utils/productHelpers'
 
 interface ProductDetailsProps {
   product: Product;
@@ -13,19 +14,6 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ product, onEdit, onClose }: ProductDetailsProps) {
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'active': return <Badge variant="success">Actif</Badge>;
-      case 'inactive': return <Badge variant="error">Inactif</Badge>;
-      case 'out-of-stock': return <Badge variant="warning">Rupture</Badge>;
-      default: return <Badge variant="default">{status}</Badge>;
-    }
-  };
-  
-
-  const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0;
 
   return (
     <motion.div
@@ -142,7 +130,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
                       <div className="flex items-center justify-between">
                         <span>Réduction:</span>
                         <span className="text-red-600 font-semibold">
-                          -{discountPercentage}% ({(product.originalPrice - product.price).toLocaleString()} DA)
+                          -{calculateDiscount}% ({(product.originalPrice - product.price).toLocaleString()} DA)
                         </span>
                       </div>
                     </>

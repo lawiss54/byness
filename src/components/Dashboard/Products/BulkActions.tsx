@@ -1,4 +1,4 @@
-'use client';;
+'use client';
 import { motion } from 'framer-motion';
 import { Trash2, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/shared/ui';

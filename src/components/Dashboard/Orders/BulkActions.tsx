@@ -1,6 +1,7 @@
-'use client';;
+'use client';
+
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Truck, Download, Package } from 'lucide-react';
+import { CheckCircle, XCircle, Download } from 'lucide-react';
 import { Button } from '@/components/shared/ui';
 
 interface BulkActionsProps {
@@ -10,11 +11,11 @@ interface BulkActionsProps {
   onDownload: (orderIds: string[]) => void;
 }
 
-export default function BulkActions({ 
-  selectedCount, 
-  selectedOrders, 
-  onStatusChange, 
-  onDownload 
+export default function BulkActions({
+  selectedCount,
+  selectedOrders,
+  onStatusChange,
+  onDownload
 }: BulkActionsProps) {
   return (
     <motion.div
@@ -40,7 +41,6 @@ export default function BulkActions({
           >
             Confirmer
           </Button>
-          
           
           <Button
             size="sm"

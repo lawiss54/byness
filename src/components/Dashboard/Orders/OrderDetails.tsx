@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Phone, User, Package } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import Image from 'next/image';
+import {getStatusBadge, formatDate} from './utils/orderUtils'
 
 interface OrderDetailsProps {
   order: any;
@@ -10,124 +11,7 @@ interface OrderDetailsProps {
   onClose: () => void;
 }
 
-export default function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
-
-  console.log(order)
-  
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <Badge variant="warning">En attente de confirmation</Badge>;
-
-      case 'confirmed':
-        return <Badge variant="info">Commande confirmée</Badge>;
-
-      case 'Pas encore expédié':
-        return <Badge variant="processing">Pas encore expédiée</Badge>;
-
-      case 'A vérifier':
-        return <Badge variant="processing">À vérifier</Badge>;
-
-      case 'En préparation':
-        return <Badge variant="processing">Commande en préparation</Badge>;
-
-      case 'Pas encore ramassé':
-        return <Badge variant="delivery">En attente de ramassage</Badge>;
-
-      case 'Prêt à expédier':
-        return <Badge variant="delivery">Prête à expédier</Badge>;
-
-      case 'Ramassé':
-        return <Badge variant="delivery">Colis ramassé</Badge>;
-
-      case 'Bloqué':
-        return <Badge variant="blocked">Commande bloquée</Badge>;
-
-      case 'Débloqué':
-        return <Badge variant="info">Commande débloquée</Badge>;
-
-      case 'Transfert':
-        return <Badge variant="transit">Transfert en cours</Badge>;
-
-      case 'Expédié':
-        return <Badge variant="info">Commande expédiée</Badge>;
-
-      case 'Centre':
-        return <Badge variant="transit">Au centre logistique</Badge>;
-
-      case 'En localisation':
-        return <Badge variant="transit">En cours de localisation</Badge>;
-
-      case 'Vers Wilaya':
-        return <Badge variant="transit">En route vers la Wilaya</Badge>;
-
-      case 'Reçu à Wilaya':
-        return <Badge variant="transit">Arrivée à la Wilaya</Badge>;
-
-      case 'En attente du client':
-        return <Badge variant="warning">En attente du client</Badge>;
-
-      case 'Prêt pour livreur':
-        return <Badge variant="delivery">Prête pour livraison</Badge>;
-
-      case 'Sorti en livraison':
-        return <Badge variant="delivery">Sortie pour livraison</Badge>;
-
-      case 'En attente':
-        return <Badge variant="warning">Commande en attente</Badge>;
-
-      case 'En alerte':
-        return <Badge variant="attention">Commande en alerte</Badge>;
-
-      case 'Tentative échouée':
-        return <Badge variant="attention">Tentative de livraison échouée</Badge>;
-
-      case 'Livré':
-        return <Badge variant="success">Commande livrée avec succès</Badge>;
-
-      case 'Echèc livraison':
-        return <Badge variant="error">Échec de livraison</Badge>;
-
-      case 'Retour vers centre':
-        return <Badge variant="returned">Retour vers le centre</Badge>;
-
-      case 'Retourné au centre':
-        return <Badge variant="returned">Retournée au centre</Badge>;
-
-      case 'Retour transfert':
-        return <Badge variant="returned">Retour en transfert</Badge>;
-
-      case 'Retour groupé':
-        return <Badge variant="returned">Retour groupé</Badge>;
-
-      case 'Retour à retirer':
-        return <Badge variant="returned">Retour à retirer</Badge>;
-
-      case 'Retour vers vendeur':
-        return <Badge variant="returned">Retour vers le vendeur</Badge>;
-
-      case 'Retourné au vendeur':
-        return <Badge variant="returned">Retournée au vendeur</Badge>;
-
-      case 'Echange échoué':
-        return <Badge variant="error">Échange échoué</Badge>;
-
-      default:
-        return <Badge variant="default">{status}</Badge>;
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
- 
+export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
 
   return (
     <motion.div
@@ -137,7 +21,7 @@ export default function OrderDetails({ order, onEdit, onClose }: OrderDetailsPro
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-full overflow-auto"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}

@@ -24,12 +24,12 @@ const Button = ({ variant = 'primary', onClick, icon, children, ...props }) => {
 };
 
 interface Props {
-  productsData: Array; 
+  productsData: Array<any>;
   onClose: () => void;
   append: any;
 }
 
-export default function ProductsTableModal({ onClose, productsData, append }: Props) {
+export function ProductsTableModal({ onClose, productsData, append }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(productsData);
 
@@ -48,10 +48,8 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
   };
 
   const handleAddProduct = (product) => {
-    // Ici on peut ajouter le produit au panier
-    
     append({
-      id: product.id.toLocaleString(),
+      id: product.id.toString(),
       name: product.name,
       quantity: 1,
       price: product.price,
@@ -59,10 +57,9 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
       size: product.sizes[0],
       image: product.images[0],
     });
-    onClose()
+    onClose();
   };
   
-
   return (
     <motion.div
       className="fixed inset-0 bg-brand-darkGreen-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -127,7 +124,7 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
                     <Image
                       width={50}
                       height={50}
-                      src={product.images[0]} 
+                      src={product.images[0] || "/placeholder.svg"} 
                       alt={product.name}
                       className="w-16 h-16 object-cover rounded-lg shadow-md"
                     />
@@ -141,7 +138,7 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
                   <td className="p-4">
                     <div className="flex flex-wrap gap-1">
                       {product.sizes.map((size) => (
-                        <span 
+                        <span
                           key={size}
                           className="bg-brand-darkGreen-100 text-brand-darkGreen-700 text-xs px-2 py-1 rounded-full font-secondary"
                         >
@@ -153,7 +150,7 @@ export default function ProductsTableModal({ onClose, productsData, append }: Pr
                   <td className="p-4">
                     <div className="flex flex-wrap gap-1">
                       {product.colors.map((color) => (
-                        <span 
+                        <span
                           key={color}
                           className="bg-brand-sage-200 text-brand-darkGreen-700 text-xs px-2 py-1 rounded-full font-secondary"
                         >
