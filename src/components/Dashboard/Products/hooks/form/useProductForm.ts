@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { Product, Category } from '@/app/admin/types';
 import { toast } from 'react-toastify';
-import { saveProductService } from '../services/form/productFormService';
+import { saveProductService } from '../../services/form/productFormService';
 
 const productSchema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),

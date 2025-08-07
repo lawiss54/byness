@@ -93,8 +93,8 @@ const CustomerInfoStep: React.FC<CustomerInfoStepProps> = ({ form }) => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        <Input {...register('firstName')} palceholde="Prénom"  label="Prénom" icon={<User className="w-5 h-5" />} error={errors.firstName?.message} required />
-        <Input {...register('lastName')} palceholder="Nom" label="Nom" icon={<User className="w-5 h-5" />} error={errors.lastName?.message} required />
+        <Input {...register('firstName')} placeholder="Prénom"  label="Prénom" icon={<User className="w-5 h-5" />} error={errors.firstName?.message} required />
+        <Input {...register('lastName')} placeholder="Nom" label="Nom" icon={<User className="w-5 h-5" />} error={errors.lastName?.message} required />
         <div className="md:col-span-2">
           <Input {...register('phone')} placeholder="Téléphone" label="Téléphone" icon={<Phone className="w-5 h-5" />} error={errors.phone?.message} required />
         </div>
