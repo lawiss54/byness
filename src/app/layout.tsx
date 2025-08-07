@@ -1,6 +1,6 @@
 import Footer from '@/components/Layout/Footer';
 import Header from '@/components/Layout/Header';
-
+import LinkLoader from '@/components/shared/LinkLouder';
 import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { ToastContainer } from 'react-toastify';
@@ -125,6 +125,7 @@ export default async function RootLayout({
 */}
               <main className="min-h-screen flex-1 flex-grow">
                 <ApiBootstrap />
+                <LinkLoader />
                 {children}
               </main>
               {/* تمرير بيانات ديناميكية إلى Footer */}
