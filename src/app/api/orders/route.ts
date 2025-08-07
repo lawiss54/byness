@@ -1,13 +1,14 @@
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { cookies } from "next/headers";
+import { getCache, setCache, delCache } from "@/lib/cache";
 import { getFingerprint } from "@/lib/getFingerprint";
 import { rateLimiter } from "@/lib/rateLimiter";
 
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const CACHE_KEY = "orders:data";
+const CACHE_TTL = 60 * 5; // 5 دقائق
 
+// ================= GET =================
 export async function GET() {
   try {
     if (!API_URL) {
@@ -16,6 +17,13 @@ export async function GET() {
         { error: "Configuration serveur manquante" },
         { status: 500 }
       );
+    }
+
+    // ✅ محاولة جلب البيانات من الكاش
+    const cachedData = await getCache(CACHE_KEY);
+    if (cachedData) {
+      console.log("Serving orders from cache");
+      return NextResponse.json(cachedData, { status: 200 });
     }
 
     const res = await fetch(`${API_URL}/api/order`, {
@@ -60,7 +68,10 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json(data || data, { status: 200 });
+    // ✅ تخزين النتيجة في الكاش
+    await setCache(CACHE_KEY, data, CACHE_TTL);
+
+    return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
     console.error("Orders API Error:", error);
 
@@ -88,8 +99,7 @@ export async function GET() {
   }
 }
 
-
-
+// ================= POST =================
 export async function POST(req: NextRequest) {
   try {
     const fingerprint = getFingerprint(req);
@@ -137,6 +147,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ✅ مسح الكاش بعد أي تعديل
+    await delCache(CACHE_KEY);
+
     return NextResponse.json(data.data || data, { status: response.status });
   } catch (error: any) {
     console.error('Product POST API Error:', error);
@@ -154,5 +167,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-

@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 const protectedPaths = [
   '/admin/dashboard',
-  '/admin/dashboard/categories',
-  '/admin/dashboard/products',
-  '/admin/dashboard/orders',
 ];
 
 export function middleware(request: NextRequest) {

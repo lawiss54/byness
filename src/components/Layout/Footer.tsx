@@ -213,7 +213,7 @@ export default function Footer({data}) {
       </div>
 
       {/* Scroll to Top Button */}
-     {/* <motion.button
+      <motion.button
         className="fixed bottom-6 right-6 w-12 h-12 bg-brand-darkGreen-800 text-sage-500 rounded-full shadow-lg hover:bg-brand-greenBlack-800 transition-colors duration-200 z-50"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -234,7 +234,7 @@ export default function Footer({data}) {
             d="M5 10l7-7m0 0l7 7m-7-7v18"
           />
         </svg>
-      </motion.button> */}
+      </motion.button> 
     </footer>
   );
 }

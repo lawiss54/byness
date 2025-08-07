@@ -1,221 +1,224 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { getCache, setCache } from "@/lib/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+// دالة مساعدة للتحقق من صحة البيانات
+const validateApiResponse = (data: any) => {
+  if (!data) {
+    return { isValid: false, error: "Aucune donnée reçue du serveur" };
+  }
+  if (typeof data === "object" && Object.keys(data).length === 0) {
+    return { isValid: false, error: "Données vides reçues du serveur" };
+  }
+  return { isValid: true, error: null };
+};
+
+// دالة مساعدة لمعالجة أخطاء API
+const handleApiError = (error: any, operation: string = "opération") => {
+  console.error(`${operation} API Error:`, error);
+
+  if (error.name === "AbortError") {
+    return NextResponse.json(
+      { error: "Délai d'attente de la requête dépassé" },
+      { status: 408 }
+    );
+  }
+
+  if (error.name === "TypeError" && error.message.includes("fetch")) {
+    return NextResponse.json(
+      { error: "Impossible de se connecter au serveur" },
+      { status: 503 }
+    );
+  }
+
+  if (error.message && error.message.includes("ECONNREFUSED")) {
+    return NextResponse.json(
+      { error: "Serveur indisponible" },
+      { status: 503 }
+    );
+  }
+
+  return NextResponse.json(
+    { error: `Erreur lors de ${operation}. Veuillez réessayer.` },
+    { status: 500 }
+  );
+};
+
+// دالة مساعدة لتحليل الاستجابة
+const parseApiResponse = async (response: Response) => {
+  const contentType = response.headers.get("content-type");
+
+  if (!contentType || !contentType.includes("application/json")) {
+    throw new Error("Réponse serveur non JSON");
+  }
+
+  try {
+    const data = await response.json();
+    return data;
+  } catch (parseError) {
+    console.error("Failed to parse JSON response:", parseError);
+    throw new Error("Réponse serveur invalide");
+  }
+};
+
 export async function GET() {
   try {
-    // التحقق من وجود API_URL
     if (!API_URL) {
       console.error("API_URL is not defined in environment variables");
       return NextResponse.json(
-        { error: "Configuration serveur manquante" },
+        {
+          error: "Configuration serveur manquante",
+          message: "URL de l'API non configurée",
+        },
         { status: 500 }
       );
     }
 
-    const res = await fetch(`${API_URL}/api/category`, {
+    // التحقق من الكاش
+    const cachedData = await getCache("contant-managers");
+    if (cachedData) {
+      console.log("Serving data from cache");
+      return NextResponse.json(
+        {
+          success: true,
+          data: cachedData,
+          message: "Données récupérées depuis le cache",
+        },
+        { status: 200 }
+      );
+    }
+
+    console.log("Fetching data from API:", `${API_URL}/api/contant-managers`);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    const res = await fetch(`${API_URL}/api/contant-managers`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      // إضافة timeout للطلب
-      signal: AbortSignal.timeout(10000), // 10 seconds timeout
+      signal: controller.signal,
     });
 
-    // محاولة قراءة البيانات حتى لو فشل الطلب
-    let data;
-    try {
-      data = await res.json();
-    } catch (parseError) {
-      console.error("Failed to parse JSON response:", parseError);
-      return NextResponse.json(
-        { error: "Réponse serveur invalide" },
-        { status: 502 }
-      );
-    }
+    clearTimeout(timeoutId);
+
+    const data = await parseApiResponse(res);
 
     if (!res.ok) {
-      // تحسين معالجة الأخطاء
       const errorMessage =
         data?.error ||
         data?.message ||
         data?.data?.error ||
         `Erreur ${res.status}: ${res.statusText}`;
 
-      console.error("API Error:", {
+      console.error("API Error Response:", {
         status: res.status,
         statusText: res.statusText,
         error: errorMessage,
-        data: data
+        data: data,
       });
 
       return NextResponse.json(
-        { error: errorMessage },
+        {
+          error: errorMessage,
+          status: res.status,
+        },
         { status: res.status }
       );
     }
 
-    // التحقق من تنسيق البيانات
-    if (!data) {
-      return NextResponse.json(
-        { error: "Aucune donnée reçue du serveur" },
-        { status: 204 }
-      );
+    const validation = validateApiResponse(data);
+    if (!validation.isValid) {
+      return NextResponse.json({ error: validation.error }, { status: 204 });
     }
 
-    // إرجاع البيانات - يمكن إرجاع data.data إذا كانت البيانات مدفونة في خاصية data
-    return NextResponse.json(data.data || data, { status: 200 });
-
-  } catch (error) {
-    console.error("Categories API Error:", error);
-
-    // معالجة أنواع مختلفة من الأخطاء
-    if (error.name === "AbortError") {
-      return NextResponse.json(
-        { error: "Délai d'attente de la requête dépassé" },
-        { status: 408 }
-      );
-    }
-
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      return NextResponse.json(
-        { error: "Impossible de se connecter au serveur" },
-        { status: 503 }
-      );
-    }
+    // تخزين البيانات في الكاش لمدة 5 دقائق
+    await setCache("contant-managers", data.data || data, 300);
 
     return NextResponse.json(
       {
-        error: "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site.",
+        success: true,
+        data: data.data || data,
+        message: data.message || "Données récupérées avec succès",
       },
-      { status: 500 }
+      { status: 200 }
     );
+  } catch (error) {
+    return handleApiError(error, "récupération des données");
   }
 }
 
-
 export async function POST(req: NextRequest) {
-    const cookieStore = cookies();
-    const token = (await cookieStore).get('access_token')?.value;
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("access_token")?.value;
 
-    try {
-      if (!API_URL) {
-        return NextResponse.json(
-          { error: "Configuration serveur manquante" },
-          { status: 500 }
-        );
-      }
-
-      if (!token) {
-        return NextResponse.json(
-          { error: "Token manquant" },
-          { status: 401 }
-        );
-      }
-
-      const body = await req.json();
-
-      const res = await fetch(`${API_URL}/api/category`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      let data;
-      try {
-        data = await res.json();
-      } catch (parseError) {
-        console.error("Failed to parse JSON response:", parseError);
-        return NextResponse.json(
-          { error: "Réponse serveur invalide" },
-          { status: 502 }
-        );
-      }
-
-      if (!res.ok) {
-        const errorMessage =
-          data?.error ||
-          data?.message ||
-          data?.data?.error ||
-          `Erreur ${res.status}: ${res.statusText}`;
-
-        return NextResponse.json(
-          { error: errorMessage },
-          { status: res.status }
-        );
-      }
-
-      return NextResponse.json(data.data || data, { status: res.status });
-
-    } catch (error) {
-      console.error("Categories POST API Error:", error);
-
-      if (error instanceof Error && error.name === "AbortError") {
-        return NextResponse.json(
-          { error: "Délai d'attente de la requête dépassé" },
-          { status: 408 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Erreur lors de la création de la catégorie" },
-        { status: 500 }
-      );
-    }
-
-}
-
-
-export async function DELETE(request: NextRequest) {
   try {
     if (!API_URL) {
       return NextResponse.json(
-        { error: "Configuration serveur manquante" },
+        {
+          error: "Configuration serveur manquante",
+          message: "URL de l'API non configurée",
+        },
         { status: 500 }
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-
-    if (!id) {
+    if (!token) {
       return NextResponse.json(
-        { error: "ID de catégorie requis" },
+        {
+          error: "Token manquant",
+          message: "Authentification requise",
+        },
+        { status: 401 }
+      );
+    }
+
+    let body;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        {
+          error: "Données invalides",
+          message: "Format JSON invalide",
+        },
         { status: 400 }
       );
     }
 
-    const res = await fetch(`${API_URL}/api/category/${id}`, {
-      method: "DELETE",
+    if (!body || typeof body !== "object") {
+      return NextResponse.json(
+        {
+          error: "Données manquantes",
+          message: "Aucune donnée fournie",
+        },
+        { status: 400 }
+      );
+    }
+
+    console.log("Sending POST request to:", `${API_URL}/api/contant-managers`);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const res = await fetch(`${API_URL}/api/contant-managers`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      signal: AbortSignal.timeout(10000),
+      body: JSON.stringify(body),
+      signal: controller.signal,
     });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch (parseError) {
-      // DELETE requests might not return JSON, so this is OK
-      if (res.ok) {
-        return NextResponse.json(
-          { message: "Catégorie supprimée avec succès" },
-          { status: 200 }
-        );
-      }
-      console.error("Failed to parse JSON response:", parseError);
-      return NextResponse.json(
-        { error: "Réponse serveur invalide" },
-        { status: 502 }
-      );
-    }
+    clearTimeout(timeoutId);
+
+    const data = await parseApiResponse(res);
 
     if (!res.ok) {
       const errorMessage =
@@ -224,30 +227,44 @@ export async function DELETE(request: NextRequest) {
         data?.data?.error ||
         `Erreur ${res.status}: ${res.statusText}`;
 
+      console.error("POST API Error Response:", {
+        status: res.status,
+        statusText: res.statusText,
+        error: errorMessage,
+        requestBody: body,
+        responseData: data,
+      });
+
       return NextResponse.json(
-        { error: errorMessage },
+        {
+          error: errorMessage,
+          status: res.status,
+        },
         { status: res.status }
       );
     }
 
+    console.log("POST request successful");
+
     return NextResponse.json(
-      data.data || data || { message: "Catégorie supprimée avec succès" },
-      { status: 200 }
+      {
+        success: true,
+        data: data.data || data,
+        message: data.message || "Opération réussie",
+      },
+      { status: res.status || 200 }
     );
-
   } catch (error) {
-    console.error("Categories DELETE API Error:", error);
-
-    if (error.name === "AbortError") {
+    if (error.message && error.message.includes("401")) {
       return NextResponse.json(
-        { error: "Délai d'attente de la requête dépassé" },
-        { status: 408 }
+        {
+          error: "Token expiré",
+          message: "Veuillez vous reconnecter",
+        },
+        { status: 401 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Erreur lors de la suppression de la catégorie" },
-      { status: 500 }
-    );
+    return handleApiError(error, "création");
   }
 }

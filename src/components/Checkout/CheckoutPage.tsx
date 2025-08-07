@@ -76,19 +76,19 @@ const CheckoutPage: React.FC = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <CustomerInfoStep form={form} />;
+        return <CustomerInfoStep form={form} data-auto-scroll />;
       case 2:
         return (
-          <OrderSummaryStep 
+          <OrderSummaryStep data-auto-scroll
             form={form} 
             onSubmit={onSubmit}
             isSubmitting={isSubmitting}
           />
         );
       case 3:
-        return <SuccessStep />;
+        return <SuccessStep data-auto-scroll />;
       default:
-        return <CustomerInfoStep form={form} />;
+        return <CustomerInfoStep form={form} data-auto-scroll />;
     }
   };
 
@@ -124,7 +124,7 @@ const CheckoutPage: React.FC = () => {
         {currentStep < 3 && <StepIndicator steps={steps} currentStep={currentStep} />}
 
         {/* Step Content */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+        <div className="bg-white min-h-full rounded-3xl shadow-2xl p-8 mb-8" >
           <AnimatePresence mode="wait">
             {renderStep()}
           </AnimatePresence>
@@ -133,7 +133,7 @@ const CheckoutPage: React.FC = () => {
         {/* Navigation Buttons */}
         {currentStep < 3 && (
           <motion.div
-            className="flex justify-between"
+            className="flex justify-between gap-2"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}

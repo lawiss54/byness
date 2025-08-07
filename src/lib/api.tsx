@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { getCache, setCache } from '@/lib/cache';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const headers = {
@@ -6,20 +6,34 @@ const headers = {
   Accept: 'application/json',
 };
 
-// ✅ getSiteSettings (مع كاش)
-export const getSiteSettings = cache(async () => {
+const ttlSeconds = 300 ;
+
+// ✅ getSiteSettings call
+export const getSiteSettings = async () => {
+  const cacheKey = 'settings:data'
+  const cached = getCache(cacheKey);
+  if(cached){
+    return cached;
+  }
   try {
     const res = await fetch(`${API_URL}/api/settings`, { method: 'GET', headers });
     if (!res.ok) throw new Error('Échec de récupération des paramètres');
-    return await res.json();
+    const data = await res.json();
+    setCache(cacheKey, data, ttlSeconds)
+    return data;
   } catch (err) {
     console.error('Erreur metadata:', err);
     return null;
   }
-});
+};
+// ✅ heroSection (مع كاش داخلي)
+export const heroSection = async () => {
+  const cacheKey = 'heroSection:data';
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return cached;
+  }
 
-// ✅ heroSection (مع كاش + transform نظيف)
-export const heroSection = cache(async () => {
   try {
     const res = await fetch(`${API_URL}/api/contant`, { method: 'GET', headers });
     if (!res.ok) throw new Error('Échec de récupération des données de bannière');
@@ -28,9 +42,10 @@ export const heroSection = cache(async () => {
     const slides = Array.isArray(response.data) ? response.data : [];
 
     const animationTypes = ['bounceIn', 'slideInLeft', 'fadeInUp'];
-    const getRandomAnimation = () => animationTypes[Math.floor(Math.random() * animationTypes.length)];
+    const getRandomAnimation = () =>
+      animationTypes[Math.floor(Math.random() * animationTypes.length)];
 
-    return slides
+    const formattedSlides = slides
       .map((raw) => ({
         badge: raw.badge,
         mainTitle: raw.main_title,
@@ -44,23 +59,40 @@ export const heroSection = cache(async () => {
         animationType: getRandomAnimation(),
       }))
       .filter((item) => item.status === true);
+
+    // تخزين في الكاش
+    setCache(cacheKey, formattedSlides, ttlSeconds);
+
+    return formattedSlides;
   } catch (err) {
     console.error('Erreur hero section:', err);
     return [];
   }
-});
+};
 
-// ✅ products (مع كاش وتصفية hero_section)
-export const getHeroProducts = cache(async () => {
+// ✅ getHeroProducts (مع كاش داخلي)
+export const getHeroProducts = async () => {
+  const cacheKey = 'heroProducts:data';
+  const cached = getCache(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   try {
     const res = await fetch(`${API_URL}/api/product`, { method: 'GET', headers });
     if (!res.ok) throw new Error('Échec de récupération des produits');
 
     const response = await res.json();
     const data = Array.isArray(response.data) ? response.data : [];
-    return data.filter((item) => item.hero_section === true);
+
+    const filteredProducts = data.filter((item) => item.hero_section === true);
+
+    // تخزين في الكاش
+    setCache(cacheKey, filteredProducts, ttlSeconds);
+
+    return filteredProducts;
   } catch (err) {
     console.error('Erreur produits:', err);
     return [];
   }
-});
+};
