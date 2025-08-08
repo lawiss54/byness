@@ -5,12 +5,9 @@ import './globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { ApiProvider } from '@/lib/apiContext';
-import { CartCheckoutProvider } from '@/lib/CartCheckoutContext';
 import TrackingScripts from '@/components/shared/TrackingScripts';
 import ScrollToTop from '@/components/shared/ScrollToTop';
 import { Metadata } from 'next';
-import ApiBootstrap from '@/components/apiBootstrap';
 import DeleyGoogleAnalytics from '@/components/DeleyGoogleAnalytics';
 
 
@@ -117,33 +114,28 @@ export default async function RootLayout({
       <body className="min-h-screen font-secondary antialiased bg-brand-ivory-200 text-brand-greenBlack-500 selection:bg-brand-sage-200 selection:text-brand-greenBlack-700">
         <div className="min-h-screen flex flex-col flex-grow">
           <Analytics />
-          <ApiProvider>
-            <CartCheckoutProvider>
-              <TrackingScripts pixels={settings?.pixel} />
-              <Header image={{logo: settings.settings?.siteLogo || '/logo.png'}} />
-              <ScrollToTop /> 
-              <main className="min-h-screen flex-1 flex-grow">
-                <ApiBootstrap />
-                <LinkLoader />
-                {children}
-              </main>
-              {/* تمرير بيانات ديناميكية إلى Footer */}
-              <Footer
-                data={{
-                  settings: {
-                    contactPhone: settings?.settings?.contactPhone || '+213 555 00 00 00',
-                    contactMail: settings?.settings?.contactEmail || 'contact@byness.dz',
-                  },
-                  socialmedia: settings?.socialmedia || {
-                    facebook: 'https://facebook.com/bynessdz',
-                    instagram: 'https://instagram.com/byness.dz',
-                    tiktok: 'https://tiktok.com/@bynessdz',
-                    whatsapp: 'https://wa.me/213555000000',
-                  },
-                }}
-              />
-            </CartCheckoutProvider>
-          </ApiProvider>
+          <TrackingScripts pixels={settings?.pixel} />
+          <Header image={{logo: settings.settings?.siteLogo || '/logo.png'}} />
+          <ScrollToTop />
+          <main className="min-h-screen flex-1 flex-grow">
+            <LinkLoader />
+            {children}
+          </main>
+          {/* تمرير بيانات ديناميكية إلى Footer */}
+          <Footer
+            data={{
+              settings: {
+                contactPhone: settings?.settings?.contactPhone || '+213 555 00 00 00',
+                contactMail: settings?.settings?.contactEmail || 'contact@byness.dz',
+              },
+              socialmedia: settings?.socialmedia || {
+                facebook: 'https://facebook.com/bynessdz',
+                instagram: 'https://instagram.com/byness.dz',
+                tiktok: 'https://tiktok.com/@bynessdz',
+                whatsapp: 'https://wa.me/213555000000',
+              },
+            }}
+          />
           <ToastContainer position="top-right" autoClose={3000} />
         </div>
       </body>
