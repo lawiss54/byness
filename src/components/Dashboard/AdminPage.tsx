@@ -79,7 +79,7 @@ function AdminPage() {
           isOpen={isSidebarOpen}
         />
       </div>
-      <main className="flex-1 overflow-auto" data-scroll-target>
+      <main className="flex-1 overflow-auto">
         <div className="p-4">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}

@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { toast } from 'react-toastify';
 import { Category, Product } from '@/components/boutique/types/product.types';
-import { getCache, setCache, delCache } from '@/lib/cache';
 
 interface ApiContextType {
   activeProduct: () => Product[];
@@ -13,7 +12,6 @@ interface ApiContextType {
   loading: boolean;
   fetchResource: () => void;
   fetchContent: () => void;
-  fetchOrders: () => void;
   orders: any[];
   products: Product[];
   contant: any[];
@@ -26,7 +24,12 @@ export const useApi = () => {
   return context;
 };
 
-const TTL = 60 * 5; // 5 دقائق
+const cache = {
+  categories: null as Category[] | null,
+  products: null as Product[] | null,
+  orders: null as any[] | null,
+  contant: null as any[] | null
+};
 
 export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,9 +40,8 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isFetched, setIsFetched] = useState(false);
 
   async function fetchContent() {
-    const cachedData = getCache("contant");
-    if (cachedData) {
-      setContant(cachedData);
+    if (cache.contant) {
+      setContent(cache.contant);
       return;
     }
 
@@ -71,7 +73,7 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }))
         .filter(item => item.status === true);
 
-      setCache("contant", transformed, TTL);
+      cache.contant = transformed;
       setContant(transformed);
 
     } catch (err) {
@@ -79,12 +81,11 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const fetchOrders = async () => {
-    const cachedOrders = getCache("orders");
-    if (cachedOrders) {
-      setOrders(cachedOrders);
+    if (cache.orders) {
+      setOrders(cache.orders);
       return;
     }
 
@@ -98,8 +99,7 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       const data = await res.json();
       const transformed = data.data.map(transformOrder);
-
-      setCache("orders", transformed, TTL);
+      cache.orders = transformed;
       setOrders(transformed);
 
     } catch (err) {
@@ -112,18 +112,15 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const fetchResource = async () => {
     if (isFetched) return;
 
-    const cachedCategories = getCache("categories");
-    const cachedProducts = getCache("products");
-
-    if (cachedCategories && cachedProducts) {
-      setCategories(cachedCategories);
-      setProducts(cachedProducts);
-      setIsFetched(true);
-      return;
-    }
-
     try {
       setLoading(true);
+
+      if (cache.categories && cache.products) {
+        setCategories(cache.categories);
+        setProducts(cache.products);
+        setIsFetched(true);
+        return;
+      }
 
       const [resCategory, resProducts] = await Promise.all([
         fetch('/api/Category'),
@@ -136,8 +133,8 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const transformedCategories = categoryData.map(transformCategory);
       const transformedProducts = productData.data.map(transformProduct);
 
-      setCache("categories", transformedCategories, TTL);
-      setCache("products", transformedProducts, TTL);
+      cache.categories = transformedCategories;
+      cache.products = transformedProducts;
 
       setCategories(transformedCategories);
       setProducts(transformedProducts);
@@ -148,12 +145,6 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setLoading(false);
     }
   };
-
-  // دوال المسح من الكاش (ممكن تستعملها بعد أي تعديل)
-  const clearProductsCache = () => delCache("products");
-  const clearCategoriesCache = () => delCache("categories");
-  const clearOrdersCache = () => delCache("orders");
-  const clearContentCache = () => delCache("contant");
 
   // Transform helpers
   const transformProduct = (raw): Product => ({
@@ -221,10 +212,9 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setLoading,
     loading,
     fetchResource,
-    fetchOrders,
+    orders,
     products,
     contant,
-    orders,
     fetchContent
   };
 

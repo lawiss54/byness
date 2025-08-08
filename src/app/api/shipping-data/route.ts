@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
-import { getCache, setCache } from "@/lib/cache";
+import { NextResponse, NextRequest } from "next/server";
+
+
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const TTL = 60 * 60; // ساعة واحدة بالكاش
 
 export async function GET() {
   try {
@@ -12,12 +13,6 @@ export async function GET() {
         { error: "Configuration serveur manquante" },
         { status: 500 }
       );
-    }
-
-    // ✅ محاولة جلب البيانات من الكاش
-    const cached = getCache("wilayas-with-shipping");
-    if (cached) {
-      return NextResponse.json(cached, { status: 200 });
     }
 
     const res = await fetch(`${API_URL}/api/wilayas-with-shipping`, {
@@ -62,13 +57,9 @@ export async function GET() {
       );
     }
 
-    // ✅ حفظ البيانات في الكاش قبل الإرجاع
-    setCache("wilayas-with-shipping", data, TTL);
-
-    return NextResponse.json(data, { status: 200 });
-
+    return NextResponse.json(data || data, { status: 200 });
   } catch (error: any) {
-    console.error("Wilayas API Error:", error);
+    console.error("Products API Error:", error);
 
     if (error.name === "AbortError") {
       return NextResponse.json(
@@ -93,3 +84,5 @@ export async function GET() {
     );
   }
 }
+
+
