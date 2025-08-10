@@ -41,6 +41,7 @@ const ProductInfo = memo<ProductInfoProps>(({
     }
     
     changeColor()
+    console.log(nameColor)
   }, [selectionData?.selectedColor, onColorSelect])
 
   const passProduct = {
@@ -64,6 +65,7 @@ const ProductInfo = memo<ProductInfoProps>(({
     discount: product.discount
   }
 
+  
 
 
   return (

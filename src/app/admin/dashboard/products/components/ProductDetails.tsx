@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Package, DollarSign, Palette, Ruler } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import type { Product } from '@/app/admin/types';
-import {getStatusBadge, calculateDiscount} from './utils/productHelpers'
+import {getStatusBadge, calculateDiscount} from '../utils/productHelpers'
 
 interface ProductDetailsProps {
   product: Product;
@@ -23,7 +23,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden"
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-full overflow-auto"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
@@ -58,7 +58,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
               {product.images && product?.images?.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4">
                   {product.images.map((image, index) => (
-                    <div >
+                    <div key={index}>
                     <img
                       key={index}
                       src={image}
@@ -130,7 +130,7 @@ export default function ProductDetails({ product, onEdit, onClose }: ProductDeta
                       <div className="flex items-center justify-between">
                         <span>Réduction:</span>
                         <span className="text-red-600 font-semibold">
-                          -{calculateDiscount}% ({(product.originalPrice - product.price).toLocaleString()} DA)
+                          -{calculateDiscount(product.originalPrice, product.price)}% ({(product.originalPrice - product.price).toLocaleString()} DA)
                         </span>
                       </div>
                     </>

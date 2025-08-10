@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import { useShippingData } from '@/hooks/useShippingData';
-import { useApi } from '@/lib/apiContext';
+import { getProducts } from '@/app/boutique/services';
 import { orderEditService } from '../services/orderEditService';
 import { 
   orderEditSchema, 
@@ -21,7 +21,7 @@ import {
   calculateShippingPrice
 } from '../utils/orderEditUtils';
 
-export function useOrderEdit(
+export async function useOrderEdit(
   order: any,
   onSave: (updatedOrder: any) => void,
   setPdfUrl: (url: string) => void,
@@ -29,7 +29,7 @@ export function useOrderEdit(
 ) {
   // External hooks
   const { data: shippingData, loading } = useShippingData();
-  const { activeProduct } = useApi();
+  const activeProduct  = await getProducts();
 
   // Local state
   const [selectedWilayaId, setSelectedWilayaId] = useState(order.wilaya || "");

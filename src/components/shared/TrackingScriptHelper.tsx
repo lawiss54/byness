@@ -20,12 +20,15 @@ interface TrackingScriptsProps {
 
 const TrackingScriptHelper = ({ settings }: TrackingScriptsProps) => {
     useEffect(() => {
+      if (typeof window !== 'undefined') {
         if (settings?.facebookPixel) {
             initFacebookPixel(settings.facebookPixel);
         }
         if (settings?.tiktokPixel) {
             initTiktokPixel(settings.tiktokPixel);
         }
+      }
+        
         
     }, [settings?.facebookPixel, settings?.tiktokPixel]);
 

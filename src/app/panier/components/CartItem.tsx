@@ -65,8 +65,8 @@ export default function CartItem({ item, index }: CartItemProps) {
             {/* Product Image */}
             <div className="relative w-full sm:w-32 sm:h-32 aspect-square sm:aspect-auto flex-shrink-0 rounded-xl overflow-hidden bg-white shadow-lg">
               <Image
-                src={item.images[0] || '/placeholder.png'}
-                alt={item.name}
+                src={item?.images[0] || '/placeholder.png'}
+                alt={item?.name}
                 width={640}
                 height={640}
                 className="object-cover group-hover:scale-110 transition-transform duration-500"
@@ -99,7 +99,7 @@ export default function CartItem({ item, index }: CartItemProps) {
               <div className="flex flex-wrap justify-between gap-4 items-start">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base sm:text-lg md:text-xl font-playfair font-semibold text-brand-darkGreen-500 mb-1 line-clamp-2">
-                    {item.name}
+                    {item?.name}
                   </h3>
 
                   <div className="flex flex-wrap items-center gap-3 text-sm text-brand-darkGreen-400">
@@ -108,11 +108,11 @@ export default function CartItem({ item, index }: CartItemProps) {
                         className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
                         style={{ backgroundColor: item?.color?.toLowerCase() }}
                       />
-                      {item.colorName}
+                      {item?.colorName}
                     </span>
                     <span>Taille: {item.size}</span>
                     <span className="bg-brand-camel-100 text-brand-camel-600 px-2 py-1 rounded-full text-xs font-semibold">
-                      {item.category}
+                      {item?.category}
                     </span>
                   </div>
                 </div>
@@ -135,11 +135,11 @@ export default function CartItem({ item, index }: CartItemProps) {
                 <div className="flex flex-col">
                   <div className="flex items-center gap-3 mb-1">
                     <span className="text-lg sm:text-xl font-bold text-brand-camel-500">
-                      {item.price.toLocaleString()} DA
+                      {item?.price?.toLocaleString()} DA
                     </span>
-                    {item.originalPrice > 0 || item.originalPrice === undefined && (
+                    {item.originalPrice > 0 && (
                       <span className="text-sm sm:text-lg text-brand-sage-400 line-through">
-                        {item.originalPrice.toLocaleString()} DA
+                        {item?.originalPrice?.toLocaleString()} DA
                       </span>
                     )}
                   </div>
@@ -153,7 +153,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     >
                       <Tag className="w-4 h-4" />
                       <span className="text-sm font-semibold">
-                        Économisez {savings.toLocaleString()} DA
+                        Économisez {savings?.toLocaleString()} DA
                       </span>
                     </motion.div>
                   )}
@@ -172,7 +172,7 @@ export default function CartItem({ item, index }: CartItemProps) {
                     </motion.button>
 
                     <span className="px-4 py-2 font-semibold text-brand-darkGreen-500 bg-white min-w-[48px] text-center">
-                      {item.quantity}
+                      {item?.quantity}
                     </span>
 
                     <motion.button
@@ -187,11 +187,11 @@ export default function CartItem({ item, index }: CartItemProps) {
 
                   <div className="text-right min-w-[100px]">
                     <div className="text-base sm:text-xl font-bold text-brand-darkGreen-500">
-                      {(item.price * item.quantity).toLocaleString()} DA
+                      {(item?.price * item?.quantity)?.toLocaleString()} DA
                     </div>
-                    {item.originalPrice > 0 || item.originalPrice === undefined && (
+                    {item.originalPrice > 0 && (
                       <div className="text-sm text-brand-sage-400 line-through">
-                        {(item.originalPrice * item.quantity).toLocaleString()} DA
+                        {(item?.originalPrice * item?.quantity)?.toLocaleString()} DA
                       </div>
                     )}
                   </div>

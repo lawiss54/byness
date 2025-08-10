@@ -5,7 +5,7 @@ import { Eye, Edit } from 'lucide-react';
 import { Button, Card } from '@/components/shared/ui';
 import type { Product } from '@/app/admin/types';
 import Image from 'next/image';
-import { getStatusIcon, getStatusBadge } from './utils/productHelpers';
+import { getStatusIcon, getStatusBadge } from '../utils/productHelpers';
 
 interface ProductsGridProps {
   products: Product[];
@@ -26,7 +26,7 @@ export default function ProductsGrid({
   onEditProduct
 }: ProductsGridProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden drop-shadow-md">
       <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence>
@@ -37,7 +37,7 @@ export default function ProductsGrid({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                className="group relative bg-brand-ivory-200 border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 drop-shadow-lg"
               >
                 {/* Selection Checkbox */}
                 <div className="absolute top-3 left-3 z-10">

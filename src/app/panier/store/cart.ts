@@ -1,13 +1,28 @@
-import { create } from 'zustand';
-import { Product } from '@/app/boutique/types'; // Using the unified Product type
+'use client';
 
-// The CartItem type might be slightly different from the Product type
-// e.g., it includes quantity and selected color/size.
-export interface CartItem extends Omit<Product, 'quantity'> {
+import { create } from 'zustand';
+import { useMemo } from 'react';
+
+// تعريف CartItem بالشكل المطلوب
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  images: string[];
+  colors?: string[];
+  color: string;
+  colorName: string | null;
+  sizes?: string[];
+  size: string;
+  slug: string;
+  badge?: string;
+  isNew?: boolean;
+  isSale?: boolean;
+  discount?: number;
   quantity: number;
-  // It's better to store selected variants directly on the cart item
-  selectedColor?: string | null;
-  selectedSize?: string | null;
+  category: string;
 }
 
 interface CartState {
@@ -22,15 +37,30 @@ interface CartState {
   };
 }
 
+// مزامنة السلة مع الباك إند
 const syncCartWithBackend = async (items: CartItem[]) => {
   try {
-    // We only need to send the essential data to the backend
     const syncData = items.map(item => ({
-      product_id: item.id,
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      originalPrice: item.originalPrice,
+      image: item.image,
+      images: item.images,
+      colors: item.colors,
+      color: item.color,
+      colorName: item.colorName,
+      sizes: item.sizes,
+      slug: item.slug,
+      badge: item.badge,
+      isNew: item.isNew,
+      isSale: item.isSale,
+      discount: item.discount,
+      size: item.size,
       quantity: item.quantity,
-      color: item.selectedColor,
-      size: item.selectedSize,
+      category: item.category
     }));
+
     await fetch('/api/cart', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -38,7 +68,6 @@ const syncCartWithBackend = async (items: CartItem[]) => {
     });
   } catch (err) {
     console.error('Failed to sync cart with backend', err);
-    // Here you might want to add some user feedback, e.g., a toast notification
   }
 };
 
@@ -52,45 +81,71 @@ const useCartStore = create<CartState>((set, get) => ({
         const res = await fetch('/api/cart');
         if (!res.ok) throw new Error('Failed to fetch cart');
         const data = await res.json();
-        // The data from the backend needs to be transformed to match our CartItem structure
-        // This is an assumption about the API response structure.
-        const fetchedItems = data.data.items || [];
+
+        // إعادة بناء العناصر القادمة من الباك إند لتكون مطابقة لـ CartItem
+        const fetchedItems: CartItem[] = (data.data.items || []).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          originalPrice: item.originalPrice,
+          image: item.image,
+          images: item.images || [],
+          colors: item.colors || [],
+          color: item.color,
+          colorName: item.colorName || null,
+          sizes: item.sizes || [],
+          slug: item.slug,
+          badge: item.badge,
+          isNew: item.isNew,
+          isSale: item.isSale,
+          discount: item.discount,
+          size: item.size,
+          quantity: item.quantity,
+          category: item.category
+        }));
+
         set({ items: fetchedItems, isInitialized: true });
       } catch (err) {
         console.error('Failed to initialize cart from backend', err);
-        set({ isInitialized: true }); // Mark as initialized even on error to prevent refetching
+        set({ isInitialized: true });
       }
     },
+
     addToCart: (item) => {
       set(state => {
         const existingItem = state.items.find(i =>
           i.id === item.id &&
-          i.selectedColor === item.selectedColor &&
-          i.selectedSize === item.selectedSize
+          i.color === item.color &&
+          i.size === item.size
         );
+
         let newItems;
         if (existingItem) {
           newItems = state.items.map(i =>
-            i.id === item.id && i.selectedColor === item.selectedColor && i.selectedSize === item.selectedSize
+            i.id === item.id && i.color === item.color && i.size === item.size
               ? { ...i, quantity: i.quantity + (item.quantity || 1) }
               : i
           );
         } else {
           newItems = [...state.items, { ...item, quantity: item.quantity || 1 }];
         }
+
         syncCartWithBackend(newItems);
         return { items: newItems };
       });
     },
+
     updateQuantity: (itemId, newQuantity) => {
       set(state => {
         const newItems = newQuantity <= 0
           ? state.items.filter(i => i.id !== itemId)
           : state.items.map(i => (i.id === itemId ? { ...i, quantity: newQuantity } : i));
+
         syncCartWithBackend(newItems);
         return { items: newItems };
       });
     },
+
     removeItem: (itemId) => {
       set(state => {
         const newItems = state.items.filter(i => i.id !== itemId);
@@ -98,6 +153,7 @@ const useCartStore = create<CartState>((set, get) => ({
         return { items: newItems };
       });
     },
+
     clearCart: () => {
       set({ items: [] });
       syncCartWithBackend([]);
@@ -105,17 +161,21 @@ const useCartStore = create<CartState>((set, get) => ({
   }
 }));
 
-// Selectors for computed values
+// Selectors
 export const useCartItems = () => useCartStore(state => state.items);
 export const useCartActions = () => useCartStore(state => state.actions);
 export const useIsCartInitialized = () => useCartStore(state => state.isInitialized);
 
+// حساب المجموعات باستخدام useMemo
 export const useCartTotals = () => {
-  return useCartStore(state => {
-    const subtotal = state.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-    const originalTotal = state.items.reduce((sum, i) => sum + (i.originalPrice || i.price) * i.quantity, 0);
+  const items = useCartItems();
+
+  return useMemo(() => {
+    const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    const originalTotal = items.reduce((sum, i) => sum + (i.originalPrice || i.price) * i.quantity, 0);
     const savings = originalTotal - subtotal;
-    const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
+    const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+
     return { subtotal, originalTotal, savings, itemCount };
-  });
+  }, [items]);
 };

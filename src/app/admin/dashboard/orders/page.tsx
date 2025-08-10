@@ -3,10 +3,7 @@ import { ordersService } from './services/ordersService';
 import OrdersSection from './components/OrdersSection';
 import { Loader } from '@/components/shared';
 
-export const metadata = {
-  title: 'Gestion des Commandes - Dashboard',
-  description: 'Gérez vos commandes, suivez les statuts et téléchargez les bordereaux.',
-};
+
 
 export default async function AdminOrdersPage() {
   // Fetch initial orders on the server.

@@ -29,7 +29,7 @@ export const useCheckoutForm = () => {
   // Effect for tracking the initiation of checkout
   useEffect(() => {
     if (cartItems.length > 0 && !hasTrackedInitiation.current) {
-      const contents = cartItems.map(p => ({ content_id: p.id, content_name: p.name, quantity: p.quantity, price: p.price }));
+      const contents = cartItems.map(p => ({ content_id: p.id, content_name: p.name, quantity: p.quantity, price: p.price, product_img: p.images[0] }));
       const eventData = { value: subtotal, currency: 'DZD', contents, content_type: 'product' };
       trackFb('InitiateCheckout', eventData);
       trackTiktok('InitiateCheckout', eventData);

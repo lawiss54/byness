@@ -1,10 +1,12 @@
 'use client';;
 import { motion } from 'framer-motion';
 import { Trash2 } from 'lucide-react';
-import { useCartCheckout } from '@/lib/CartCheckoutContext';
+import { useCartItems, useCartActions } from '../store/cart';
 
 export default function CartActions() {
-  const { clearCart, cartItems } = useCartCheckout();
+  const cartItems = useCartItems();
+  const { clearCart } = useCartActions();
+  
 
   const handleClearCart = () => {
     if (typeof window === 'undefined') return;

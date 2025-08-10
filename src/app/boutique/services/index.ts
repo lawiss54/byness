@@ -35,7 +35,7 @@ const transformCategory = (raw: any): Category => ({
 
 // Base URL for the API. Using an environment variable is best practice.
 // For now, I'll hardcode it based on the existing fetch calls.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
 
 export async function getProducts(): Promise<Product[]> {
   try {

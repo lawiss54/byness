@@ -3,10 +3,7 @@ import { fetchProductsService, fetchCategoriesService } from './services/product
 import ProductsSection from './components/ProductsSection';
 import { Loader } from '@/components/shared';
 
-export const metadata = {
-  title: 'Gestion des Produits - Dashboard',
-  description: 'Gérez vos produits, stocks, et catégories.',
-};
+
 
 // This is the new Server Component entry point for the products management page.
 export default async function AdminProductsPage() {

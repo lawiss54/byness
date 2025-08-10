@@ -1,26 +1,22 @@
 import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { getCache, setCache, delCache } from "@/lib/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const CACHE_KEY = "cart_data";
-const CACHE_TTL = 60 * 5; // مدة صلاحية الكاش بالثواني (مثلاً 1 دقيقة)
 
+/**
+ * ✅ GET: استرجاع بيانات السلة من الخادم
+ */
 export async function GET() {
   try {
+    
     if (!API_URL) {
       console.error("API_URL is not defined");
       return NextResponse.json({ error: "Configuration serveur manquante" }, { status: 500 });
     }
 
-    // ✅ تحقق من الكاش أولاً
-    const cachedData = getCache(CACHE_KEY);
-    if (cachedData) {
-      return NextResponse.json(cachedData, { status: 200 });
-    }
-
     const cookieStore = await cookies();
-    const existingKey = cookieStore.get("cart_key")?.value;
+    const existingKey = cookieStore.get('cart_key')?.value;
+   
 
     const res = await fetch(`${API_URL}/api/cart/${existingKey}`, {
       method: "GET",
@@ -46,16 +42,15 @@ export async function GET() {
     }
 
     if (!existingKey) {
-      cookieStore.set("cart_key", data.data.cart_key, {
-        path: "/",
+      
+      cookieStore.set('cart_key', data.data.cart_key , {
+        path: '/',
         maxAge: 60 * 60 * 24 * 30,
         httpOnly: true,
         secure: false,
       });
     }
 
-    // ✅ حفظ البيانات في الكاش
-    setCache(CACHE_KEY, data, CACHE_TTL);
 
     return NextResponse.json(data, { status: 200 });
   } catch (error: any) {
@@ -64,6 +59,7 @@ export async function GET() {
     if (error.name === "AbortError") {
       return NextResponse.json({ error: "Délai d'attente dépassé" }, { status: 408 });
     }
+
     if (error.name === "TypeError" && error.message.includes("fetch")) {
       return NextResponse.json({ error: "Connexion au serveur échouée" }, { status: 503 });
     }
@@ -72,12 +68,16 @@ export async function GET() {
   }
 }
 
+/**
+ * ✅ POST: إرسال تحديثات السلة إلى الخادم
+ */
 export async function PUT(request: NextRequest) {
+
   const cookieStore = cookies();
-  const cartKey = (await cookieStore).get("cart_key")?.value;
+  const cartKey = (await cookieStore).get('cart_key')?.value;
 
   if (!cartKey) {
-    return NextResponse.json({ error: "Panier non identifié" }, { status: 400 });
+    return NextResponse.json({ error: 'Panier non identifié' }, { status: 400 });
   }
 
   try {
@@ -88,7 +88,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
 
     const res = await fetch(`${API_URL}/api/cart/${cartKey}`, {
-      method: "PUT",
+      method: "PUT", 
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -110,26 +110,27 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: errorMessage }, { status: res.status });
     }
 
-    // ❌ حذف الكاش بعد التعديل
-    delCache(CACHE_KEY);
-
     return NextResponse.json(data.data || data, { status: res.status });
   } catch (error: any) {
-    console.error("PUT /api/cart error:", error);
+    console.error("POST /api/cart error:", error);
+
     if (error.name === "AbortError") {
       return NextResponse.json({ error: "Délai d’attente dépassé" }, { status: 408 });
     }
+
     return NextResponse.json({ error: "Erreur lors de l’envoi de la commande" }, { status: 500 });
   }
 }
 
+
 export async function DELETE(request: NextRequest) {
   const cookieStore = cookies();
-  const cartKey = (await cookieStore).get("cart_key")?.value;
+  const cartKey = (await cookieStore).get('cart_key')?.value;
 
   if (!cartKey) {
-    return NextResponse.json({ error: "Panier non identifié" }, { status: 400 });
+    return NextResponse.json({ error: 'Panier non identifié' }, { status: 400 });
   }
+
 
   try {
     if (!API_URL) {
@@ -139,13 +140,13 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
 
     const res = await fetch(`${API_URL}/api/cart/${cartKey}`, {
-      method: "DELETE",
+      method: "DELETE", // أو PUT/UPDATE إذا أردت حسب الواجهة الخلفية
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
       body: JSON.stringify(body),
-      credentials: "include",
+      credentials: 'include',
     });
 
     let data;
@@ -162,15 +163,14 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: errorMessage }, { status: res.status });
     }
 
-    // ❌ حذف الكاش بعد الحذف
-    delCache(CACHE_KEY);
-
     return NextResponse.json(data.data || data, { status: res.status });
   } catch (error: any) {
     console.error("DELETE /api/cart error:", error);
+
     if (error.name === "AbortError") {
       return NextResponse.json({ error: "Délai d’attente dépassé" }, { status: 408 });
     }
+
     return NextResponse.json({ error: "Erreur lors de l’envoi de la commande" }, { status: 500 });
   }
 }

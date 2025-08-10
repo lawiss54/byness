@@ -1,7 +1,5 @@
 'use client';
 
-'use client';
-
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
@@ -14,9 +12,10 @@ import TrustSignals from './ProductDetailsPage/TrustSignals';
 import type { ProductDetailsPageProps } from './ProductDetailsPage/type';
 import { ANIMATION_VARIANTS } from './ProductDetailsPage/animation';
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
+import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent'
 
 // Lazy load heavy components to improve initial page load
-const SimilarProducts = dynamic(() => import('../SimilarProducts'), {
+const SimilarProducts = dynamic(() => import('./SimilarProducts'), {
   loading: () => <div className="animate-pulse bg-gray-200 h-64 rounded-3xl" />,
   ssr: false // Only load on client side to reduce server load
 });
@@ -37,6 +36,7 @@ export default function ProductDetailsPage({
   const [showImageModal, setShowImageModal] = useState(false);
 
   const { track } = useFacebookPixelEvent();
+  const { trackTiktok } = useTiktokPixelEvent();
   
   // Memoized calculations to prevent unnecessary re-calculations
   const pricingData = useMemo(() => {
@@ -87,7 +87,14 @@ export default function ProductDetailsPage({
       value: product.price,
       currency: 'DZD',
     });
-  }, [product, track]);
+    trackTiktok('ViewContent', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price,
+      currency: 'DZD',
+    });
+  }, [product, track, trackTiktok]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-darkGreen-50 via-white to-brand-sage-50">

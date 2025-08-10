@@ -1,124 +1,264 @@
 import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
-import { getCache, setCache, delCache } from "@/lib/cache";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-const CACHE_TTL = 300; // 5 دقائق
 
-// =================== PUT ===================
 export async function PUT(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const token = (await cookies()).get("access_token")?.value;
+  
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('access_token')?.value;
 
-  if (!API_URL) {
-    return NextResponse.json({ error: "Configuration serveur manquante" }, { status: 500 });
-  }
-  if (!token) {
-    return NextResponse.json({ error: "Token manquant" }, { status: 401 });
-  }
+    try {
+      if (!API_URL) {
+        return NextResponse.json(
+          { error: "Configuration serveur manquante" },
+          { status: 500 }
+        );
+      }
 
-  const { slug } = params;
-  if (!slug) {
-    return NextResponse.json({ error: "Slug du produit manquant" }, { status: 400 });
-  }
+      if (!token) {
+        return NextResponse.json(
+          { error: "Token manquant" },
+          { status: 401 }
+        );
+      }
 
-  const body = await req.json();
-  const res = await fetch(`${API_URL}/api/product/${slug}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(body),
-  });
+      const { slug } = params;
+      
+      if (!slug) {
+        return NextResponse.json(
+          { error: "Slug du produit manquant" },
+          { status: 400 }
+        );
+      }
 
-  const data = await res.json();
-  if (!res.ok) {
-    return NextResponse.json({ error: data?.error || "Erreur de mise à jour" }, { status: res.status });
-  }
+      const body = await req.json();
 
-  // حذف الكاش بعد التحديث
-  delCache(`product:${slug}`);
+      // استخدام PUT مع slug للتحديث
+      const res = await fetch(`${API_URL}/api/product/${slug}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
 
-  return NextResponse.json(data.data || data, { status: res.status });
+      let data;
+      try {
+        data = await res.json();
+      } catch (error) {
+        console.error("Failed to parse JSON response", error);
+        return NextResponse.json(
+          { error: "Réponse serveur invalide" },
+          { status: 502 }
+        );
+      }
+
+      if (!res.ok) {
+        const errorMessage =
+          data?.error ||
+          data?.message ||
+          data?.data?.error ||
+          `Erreur ${res.status}: ${res.statusText}`;
+
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: res.status }
+        );
+      }
+
+      return NextResponse.json(data.data || data, { status: res.status });
+
+    } catch (Error) {
+      console.error("Product PUT API Error:", Error);
+      if (Error instanceof Error && Error.name === "AbortError") {
+        return NextResponse.json(
+          { error: "Délai d'attente de la requête dépassé" },
+          { status: 408 }
+        );
+      }
+      return NextResponse.json(
+        { error: "Erreur lors de la mise à jour du produit" },
+        { status: 500 }
+      );
+    }
 }
 
-// =================== DELETE ===================
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const token = (await cookies()).get("access_token")?.value;
+ 
+    const cookieStore = cookies();
+    const token = (await cookieStore).get('access_token')?.value;
 
-  if (!API_URL) {
-    return NextResponse.json({ error: "Configuration serveur manquante" }, { status: 500 });
-  }
-  if (!token) {
-    return NextResponse.json({ error: "Token manquant" }, { status: 401 });
-  }
+    try {
+      if (!API_URL) {
+        return NextResponse.json(
+          { error: "Configuration serveur manquante" },
+          { status: 500 }
+        );
+      }
 
-  const { slug } = params;
-  if (!slug) {
-    return NextResponse.json({ error: "Slug du produit manquant" }, { status: 400 });
-  }
+      if (!token) {
+        return NextResponse.json(
+          { error: "Token manquant" },
+          { status: 401 }
+        );
+      }
 
-  const res = await fetch(`${API_URL}/api/product/${slug}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+      const { slug } = params;
+      
+      if (!slug) {
+        return NextResponse.json(
+          { error: "Slug du produit manquant" },
+          { status: 400 }
+        );
+      }
 
-  const data = await res.json();
-  if (!res.ok) {
-    return NextResponse.json({ error: data?.error || "Erreur de suppression" }, { status: res.status });
-  }
+      // استخدام PUT مع slug للتحديث
+      const res = await fetch(`${API_URL}/api/product/${slug}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  // حذف الكاش بعد الحذف
-  delCache(`product:${slug}`);
+      let data;
+      try {
+        data = await res.json();
+      } catch (error) {
+        console.error("Failed to parse JSON response", error);
+        return NextResponse.json(
+          { error: "Réponse serveur invalide" },
+          { status: 502 }
+        );
+      }
 
-  return NextResponse.json(data.data || data, { status: res.status });
+      if (!res.ok) {
+        const errorMessage =
+          data?.error ||
+          data?.message ||
+          data?.data?.error ||
+          `Erreur ${res.status}: ${res.statusText}`;
+
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: res.status }
+        );
+      }
+
+      return NextResponse.json(data.data || data, { status: res.status });
+
+    } catch (Error) {
+      console.error("Product DELETE API Error:", Error);
+      if (Error instanceof Error && Error.name === "AbortError") {
+        return NextResponse.json(
+          { error: "Délai d'attente de la requête dépassé" },
+          { status: 408 }
+        );
+      }
+      return NextResponse.json(
+        { error: "Erreur lors de la suppression du produit" },
+        { status: 500 }
+      );
+    }
 }
 
-// =================== GET ===================
-export async function GET(
-  request: NextRequest,
+export async function GET( request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  if (!API_URL) {
-    return NextResponse.json({ error: "Configuration serveur manquante" }, { status: 500 });
+  try {
+    if (!API_URL) {
+      console.error("API_URL is not defined in environment variables");
+      return NextResponse.json(
+        { error: "Configuration serveur manquante" },
+        { status: 500 }
+      );
+    }
+    const { slug } = params;
+      
+      if (!slug) {
+        return NextResponse.json(
+          { error: "Slug du produit manquant" },
+          { status: 400 }
+        );
+      }
+
+
+    const res = await fetch(`${API_URL}/api/product/${slug}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    let data;
+    try {
+      data = await res.json();
+    } catch (parseError) {
+      console.error("Failed to parse JSON response:", parseError);
+      return NextResponse.json(
+        { error: "Réponse serveur invalide" },
+        { status: 502 }
+      );
+    }
+
+    if (!res.ok) {
+      const errorMessage =
+        data?.error ||
+        data?.message ||
+        data?.data?.error ||
+        `Erreur ${res.status}: ${res.statusText}`;
+
+      console.error("API Error:", {
+        status: res.status,
+        statusText: res.statusText,
+        error: errorMessage,
+        data: data,
+      });
+
+      return NextResponse.json({ error: errorMessage }, { status: res.status });
+    }
+
+    if (!data) {
+      return NextResponse.json(
+        { error: "Aucune donnée reçue du serveur" },
+        { status: 204 }
+      );
+    }
+
+    return NextResponse.json(data || data, { status: 200 });
+  } catch (error: any) {
+    console.error("Products API Error:", error);
+
+    if (error.name === "AbortError") {
+      return NextResponse.json(
+        { error: "Délai d'attente de la requête dépassé" },
+        { status: 408 }
+      );
+    }
+
+    if (error.name === "TypeError" && error.message.includes("fetch")) {
+      return NextResponse.json(
+        { error: "Impossible de se connecter au serveur" },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        error:
+          "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site.",
+      },
+      { status: 500 }
+    );
   }
-
-  const { slug } = params;
-  if (!slug) {
-    return NextResponse.json({ error: "Slug du produit manquant" }, { status: 400 });
-  }
-
-  const cacheKey = `product:${slug}`;
-  const cached = getCache(cacheKey);
-  if (cached) {
-    return NextResponse.json(cached, { status: 200 });
-  }
-
-  const res = await fetch(`${API_URL}/api/product/${slug}`, {
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    return NextResponse.json({ error: data?.error || "Erreur de récupération" }, { status: res.status });
-  }
-
-  // حفظ البيانات في الكاش
-  setCache(cacheKey, data, CACHE_TTL);
-
-  return NextResponse.json(data || data, { status: 200 });
 }

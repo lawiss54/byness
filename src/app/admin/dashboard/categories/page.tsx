@@ -3,10 +3,6 @@ import { fetchCategoriesService } from '../products/services/productsService'; /
 import CategoriesSection from './components/CategoriesSection';
 import { Loader } from '@/components/shared';
 
-export const metadata = {
-  title: 'Gestion des Catégories - Dashboard',
-  description: 'Gérez les catégories de vos produits.',
-};
 
 export default async function AdminCategoriesPage() {
   const initialCategories = await fetchCategoriesService();

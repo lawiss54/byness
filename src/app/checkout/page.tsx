@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 
 
 const CheckoutPage = dynamic(
-  () => import('@/components/Checkout/CheckoutPage'),
+  () => import('./components/CheckoutPage'),
   { ssr: false }
 )
 

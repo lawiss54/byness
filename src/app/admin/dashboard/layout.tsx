@@ -1,29 +1,43 @@
+// app/admin/dashboard/layout.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Sidebar = dynamic(
   () => import('@/components/Dashboard/Sidebar'),
   { ssr: false }
 )
 
-const Profile = dynamic(
-  () => import('@/components/Dashboard/Profile'),
-  { ssr: false }
-)
 
-function AdminPage() {
+interface DashboardLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Sync activeSection with current pathname
+  useEffect(() => {
+    if (pathname === '/admin/dashboard') {
+      setActiveSection('dashboard');
+    } else if (pathname.startsWith('/admin/dashboard/')) {
+      const section = pathname.split('/').pop();
+      setActiveSection(section || 'dashboard');
+    }
+  }, [pathname]);
 
   // Handle navigation when activeSection changes
-  useEffect(() => {
-    switch (activeSection) {
+  const handleSectionChange = (section: string) => {
+    setActiveSection(section);
+    
+    switch (section) {
       case 'dashboard':
         router.push('/admin/dashboard');
         break;
@@ -49,21 +63,21 @@ function AdminPage() {
         router.push('/admin/dashboard');
         break;
     }
-  }, [activeSection, router]);
- 
-  const renderActiveSection = () => {
-   
-    
-    // For other sections, return null since navigation is handled by useEffect
-    return null;
   };
+
+  // Close sidebar on mobile when route changes
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  }, [pathname]);
 
   return (
     <div className="flex min-h-screen">
       <div className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
         <Sidebar 
           activeSection={activeSection} 
-          onSectionChange={setActiveSection} 
+          onSectionChange={handleSectionChange} 
           isOpen={isSidebarOpen}
         />
       </div>
@@ -71,7 +85,7 @@ function AdminPage() {
         <div className="p-4">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 mb-4"
+            className="p-2 rounded-md bg-gray-200 hover:bg-gray-300 mb-4 transition-colors"
           >
             {isSidebarOpen ? (
               <X className="w-6 h-6 text-gray-700" />
@@ -79,11 +93,9 @@ function AdminPage() {
               <Menu className="w-6 h-6 text-gray-700" />
             )}
           </button>
-          {activeSection}
+          {children}
         </div>
       </main>
     </div>
   );
 }
-
-export default AdminPage;

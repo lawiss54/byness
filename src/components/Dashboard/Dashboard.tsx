@@ -298,7 +298,7 @@ export default function Dashboard() {
   };
   
   return (
-    <div className="space-y-6">
+    <div className="h-full w-full mt-2 p-4 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Tableau de bord</h1>
         <p className="text-gray-600 mt-2">Aperçu des performances de votre boutique</p>

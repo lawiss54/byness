@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion"
 import { Plus, Eye } from 'lucide-react'
 import { useContentSections } from '../hooks/useContentSections'
 import { useContentForm } from '../hooks/useContentForm'
-import { Button } from './common/Button'
+import { Button } from '@/components/Dashboard/HomeHeroSection'
 import { StatisticsCards } from './StatisticsCards'
 import { ContentSectionsList } from './ContentSectionsList'
 import { PreviewMode } from './PreviewMode'

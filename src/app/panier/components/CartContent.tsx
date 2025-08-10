@@ -1,4 +1,5 @@
-'use client';;
+'use client';
+
 import { motion } from 'framer-motion';
 import { useCartItems } from '../store/cart';
 import dynamic from 'next/dynamic'
@@ -16,6 +17,7 @@ const CartItem = dynamic(
 export default function CartContent() {
 
   const cartItems = useCartItems();
+  
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -43,7 +45,7 @@ export default function CartContent() {
 
       <div className="space-y-4 sm:space-y-6">
         {cartItems.map((item, index) => (
-          <CartItem key={item.id} item={item} index={index} />
+          <CartItem key={item.id || index} item={item} index={index} />
         ))}
       </div>
 

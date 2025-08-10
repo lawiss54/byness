@@ -1,7 +1,7 @@
 import type React from "react"
-import { Card } from './components/Card'
+import { Card } from '@/components/Dashboard/HomeHeroSection'
 import { Layout, Eye, EyeOff, Home } from 'lucide-react'
-import type { ContentSection } from './utils/types'
+import type { ContentSection } from '../utils/types'
 
 interface StatisticsCardsProps {
   sections: ContentSection[]

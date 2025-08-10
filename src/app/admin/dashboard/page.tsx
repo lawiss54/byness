@@ -1,5 +1,6 @@
-import AdminPage from '@/components/Dashboard/AdminPage';
 
-export default function AdminWrapper() {
-  return <AdminPage />;
+import Dashboard from '@/components/Dashboard/Dashboard';
+
+export default function AdminDashboard() {
+  return <Dashboard />
 }

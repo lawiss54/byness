@@ -13,20 +13,21 @@ interface ProductPageProps {
 
 // Optional: Add metadata generation
 export async function generateMetadata({ params }: ProductPageProps) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
   if (!product) {
     return {
       title: 'Produit non trouvé',
     };
   }
   return {
-    title: `${product.name} - Notre Boutique`,
+    title: `${product.name} - ByNess Boutique`,
     description: product.description.substring(0, 160),
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   
   // Fetch the main product and all products for "similar products" in parallel
   const [product, allProducts] = await Promise.all([

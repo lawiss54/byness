@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Eye, Edit, Phone, Download, User } from 'lucide-react';
 import { Button } from '@/components/shared/ui';
-import { getStatusIcon, getStatusBadge, formatDate } from './utils/orderUtils';
-import type { Order } from './types/orders';
+import { getStatusIcon, getStatusBadge, formatDate } from '@/app/admin/dashboard/orders/utils/orderUtils';
+import type { Order } from '@/app/admin/dashboard/orders/types/orders';
 
 interface OrdersTableProps {
   orders: Order[];

@@ -24,7 +24,7 @@ const transformProduct = (raw: any): Product => ({
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/products/${slug}`, { next: { revalidate: 300 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_URL || ''}/api/products/${slug}`, { next: { revalidate: 300 } });
 
     if (!res.ok) {
       if (res.status === 404) {

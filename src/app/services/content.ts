@@ -20,7 +20,7 @@ const transformContent = (raw: any): HomepageContent => {
 
 export async function getHomepageContent(): Promise<HomepageContent[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/contant`, { next: { revalidate: 300 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_LOCAL_URL || ''}/api/contant`, { next: { revalidate: 300 } });
 
     if (!res.ok) {
       throw new Error('Failed to fetch homepage content');

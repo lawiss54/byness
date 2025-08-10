@@ -4,10 +4,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from "framer-motion"
 import { X, Save, Upload, Type, Tag, Link, FileText } from 'lucide-react'
-import { Button } from './components/Button'
-import { Input } from './components/Input'
-import { contentFormSchema, type ContentFormSchema } from './utils/validationSchema'
-import type { ContentSection } from './utils/types'
+import { Button, Input } from '@/components/Dashboard/HomeHeroSection'
+import { contentFormSchema, type ContentFormSchema } from '../utils/validationSchema'
+import type { ContentSection } from '../utils/types'
 import { useEffect } from 'react' // إضافة useEffect
 
 interface ContentFormProps {

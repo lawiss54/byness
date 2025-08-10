@@ -1,10 +1,10 @@
 import { toast } from 'react-toastify';
-import { CartItem } from '@/app/panier/store/cart';
+import { Order } from '@/app/admin/dashboard/orders/types/order';
 import { CheckoutFormData } from '../schemas/checkoutSchemas'; // Assuming the schema file is in this new location
 
 interface OrderPayload {
   customer: CheckoutFormData;
-  items: CartItem[];
+  items: Order[];
   subtotal: number;
   total: number;
 }

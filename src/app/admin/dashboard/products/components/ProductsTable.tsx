@@ -4,7 +4,7 @@ import { Eye, Edit, Trash2, Loader2 } from 'lucide-react';
 import { Button, Card } from '@/components/shared/ui';
 import type { Product } from '@/app/admin/types';
 import Image from 'next/image';
-import { getStatusBadge } from './utils/productHelpers';
+import { getStatusBadge } from '../utils/productHelpers';
 
 interface ProductsTableProps {
   products: Product[];

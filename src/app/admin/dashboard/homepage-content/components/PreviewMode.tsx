@@ -2,10 +2,8 @@
 import type React from "react"
 import { motion } from "framer-motion"
 import { Eye, ExternalLink } from 'lucide-react'
-import { Button } from './components/Button'
-import { Badge } from './components/Badge'
-import { Card } from './components/Card'
-import type { ContentSection } from './utils/types'
+import { Button, Badge, Card} from '@/components/Dashboard/HomeHeroSection'
+import type { ContentSection } from '../utils/types'
 
 interface PreviewModeProps {
   sections: ContentSection[]

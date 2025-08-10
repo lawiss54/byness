@@ -1,12 +1,16 @@
 import { transformOrders } from '../utils/orderUtils';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
+
 export const ordersService = {
+  
   async fetchOrders() {
-    const res = await fetch('/api/orders');
+    const res = await fetch(`${API_BASE_URL}/api/orders`);
     if (!res.ok) {
       throw new Error('Failed to fetch orders');
     }
     const data = await res.json();
+    
     return data.data.map(transformOrders);
   },
 
@@ -16,7 +20,7 @@ export const ordersService = {
       status: newStatus
     };
 
-    const res = await fetch('/api/orders/change-status', {
+    const res = await fetch(`${API_BASE_URL}/api/orders/change-status`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +37,7 @@ export const ordersService = {
 
   async downloadOrdersPDF(orderIds: string[]) {
     const data = { orders: orderIds };
-    const res = await fetch('/api/orders/Bordereaus', {
+    const res = await fetch(`${API_BASE_URL}/api/orders/Bordereaus`, {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -52,7 +56,7 @@ export const ordersService = {
   },
 
   async updateOrder(updatedOrder: any) {
-    const res = await fetch('/api/orders/update', {
+    const res = await fetch(`${API_BASE_URL}/api/orders/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

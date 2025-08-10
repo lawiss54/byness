@@ -14,13 +14,13 @@ import SizesSection from './product-form/SizesSection';
 import ProductFormFooter from './product-form/ProductFormFooter';
 
 // Hooks
-import { useProductForm } from './hooks/form/useProductForm';
-import { useImageUpload } from './hooks/form/useImageUpload';
-import { useColorsManager } from './hooks/form/useColorsManager';
-import { useSizesManager } from './hooks/form/useSizesManager';
+import { useProductForm } from '../hooks/form/useProductForm';
+import { useImageUpload } from '../hooks/form/useImageUpload';
+import { useColorsManager } from '../hooks/form/useColorsManager';
+import { useSizesManager } from '../hooks/form/useSizesManager';
 
 // Utils
-import { predefinedColors, predefinedSizes } from './utils/form/formHelpers';
+import { predefinedColors, predefinedSizes } from '../utils/form/formHelpers';
 
 interface ProductFormProps {
   product?: Product | null;

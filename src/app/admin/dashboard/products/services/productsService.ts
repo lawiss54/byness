@@ -1,10 +1,11 @@
-'use client';
 
 import type { Product, Category } from '@/app/admin/types';
 
 /**
  * Service for products API calls
  */
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
 
 // Transform raw product data from API
 function transformProduct(raw: any): Product {
@@ -47,7 +48,7 @@ function transformCategory(raw: any): Category {
 }
 
 export async function fetchProductsService(): Promise<Product[]> {
-  const res = await fetch('/api/products');
+  const res = await fetch(`${API_BASE_URL}/api/products`);
   if (!res.ok) {
     throw new Error(`HTTP error! status: ${res.status}`);
   }
@@ -56,7 +57,7 @@ export async function fetchProductsService(): Promise<Product[]> {
 }
 
 export async function fetchCategoriesService(): Promise<Category[]> {
-  const res = await fetch('/api/Category');
+  const res = await fetch(`${API_BASE_URL}/api/Category`);
   if (!res.ok) {
     throw new Error(`HTTP error! status: ${res.status}`);
   }

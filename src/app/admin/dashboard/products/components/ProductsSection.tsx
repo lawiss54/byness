@@ -9,23 +9,23 @@ import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
 
 // Components
-import ProductsHeader from './Products/ProductsHeader';
-import ProductsStats from './Products/ProductsStats';
-import ProductsFilters from './Products/ProductsFilters';
-import ProductsBulkActions from './Products/ProductsBulkActions';
-import ProductsGrid from './Products/ProductsGrid';
-import ProductsTable from './Products/ProductsTable';
-import ProductsPagination from './Products/ProductsPagination';
-import ProductsEmptyState from './Products/ProductsEmptyState';
+import ProductsHeader from './ProductsHeader';
+import ProductsStats from './ProductsStats';
+import ProductsFilters from './ProductsFilters';
+import ProductsBulkActions from './ProductsBulkActions';
+import ProductsGrid from './ProductsGrid';
+import ProductsTable from './ProductsTable';
+import ProductsPagination from './ProductsPagination';
+import ProductsEmptyState from './ProductsEmptyState';
 
 // Hooks
-import { useProducts } from './Products/hooks/useProducts';
-import { useProductsFilters } from './Products/hooks/useProductsFilters';
-import { useProductsActions } from './Products/hooks/useProductsActions';
+import { useProducts } from '../hooks/useProducts';
+import { useProductsFilters } from '../hooks/useProductsFilters';
+import { useProductsActions } from '../hooks/useProductsActions';
 
 // Dynamic imports
-const ProductForm = dynamic(() => import('./Products/ProductForm'), { ssr: false });
-const ProductDetails = dynamic(() => import('./Products/ProductDetails'), { ssr: false });
+const ProductForm = dynamic(() => import('./ProductForm'), { ssr: false });
+const ProductDetails = dynamic(() => import('./ProductDetails'), { ssr: false });
 
 type ViewMode = 'grid' | 'table';
 

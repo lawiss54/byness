@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Phone, User, Package } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import Image from 'next/image';
-import {getStatusBadge, formatDate} from './utils/orderUtils'
+import {getStatusBadge, formatDate} from '../utils/orderUtils'
 
 interface OrderDetailsProps {
   order: any;
@@ -12,7 +12,7 @@ interface OrderDetailsProps {
 }
 
 export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
-
+  console.log(order);
   return (
     <motion.div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -139,7 +139,7 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                     <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-xl">
                       <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.images}
+                          src={item.image}
                           alt={item.name}
                           fill
                           className="object-cover"

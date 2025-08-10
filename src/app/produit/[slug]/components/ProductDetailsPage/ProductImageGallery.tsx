@@ -35,16 +35,17 @@ const ProductImageGallery = memo<ProductImageGalleryProps>(({
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R6i+GCWZg4DK4Dg5GUIPqDxXHx72tNVFUQOPRuWyDhTbONu/wDIuV3qtiznU3+pLTWTcLlHkdTdOjqajCnCzk5jR9f7mvOzl8aHbVgNT9gxFGDdJhHDjpCAEJIAQ=" // Optimized blur placeholder
           />
         </motion.div>
-
         {/* Product Badge */}
-        <motion.div
-          className="absolute top-4 left-4 bg-brand-camel-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm"
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
-        >
-          {product?.badge}
-        </motion.div>
+        {product?.badge && (
+          <motion.div
+            className="absolute top-4 left-4 bg-brand-camel-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg backdrop-blur-sm"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.5, type: "spring", stiffness: 300 }}
+          >
+            {product?.badge}
+          </motion.div>
+        )}
 
         {/* Discount Badge - Only show if there's a discount */}
         {discountPercentage > 0 && (
