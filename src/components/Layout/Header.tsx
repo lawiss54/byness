@@ -1,20 +1,30 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import { useCartCheckout } from "@/lib/CartCheckoutContext";
+import { useCartTotals, useCartActions } from '@/app/panier/store/cart';
 import { useRouter } from "next/navigation";
 
+
+
 export default function Header({image}) {
+  
+  const {itemCount} = useCartTotals();
+  const { initializeCart } = useCartActions();
+  
 
-
-  const { itemCount } = useCartCheckout()
   const router = useRouter();
 
   const goHome = () => {
     router.push('/')
   }
+  
+  // Initialize cart from backend on component mount
+  useEffect(() => {
+    initializeCart();
+  }, [initializeCart]);
 
 
   return (

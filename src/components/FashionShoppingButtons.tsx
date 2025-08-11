@@ -4,8 +4,8 @@ import { ShoppingCart, Package, CreditCard } from "lucide-react";
 import { Product } from "@/components/boutique/types/product.types";
 import { useRouter } from "next/navigation";
 import { Button } from "./shared/ui";
-import { useCartCheckout } from "@/lib/CartCheckoutContext";
-import { CartItem } from "@/lib/CartCheckoutContextType";
+import { useCartActions } from '@/app/panier/store/cart';
+import { CartItem } from '@/app/panier/store/cart';
 
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 import { useTiktokPixelEvent } from '@/hooks/useTiktokPixelEvent'
@@ -21,7 +21,7 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
   const { trackTiktok } = useTiktokPixelEvent();
   const [isAdded, setIsAdded] = useState(false);
 
-  const { addToCart } = useCartCheckout()
+  const actions = useCartActions()
 
   const handleAddToCart = () => {
 
@@ -39,21 +39,24 @@ export const AddToCartButtons: React.FC<AddToCartButtonsProps> = ({ product }) =
       value: product?.price,
       currency: 'DZD',
     });
+    
     const cartProduct: CartItem = {
-      id: product?.id,
-      name: product?.name,
-      price: product?.price,
-      originalPrice: product?.originalPrice,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      originalPrice: product.originalPrice,
+      image: product.images[0],
+      images: product.images,
+      colors: product.colors,
+      color: product.colors?.[0] || null,
+      colorName: product.colors?.[0] || null,
+      sizes: product.sizes,
+      size: product.sizes?.[0] || null,
+      slug: product.slug,
       quantity: 1,
-      category: product?.category,
-      images: product?.images,
-      colors: product?.colors,
-      color: product?.colors?.[0] || null,
-      colorName: product?.colors?.[0] || null,
-      sizes: product?.sizes,
-      size: product?.sizes?.[0] || null
+      category: product.category
     };
-    addToCart(cartProduct);
+    actions.addToCart(cartProduct);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
   };
@@ -76,9 +79,11 @@ interface BuyNowButtonsProps {
 }
 
 export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
-  const { addToCart } = useCartCheckout();
+  const actions = useCartActions()
+
   const { track } = useFacebookPixelEvent();
   const { trackTiktok } = useTiktokPixelEvent();
+  
   const router = useRouter();
 
   const handleBuyNow = () => {
@@ -102,22 +107,18 @@ export const BuyNowButtons: React.FC<BuyNowButtonsProps> = ({ product }) => {
       name: product.name,
       price: product.price,
       originalPrice: product.originalPrice,
-      image: product.images?.[0],
-      quantity: product.quantity ?? 1,
-      category: product.category,
+      image: product.images[0],
       images: product.images,
       colors: product.colors,
-      color: product.colors?.[0],
-      colorName: product.colorName ?? null,
+      color: product.colors?.[0] || null,
+      colorName: product.colors?.[0] || null,
       sizes: product.sizes,
-      size: product.size,
+      size: product.sizes?.[0] || null,
       slug: product.slug,
-      badge: product.badge,
-      isNew: product.isNew,
-      isSale: product.isSale,
-      discount: product.discount
+      quantity: 1,
+      category: product.category
     };
-    addToCart(cartProduct);
+    actions.addToCart(cartProduct);
 
     router.push('/checkout');
   };

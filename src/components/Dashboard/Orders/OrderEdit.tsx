@@ -3,16 +3,16 @@
 import { motion } from 'framer-motion';
 import { Loader } from '@/components/shared';
 import { ProductsTableModal } from './ProductsTableModal';
-import { useOrderEdit } from './hooks/useOrderEdit';
-import type { OrderEditProps } from './types/orderEdit';
+import { useOrderEdit } from '@/app/admin/dashboard/orders/hooks/useOrderEdit';
+import type { OrderEditProps } from '@/app/admin/dashboard/orders/types/orderEdit';
 
 // Import the components
-import { OrderEditHeader } from './OrderEdit/OrderEditHeader';
-import { OrderEditCustomerInfo } from './OrderEdit/OrderEditCustomerInfo';
-import { OrderEditShippingInfo } from './OrderEdit/OrderEditShippingInfo';
-import { OrderEditProductsList } from './OrderEdit/OrderEditProductsList';
-import { OrderEditSummary } from './OrderEdit/OrderEditSummary';
-import { OrderEditFooter } from './OrderEdit/OrderEditFooter';
+import { OrderEditHeader } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditHeader';
+import { OrderEditCustomerInfo } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditCustomerInfo';
+import { OrderEditShippingInfo } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditShippingInfo';
+import { OrderEditProductsList } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditProductsList';
+import { OrderEditSummary } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditSummary';
+import { OrderEditFooter } from '@/app/admin/dashboard/orders/components/OrderEdit/OrderEditFooter';
 
 export function OrderEdit({ order, onSave, onClose, setShowPdfModal, setPdfUrl }: OrderEditProps) {
   const {

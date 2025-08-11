@@ -1,77 +1,65 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import dynamic from 'next/dynamic'
-
-
-
+import dynamic from 'next/dynamic';
+import { useRouter } from "next/navigation";
 
 const Sidebar = dynamic(
   () => import('@/components/Dashboard/Sidebar'),
   { ssr: false }
 )
-const Dashboard = dynamic(
-  () => import('@/components/Dashboard/Dashboard'),
-  { ssr: false }
-)
-const ProductsSection = dynamic(
-  () => import('@/components/Dashboard/ProductsSection'),
-  { ssr: false }
-)
-const CategoriesSection = dynamic(
-  () => import('@/components/Dashboard/CategoriesSection'),
-  { ssr: false }
-)
-const HomepageContentManager = dynamic(
-  () => import('@/components/Dashboard/HomepageContentManager'),
-  { ssr: false }
-)
-const OrdersSection = dynamic(
-  () => import('@/components/Dashboard/OrdersSection'),
-  { ssr: false }
-)
-const SettingsSection = dynamic(
-  () => import('@/components/Dashboard/SettingsSection'),
-  { ssr: false }
-)
+
 const Profile = dynamic(
   () => import('@/components/Dashboard/Profile'),
   { ssr: false }
 )
 
-
 function AdminPage() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  
- 
+  const router = useRouter();
 
-
-  const renderActiveSection = () => {
+  // Handle navigation when activeSection changes
+  useEffect(() => {
     switch (activeSection) {
       case 'dashboard':
-        return <Dashboard />;
-      case 'branches':
-        return <ProductsSection />;
+        router.push('/admin/dashboard');
+        break;
+      case 'products':
+        router.push('/admin/dashboard/products');
+        break;
       case 'categories':
-        return <CategoriesSection />;
+        router.push('/admin/dashboard/categories');
+        break;
       case 'orders':
-        return <OrdersSection />;
+        router.push('/admin/dashboard/orders');
+        break;
       case 'settings':
-        return <SettingsSection />;
+        router.push('/admin/dashboard/settings');
+        break;
+      case 'homepage-content':
+        router.push('/admin/dashboard/homepage-content');
+        break;
       case 'profile':
-        return <Profile />;
-      case 'homepage':
-        return <HomepageContentManager />
+        router.push('/admin/dashboard/profile');
+        break;
       default:
-        return <Dashboard />;
+        router.push('/admin/dashboard');
+        break;
     }
+  }, [activeSection, router]);
+ 
+  const renderActiveSection = () => {
+   
+    
+    // For other sections, return null since navigation is handled by useEffect
+    return null;
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen">
       <div className={`relative transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-64' : 'w-0'}`}>
         <Sidebar 
           activeSection={activeSection} 
@@ -90,9 +78,8 @@ function AdminPage() {
             ) : (
               <Menu className="w-6 h-6 text-gray-700" />
             )}
-            
           </button>
-          {renderActiveSection()}
+          {activeSection}
         </div>
       </main>
     </div>

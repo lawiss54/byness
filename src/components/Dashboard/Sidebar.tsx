@@ -21,10 +21,10 @@ interface SidebarProps {
 
 const menuItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'branches', label: 'Products', icon: Store },
+  { id: 'products', label: 'Products', icon: Store },
   { id: 'categories', label: 'Categories', icon: Tag },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
-  { id: 'homepage', label: 'Homepage Manager', icon: Home },
+  { id: 'homepage-content', label: 'Homepage Manager', icon: Home },
   { id: 'profile', label: 'Profile', icon: UserRound },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];

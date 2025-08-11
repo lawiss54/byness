@@ -196,4 +196,3 @@ const handleApiError = (error: any, operation: string = "opération") => {
     { status: 500 }
   );
 };
-

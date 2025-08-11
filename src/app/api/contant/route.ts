@@ -271,7 +271,3 @@ export async function POST(req: NextRequest) {
       return handleApiError(error, "création");
     }
 }
-
-
-
-// إضافة دالة DELETE للحذف

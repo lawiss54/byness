@@ -5,12 +5,11 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
-import { useCart } from '@/components/cart/CartContext';
 import Badge from './ui/Badge';
 import {Button} from './ui/Button';
-import type { Product } from '@/components/boutique/types/product.types';
-import { useCartCheckout } from '@/lib/CartCheckoutContext';
-import { CartItem } from '@/lib/CartCheckoutContextType';
+import type { Product } from '@/app/boutique/types';
+import { useCartActions } from '@/app/panier/store/cart';
+import { CartItem } from '@/app/panier/store/cart';
 import { useFacebookPixelEvent } from '@/hooks/useFacebookPixelEvent';
 
 interface ProductCardProps {
@@ -26,7 +25,7 @@ const ProductCard = memo<ProductCardProps>(({
   showAddToCart = true,
   className = ""
 }) => {
-  const { addToCart } = useCartCheckout();
+  const actions = useCartActions();
   const { track } = useFacebookPixelEvent();
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -46,17 +45,19 @@ const ProductCard = memo<ProductCardProps>(({
       name: product.name,
       price: product.price,
       originalPrice: product.originalPrice,
-      quantity: 1,
-      category: product.category,
+      image: product.images[0],
       images: product.images,
       colors: product.colors,
       color: product.colors?.[0] || null,
       colorName: product.colors?.[0] || null,
       sizes: product.sizes,
-      size: product.sizes?.[0] || null
+      size: product.sizes?.[0] || null,
+      slug: product.slug,
+      quantity: 1,
+      category: product.category
     };
     
-    addToCart(cartProduct);
+    actions.addToCart(cartProduct);
   };
 
   const discountPercentage = product.originalPrice 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { OrderDetails } from './OrderDetails';
+import { OrderDetails } from '@/app/admin/dashboard/orders/components/OrderDetails';
 import { OrderEdit } from './OrderEdit';
 import { ModalTéléchargementPDF } from './ModalTéléchargementPDF';
 
