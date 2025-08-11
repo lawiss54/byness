@@ -8,8 +8,6 @@ export interface Branch {
   revenue: number;
 }
 
-
-
 export interface Order {
   id: string;
   customerName: string;
@@ -39,4 +37,37 @@ export interface SiteSettings {
   emailNotifications: boolean;
   smsNotifications: boolean;
   maintenanceMode: boolean;
+}
+
+export interface Product {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  price: number;
+  originalPrice?: number;
+  images: string[];
+  badge: string;
+  colors: string[];
+  sizes: string[];
+  category: string;
+  stockQuantity: number;
+  isNew: boolean;
+  isSale: boolean;
+  discount: number;
+  status: 'active' | 'inactive';
+  heroSection: boolean;
+  quantity?: number;
+  colorName?: string;
+}
+
+export interface Category {
+  name: string;
+  slug: string;
+  description: string;
+  icon: string;
+  color: string;
+  status: string
+  productsCount?: number;
+  id?: string;
 }

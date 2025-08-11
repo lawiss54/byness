@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { OrderDetails } from '@/app/admin/dashboard/orders/components/OrderDetails';
-import { OrderEdit } from './OrderEdit';
+import OrderEdit  from '@/app/admin/dashboard/orders/components/OrderEdit';
 import { ModalTéléchargementPDF } from './ModalTéléchargementPDF';
 
 interface OrdersModalsProps {

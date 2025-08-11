@@ -21,7 +21,7 @@ import {
   calculateShippingPrice
 } from '../utils/orderEditUtils';
 
-export async function useOrderEdit(
+export function useOrderEdit(
   order: any,
   onSave: (updatedOrder: any) => void,
   setPdfUrl: (url: string) => void,
@@ -29,12 +29,34 @@ export async function useOrderEdit(
 ) {
   // External hooks
   const { data: shippingData, loading } = useShippingData();
-  const activeProduct  = await getProducts();
+  
+  // State for products
+  const [activeProducts, setActiveProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   // Local state
   const [selectedWilayaId, setSelectedWilayaId] = useState(order.wilaya || "");
   const [openAddProductModel, setOpenAddProductModel] = useState(false);
   const [currentShippingPrice, setCurrentShippingPrice] = useState(0);
+
+  // Load products on mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setProductsLoading(true);
+        const products = await getProducts();
+        setActiveProducts(products);
+      } catch (error) {
+        console.error('Error loading products:', error);
+        toast.error('خطأ في تحميل المنتجات');
+        setActiveProducts([]);
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
 
   // Form setup
   const {
@@ -201,12 +223,12 @@ export async function useOrderEdit(
 
     // Data
     shippingData,
-    loading,
+    loading: loading || productsLoading,
     selectedWilayaId,
     selectedWilayaShipping,
     availableDesks,
     currentShippingPrice,
-    activeProducts: activeProduct(),
+    activeProducts,
 
     // Modals
     openAddProductModel,
