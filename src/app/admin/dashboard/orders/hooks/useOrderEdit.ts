@@ -5,7 +5,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
 import { useShippingData } from '@/hooks/useShippingData';
-import { getProducts } from '@/app/boutique/services';
+import { getProducts } from '@/app/admin/dashboard/services';
 import { orderEditService } from '../services/orderEditService';
 import { 
   orderEditSchema, 
