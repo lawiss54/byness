@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Phone, User, Package } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import Image from 'next/image';
-import { getStatusBadge, formatDate } from './utils/orderUtils';
+import { getStatusBadge, formatDate } from '@/app/admin/dashboard/orders/utils/orderUtils';
 
 interface OrderDetailsProps {
   order: any;
