@@ -4,9 +4,12 @@ import type { NextRequest } from 'next/server';
 import { cookies } from "next/headers";
 import { getFingerprint } from "@/lib/getFingerprint";
 import { rateLimiter } from "@/lib/rateLimiter";
-
+ { NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+export const dynamic = "force-dynamic"; // يمنع ISR من Next.js
+export const revalidate = 0; // ضمان إضافي لتعطيل التخزين المؤقت
 
 export async function GET() {
   try {
@@ -14,11 +17,19 @@ export async function GET() {
       console.error("API_URL is not defined in environment variables");
       return NextResponse.json(
         { error: "Configuration serveur manquante" },
-        { status: 500 }
+        {
+          status: 500,
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        }
       );
     }
 
     const res = await fetch(`${API_URL}/api/order`, {
+      cache: "no-store", // ⬅ يمنع التخزين المؤقت من fetch
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -32,7 +43,14 @@ export async function GET() {
       console.error("Failed to parse JSON response:", parseError);
       return NextResponse.json(
         { error: "Réponse serveur invalide" },
-        { status: 502 }
+        {
+          status: 502,
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        }
       );
     }
 
@@ -50,40 +68,66 @@ export async function GET() {
         data: data,
       });
 
-      return NextResponse.json({ error: errorMessage }, { status: res.status });
+      return NextResponse.json(
+        { error: errorMessage },
+        {
+          status: res.status,
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        }
+      );
     }
 
     if (!data) {
       return NextResponse.json(
         { error: "Aucune donnée reçue du serveur" },
-        { status: 204 }
+        {
+          status: 204,
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+          },
+        }
       );
     }
 
-    return NextResponse.json(data || data, { status: 200 });
+    return NextResponse.json(data, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        "Pragma": "no-cache",
+        "Expires": "0",
+      },
+    });
   } catch (error: any) {
     console.error("Orders API Error:", error);
 
-    if (error.name === "AbortError") {
-      return NextResponse.json(
-        { error: "Délai d'attente de la requête dépassé" },
-        { status: 408 }
-      );
-    }
+    let status = 500;
+    let message =
+      "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site.";
 
-    if (error.name === "TypeError" && error.message.includes("fetch")) {
-      return NextResponse.json(
-        { error: "Impossible de se connecter au serveur" },
-        { status: 503 }
-      );
+    if (error.name === "AbortError") {
+      status = 408;
+      message = "Délai d'attente de la requête dépassé";
+    } else if (error.name === "TypeError" && error.message.includes("fetch")) {
+      status = 503;
+      message = "Impossible de se connecter au serveur";
     }
 
     return NextResponse.json(
+      { error: message },
       {
-        error:
-          "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site.",
-      },
-      { status: 500 }
+        status,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
     );
   }
 }

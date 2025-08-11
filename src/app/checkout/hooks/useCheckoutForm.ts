@@ -14,12 +14,12 @@ import { submitOrder } from '../services/order';
 export const useCheckoutForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  
   // Get state and actions from our new stores/contexts
   const cartItems = useCartItems();
   const { subtotal } = useCartTotals();
   const { clearCart } = useCartActions();
-  const { total: totalWithExtras, shippingCost } = useCheckout();
+  const { total: totalWithExtras } = useCheckout();
 
   // Analytics hooks
   const { track: trackFb } = useFacebookPixelEvent();
@@ -47,17 +47,13 @@ export const useCheckoutForm = () => {
       wilaya: '',
       municipality: '',
       shippingType: 'home',
-      shippingPrice: shippingCost, // Initialize with shipping cost from context
+      shippingPrice: '', 
       giftWrap: false,
       deskId: ''
     }
   });
 
-  // Watch for changes in shipping cost from the context and update the form
-  const formShippingPrice = form.watch('shippingPrice');
-  if (formShippingPrice !== shippingCost) {
-    form.setValue('shippingPrice', shippingCost);
-  }
+  
 
   const nextStep = async () => {
     const isValid = await form.trigger();
@@ -84,6 +80,7 @@ export const useCheckoutForm = () => {
     trackFb('Purchase', { value: totalWithExtras, currency: 'DZD', contents, content_type: 'product' });
     trackTiktok('Purchase', { value: totalWithExtras, currency: 'DZD', contents, content_type: 'product' });
 
+    
     const payload = {
       customer: data,
       items: cartItems,

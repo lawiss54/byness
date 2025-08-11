@@ -15,6 +15,7 @@ interface CustomerInfoStepProps {
 
 const CustomerInfoStep: React.FC<CustomerInfoStepProps> = ({ form }) => {
   const { data, loading } = useShippingData();
+  
   const { setShippingMethod } = useCheckout();
 
   const {
@@ -111,7 +112,7 @@ const CustomerInfoStep: React.FC<CustomerInfoStepProps> = ({ form }) => {
         />
         <Select
           {...register('municipality')}
-          label="Commune"
+          label="Baladia"
           options={communes.map((c) => ({key:c.id, value: c.name, label: c.name }))}
           error={errors.municipality?.message}
           required

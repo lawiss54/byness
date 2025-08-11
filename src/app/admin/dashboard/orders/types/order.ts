@@ -1,7 +1,7 @@
 
 export interface ProductItem {
   id: string;
-  productName: string;
+  name: string;
   quantity: number;
   price: number;
   color?: string;
