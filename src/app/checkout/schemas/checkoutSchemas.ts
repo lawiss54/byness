@@ -41,7 +41,7 @@ export const checkoutSchema = z.object({
 
   giftWrap: z.boolean().optional(),
 
-  shippingPrice: z.number().optional() // سيتم تعبئته تلقائيًا في الفورم
+  shippingPrice: z.number() // سيتم تعبئته تلقائيًا في الفورم
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;
