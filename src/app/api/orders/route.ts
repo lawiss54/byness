@@ -4,7 +4,6 @@ import type { NextRequest } from 'next/server';
 import { cookies } from "next/headers";
 import { getFingerprint } from "@/lib/getFingerprint";
 import { rateLimiter } from "@/lib/rateLimiter";
- { NextResponse } from "next/server";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
