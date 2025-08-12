@@ -1,9 +1,13 @@
-'use client';;
+'use client';
 import { motion } from 'framer-motion';
 import { X, Edit, Phone, User, Package } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import Image from 'next/image';
-import {getStatusBadge, formatDate, getWilayaNameByNumber} from '../utils/orderUtils'
+import { useMemo } from 'react'; // Import manquant
+import { getStatusBadge, formatDate, getWilayaNameByNumber } from '../utils/orderUtils';
+import { useShippingData } from '@/hooks/useShippingData';
+import { Loader } from '@/components/shared';
+import { findWilayaById, findDeskById } from '../utils/orderEditUtils';
 
 interface OrderDetailsProps {
   order: any;
@@ -12,6 +16,17 @@ interface OrderDetailsProps {
 }
 
 export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
+  const { data: shippingData, loading } = useShippingData();
+
+  const availableDesks = useMemo(() => {
+    if (!shippingData || !order.wilaya) return [];
+    const wilaya = findWilayaById(shippingData, order.wilaya);
+    return wilaya?.centers || [];
+  }, [shippingData, order.wilaya]);
+  
+  if (loading) {
+    return <Loader type="fashion" size="lg" text="Chargement des données..." overlay={true} />;
+  }
   
   return (
     <motion.div
@@ -97,7 +112,9 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Nom :</span>
-                    <span className="font-semibold text-gray-900">{[order.customer_first_name, order.customer_last_name].filter(Boolean).join(' ')}</span>
+                    <span className="font-semibold text-gray-900">
+                      {[order.customer_first_name, order.customer_last_name].filter(Boolean).join(' ')}
+                    </span>
                   </div>
                   
                   <div className="flex justify-between items-center">
@@ -113,12 +130,34 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                       />
                     </div>
                   </div>
-                  {order.shippingType && (
+                  
+                  {/* Correction de la logique conditionnelle */}
+                  {order.shippingType === 'home' ? (
                     <div className="flex justify-between items-start">
                       <span className="text-gray-600">Adresse :</span>
                       <div className="text-right">
                         <p className="text-gray-900">
                           {order?.customerAddress || "Adresse non fournie"}
+                        </p>
+                        {(order?.municipality || order?.wilaya) && (
+                          <p className="text-sm text-gray-600">
+                            {order?.municipality && `${order.municipality}, `}
+                            {order?.wilaya && getWilayaNameByNumber(order.wilaya)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-start">
+                      <span className="text-gray-600">Bureau de retrait :</span>
+                      <div className="text-right">
+                        <p className="text-gray-900">
+                          {
+                          availableDesks.find(
+                            (desk) =>
+                              desk.id === Number(order.deskId)
+                          )?.address
+                          }
                         </p>
                         {(order?.municipality || order?.wilaya) && (
                           <p className="text-sm text-gray-600">
@@ -142,7 +181,7 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                 </h3>
                 
                 <div className="space-y-4">
-                  {order.items.map((item, index) => (
+                  {order.items?.map((item: any, index: number) => (
                     <div key={index} className="flex gap-4 p-4 bg-gray-50 rounded-xl">
                       <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0">
                         <Image
@@ -178,7 +217,9 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                   <div className="space-y-2">
                     <div className="flex justify-between text-gray-600">
                       <span>Sous-total :</span>
-                      <span>{order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()} DA</span>
+                      <span>
+                        {order.items?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0).toLocaleString() || 0} DA
+                      </span>
                     </div>
                     <div className="flex justify-between text-gray-600">
                       <span>Livraison :</span>
@@ -186,7 +227,7 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                     </div>
                     <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t border-gray-200">
                       <span>Total général :</span>
-                      <span>{order.total.toLocaleString()} DA</span>
+                      <span>{order.total?.toLocaleString() || 0} DA</span>
                     </div>
                   </div>
                 </div>

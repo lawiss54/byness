@@ -1,4 +1,4 @@
-// Color mapping utility
+
 export const colorMap: { [key: string]: string } = {
   '#ff0000': 'Rouge',
   '#0000ff': 'Bleu',

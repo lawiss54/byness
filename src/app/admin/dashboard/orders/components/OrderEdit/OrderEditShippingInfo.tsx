@@ -139,6 +139,7 @@ export function OrderEditShippingInfo({
             render={({ field }) => (
               <Select
                 {...field}
+                value={field.value || watchedDeskId}
                 label="Bureau de retrait"
                 required
                 icon={<Building className="w-4 h-4" />}
