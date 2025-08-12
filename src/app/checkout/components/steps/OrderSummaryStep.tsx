@@ -1,14 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Package, Truck, User } from 'lucide-react';
 import { UseFormReturn } from 'react-hook-form';
 import Image from 'next/image';
 import { Card } from '@/components/shared/ui';
 import { CheckoutFormData } from '../../schemas/checkoutSchemas';
-import { useCartItems, useCartTotals } from '@/app/panier/store/cart';
 import { useCheckout } from '../../context/CheckoutContext';
+import { useCartItems, useCartTotals } from '@/app/panier/store/cart';
+import { useShippingData } from '@/hooks/useShippingData';
+import { Loader } from '@/components/shared';
+import { findWilayaById, findDeskById } from '@/app/admin/dashboard/orders/utils/orderEditUtils';
 
 interface OrderSummaryStepProps {
   form: UseFormReturn<CheckoutFormData>;
@@ -21,11 +24,48 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
   onSubmit, 
   isSubmitting 
 }) => {
+  const { data: shippingData, loading } = useShippingData();
   const cartItems = useCartItems();
   const { subtotal } = useCartTotals();
-  const { shippingCost, total } = useCheckout();
+  const {setTotal, setShippingCost} = useCheckout()
+  
   const formData = form.getValues();
+  
+  const availableDesks = useMemo(() => {
+    if (!shippingData || !formData.wilaya) return [];
+    const wilaya = findWilayaById(shippingData, formData.wilaya);
+    return wilaya?.centers || [];
+  }, [shippingData, formData.wilaya]);
 
+  const total = useMemo(() => {
+    return subtotal + formData.shippingPrice ;
+  }, [subtotal, formData.shippingPrice]);
+
+  const shippingPrice = useMemo(() => {
+    return formData.shippingPrice ;
+  }, [formData.shippingPrice]);
+
+  // إضافة useMemo لإيجاد معلومات الولاية
+  const wilayaInfo = useMemo(() => {
+    if (!shippingData || !formData.wilaya) return null;
+    return findWilayaById(shippingData, formData.wilaya);
+  }, [shippingData, formData.wilaya]);
+
+  // إضافة useMemo لإيجاد معلومات المكتب
+  const deskInfo = useMemo(() => {
+    if (!availableDesks || !formData.deskId) return null;
+    return availableDesks.find((desk) => desk.id === Number(formData.deskId));
+  }, [availableDesks, formData.deskId]);
+  
+  useEffect(() => {
+    setTotal(subtotal + formData.shippingPrice);
+    setShippingCost(formData.shippingPrice);
+  }, [subtotal, formData.shippingPrice]);
+  
+
+  if (loading) {
+    return <Loader type="fashion" size="lg" text="Chargement des données..." />;
+  }
 
   return (
     <motion.div
@@ -70,10 +110,13 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
             <div className="flex flex-col gap-1">
               <span className="text-brand-darkGreen-400">Adresse:</span>
               <span className="font-semibold text-brand-darkGreen-600">
-                {formData.address}
+                {formData.shippingType === 'home' 
+                  ? formData.address 
+                  : deskInfo?.address || 'Adresse non trouvée'
+                }
               </span>
               <span className="text-sm text-brand-darkGreen-400">
-                {formData.municipality}, Wilaya {formData.wilaya}
+                {formData.municipality}, Wilaya {wilayaInfo?.name || 'Non trouvée'}
               </span>
             </div>
             
@@ -108,7 +151,7 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
               <div key={item.id} className="flex gap-4 p-4 bg-brand-sage-50 rounded-xl">
                 <div className="w-16 h-16 relative rounded-lg overflow-hidden flex-shrink-0">
                   <Image
-                    src={item.images?.[0]}
+                    src={item.images?.[0] || '/placeholder-image.jpg'}
                     alt={item.name}
                     fill
                     className="object-cover"
@@ -122,16 +165,6 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
                   <p className="text-sm text-brand-darkGreen-400">
                     Quantité: {item.quantity}
                   </p>
-                  {item.color && (
-                    <p className="text-sm text-brand-darkGreen-400">
-                      Couleur: {item.colorName || item.color}
-                    </p>
-                  )}
-                  {item.size && (
-                    <p className="text-sm text-brand-darkGreen-400">
-                      Taille: {item.size}
-                    </p>
-                  )}
                 </div>
                 <div className="text-right">
                   <div className="font-bold text-brand-camel-500">
@@ -151,7 +184,7 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
             
             <div className="flex justify-between text-brand-darkGreen-500">
               <span>Livraison</span>
-              <span>{shippingCost.toLocaleString()} DA</span>
+              <span>{(shippingPrice || 0).toLocaleString()} DA</span>
             </div>
             
             <div className="flex justify-between text-xl font-bold text-brand-camel-500 pt-3 border-t border-brand-sage-200">
@@ -161,6 +194,8 @@ const OrderSummaryStep: React.FC<OrderSummaryStepProps> = ({
           </div>
         </Card>
       </div>
+
+      
     </motion.div>
   );
 };

@@ -223,7 +223,7 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                     </div>
                     <div className="flex justify-between text-gray-600">
                       <span>Livraison :</span>
-                      <span>{order.shippingType === 'home' ? '800' : '300'} DA</span>
+                      <span>{order.shippingPrice } DA</span>
                     </div>
                     <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t border-gray-200">
                       <span>Total général :</span>
