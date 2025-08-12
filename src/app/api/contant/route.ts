@@ -79,8 +79,7 @@ export async function GET() {
       );
     }
 
-    console.log("Attempting to fetch from:", `${API_URL}/api/contant-managers`);
-
+    
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
 
@@ -91,6 +90,8 @@ export async function GET() {
         Accept: "application/json",
       },
       signal: controller.signal,
+      next: { revalidate: 0 }, 
+      cache: "no-store", 
     });
 
     clearTimeout(timeoutId);

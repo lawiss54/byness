@@ -19,8 +19,8 @@ export async function GET() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      next: { revalidate: 0 }, // تعطيل إعادة التحقق
-      cache: "no-store", // منع التخزين نهائيًا
+      next: { revalidate: 0 }, 
+      cache: "no-store", 
     });
 
     const fetchEndTime = Date.now();
