@@ -201,8 +201,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      console.log("Sending POST request to:", `${API_URL}/api/contant-managers`);
-
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 seconds for POST
 
@@ -245,8 +243,6 @@ export async function POST(req: NextRequest) {
           { status: res.status }
         );
       }
-
-      console.log("POST request successful");
 
       return NextResponse.json(
         {
