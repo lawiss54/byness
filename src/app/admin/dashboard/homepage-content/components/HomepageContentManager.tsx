@@ -56,7 +56,7 @@ export default function HomepageContentManager({ initialSections }: HomepageCont
   }
 
   return (
-    <div className="min-h-screen space-y-4 sm:space-y-6 p-3 sm:p-6 bg-gray-50">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6">
       {/* Header */}
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">

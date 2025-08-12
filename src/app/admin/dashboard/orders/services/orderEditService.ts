@@ -2,6 +2,7 @@ import { ordersService } from './ordersService';
 
 export const orderEditService = {
   async updateOrder(updatedOrder: any) {
+    console.log(updatedOrder);
     return await ordersService.updateOrder(updatedOrder);
   },
 

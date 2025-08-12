@@ -44,7 +44,6 @@ export const useContentForm = (
         
         const newSection: ContentSection = {
           ...editingSection,
-          title: data.title || "",
           badge: data.badge || "",
           mainTitle: data.mainTitle,
           description: data.description,
@@ -59,14 +58,13 @@ export const useContentForm = (
           section.id === editingSection.id ? newSection : section
         )
         setSections(updatedSections)
-        toast.success(result.message || "تم تحديث القسم بنجاح")
+        toast.success(result.message || "La section a été mise à jour avec succès");
       } else {
         // إنشاء قسم جديد
         const result = await ContentService.createSection(data)
         
         const newSection: ContentSection = {
           id: result.data?.id?.toString() || Date.now().toString(),
-          title: data.title || "",
           badge: data.badge || "",
           mainTitle: data.mainTitle,
           description: data.description,
@@ -80,18 +78,18 @@ export const useContentForm = (
         }
 
         setSections((prevSections) => [...prevSections, newSection])
-        toast.success(result.message || "تم إنشاء القسم بنجاح")
+        toast.success(result.message || "La section a été créée avec succès")
       }
 
       resetForm()
     } catch (error) {
-      console.error("خطأ في handleSubmit:", error)
+      console.error(" Erreur au handleSubmit:", error)
       if (error instanceof TypeError && error.message.includes("fetch")) {
-        toast.error("خطأ في الاتصال بالخادم. الرجاء المحاولة مرة أخرى.")
+        toast.error("Erreur de connexion au serveur, veuillez réessayer")
       } else if (error instanceof Error) {
         toast.error(error.message)
       } else {
-        toast.error("حدث خطأ غير متوقع")
+        toast.error("Une erreur inattendue s’est produite")
       }
     } finally {
       setButtonLoading(false)

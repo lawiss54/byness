@@ -48,6 +48,7 @@ export const ordersService = {
     if (!res.ok) {
       throw new Error('Failed to download PDF');
     }
+    console.log(res)
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);

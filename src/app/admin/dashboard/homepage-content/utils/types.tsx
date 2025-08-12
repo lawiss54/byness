@@ -2,7 +2,6 @@
 
 export interface ContentSection {
   id: string
-  title: string
   badge: string
   mainTitle: string
   description: string
@@ -16,7 +15,6 @@ export interface ContentSection {
 }
 
 export interface ContentFormData {
-  title: string
   badge: string
   mainTitle: string
   description: string

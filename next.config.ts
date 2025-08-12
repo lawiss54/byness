@@ -18,7 +18,8 @@ const securityHeaders = [
         https://analytics.tiktok.com
         https://ads.tiktok.com
         https://www.google-analytics.com
-        https://www.facebook.com;
+        https://www.facebook.com
+        https://byness.vercel.app;
       img-src * data: blob:;
       frame-src https://analytics.tiktok.com https://ads.tiktok.com;
     `.replace(/\n/g, ''),

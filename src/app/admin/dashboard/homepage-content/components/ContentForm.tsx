@@ -1,3 +1,4 @@
+import Form from '../../../../../components/shared/ui/form';
 "use client"
 import type React from "react"
 import { useForm } from 'react-hook-form'
@@ -37,7 +38,6 @@ export const ContentForm: React.FC<ContentFormProps> = ({
   } = useForm<ContentFormSchema>({
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
-      title: "",
       badge: "",
       mainTitle: "",
       description: "",
@@ -52,7 +52,6 @@ export const ContentForm: React.FC<ContentFormProps> = ({
   useEffect(() => {
     if (editingSection) {
       reset({
-        title: editingSection?.title,
         badge: editingSection?.badge,
         mainTitle: editingSection?.mainTitle,
         description: editingSection?.description,
@@ -63,7 +62,6 @@ export const ContentForm: React.FC<ContentFormProps> = ({
       })
     } else {
       reset({
-        title: "",
         badge: "",
         mainTitle: "",
         description: "",
@@ -74,8 +72,6 @@ export const ContentForm: React.FC<ContentFormProps> = ({
       })
     }
   }, [editingSection, reset])
-  
-  console.log(editingSection);
 
   const watchedImage = watch('image')
 
@@ -95,7 +91,6 @@ export const ContentForm: React.FC<ContentFormProps> = ({
    */
   const handleClose = () => {
     reset({
-      title: "",
       badge: "",
       mainTitle: "",
       description: "",
@@ -122,14 +117,14 @@ export const ContentForm: React.FC<ContentFormProps> = ({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-3 sm:p-4 z-50"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[95vh] overflow-y-auto"
+        className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-full overflow-auto"
       >
         <div className="sticky top-0 bg-white p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between rounded-t-xl">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
@@ -144,19 +139,7 @@ export const ContentForm: React.FC<ContentFormProps> = ({
           />
         </div>
         
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Titre de la section (optionnel)
-            </label>
-            <Input
-              {...register('title')}
-              placeholder="Exemple: Section Hero"
-              icon={<Type className="w-4 h-4" />}
-              error={errors.title?.message}
-            />
-          </div>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4 sm:p-6 space-y-4 sm:space-y-6"> 
 
           {/* Badge */}
           <div>
@@ -199,7 +182,7 @@ export const ContentForm: React.FC<ContentFormProps> = ({
           {/* Button Text and Link - Side by side on larger screens */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton (optionnel)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton</label>
               <Input
                 {...register('buttonText')}
                 placeholder="Exemple: En savoir plus"
@@ -208,7 +191,7 @@ export const ContentForm: React.FC<ContentFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Lien du bouton (optionnel)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Lien du bouton </label>
               <Input
                 {...register('buttonLink')}
                 placeholder="Exemple: /services ou https://exemple.com"
@@ -256,7 +239,7 @@ export const ContentForm: React.FC<ContentFormProps> = ({
                         }}
                       />
                     </label>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG jusqu'à 5MB</p>
+                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, WEBP, AVIF jusqu'à 15MB</p>
                   </div>
                 </div>
               )}

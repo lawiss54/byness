@@ -24,9 +24,9 @@ export const useContentSections = ({ initialSections = [] }: UseContentSectionsP
       setLoading(true);
       const data = await ContentService.loadSections();
       setSections(data);
-      toast.success("تم تحميل البيانات بنجاح");
+      toast.success("Les données ont été chargées avec succès");
     } catch (error) {
-      console.error("خطأ في تحميل البيانات:", error);
+      console.error(" Erreur lors du chargement des données  :", error);
       toast.error("Erreur lors du chargement du contenu");
       setSections([]);
     } finally {

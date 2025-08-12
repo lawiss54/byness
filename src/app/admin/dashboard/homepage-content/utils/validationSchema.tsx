@@ -4,21 +4,20 @@ import { z } from 'zod'
  * مخطط التحقق من صحة بيانات النموذج باستخدام Zod
  */
 export const contentFormSchema = z.object({
-  title: z.string().optional(),
   badge: z.string().optional(),
   mainTitle: z.string()
-    .min(1, "الرجاء إدخال العنوان الرئيسي")
-    .max(200, "العنوان الرئيسي طويل جداً"),
+    .min(1, "Veuillez saisir l’adresse principale")
+    .max(200, "L’adresse principale est trop longue"),
   description: z.string()
-    .min(1, "الرجاء إدخال الوصف")
-    .max(1000, "الوصف طويل جداً"),
+    .min(1, "Veuillez saisir la description")
+    .max(1000, "La description est trop longue"),
   buttonText: z.string().optional(),
   buttonLink: z.string()
     .optional()
     .refine((val) => {
       if (!val) return true
       return val.startsWith('/') || val.startsWith('http://') || val.startsWith('https://')
-    }, "الرابط يجب أن يبدأ بـ / أو http:// أو https://"),
+    }, "Le lien doit commencer par / ou http:// ou https://"),
   image: z.string().optional(),
   isActive: z.boolean().default(true),
 })

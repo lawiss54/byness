@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
         },
         body: JSON.stringify(body),
     });
+    
 
     if (!res.ok) {
         return NextResponse.json({ success: false, message: 'Erreur exportation' }, { status: 500 });
