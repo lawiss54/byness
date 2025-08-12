@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Edit, Phone, User, Package } from 'lucide-react';
 import { Button, Badge } from '@/components/shared/ui';
 import Image from 'next/image';
-import {getStatusBadge, formatDate} from '../utils/orderUtils'
+import {getStatusBadge, formatDate, getWilayaNameByNumber} from '../utils/orderUtils'
 
 interface OrderDetailsProps {
   order: any;
@@ -12,7 +12,7 @@ interface OrderDetailsProps {
 }
 
 export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
-  console.log(order);
+  
   return (
     <motion.div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
@@ -113,12 +113,19 @@ export function OrderDetails({ order, onEdit, onClose }: OrderDetailsProps) {
                       />
                     </div>
                   </div>
-                  {order.shippingType !== 'home' && (
+                  {order.shippingType && (
                     <div className="flex justify-between items-start">
                       <span className="text-gray-600">Adresse :</span>
                       <div className="text-right">
-                        <p className="text-gray-900">{order.customerAddress}</p>
-                        <p className="text-sm text-gray-600">{order.municipality}, {order.wilaya}</p>
+                        <p className="text-gray-900">
+                          {order?.customerAddress || "Adresse non fournie"}
+                        </p>
+                        {(order?.municipality || order?.wilaya) && (
+                          <p className="text-sm text-gray-600">
+                            {order?.municipality && `${order.municipality}, `}
+                            {order?.wilaya && getWilayaNameByNumber(order.wilaya)}
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}

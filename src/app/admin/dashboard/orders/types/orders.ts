@@ -56,6 +56,7 @@ export type Order = {
   customerName: string;
   customerPhone: string;
   shippingType: string;
+  deskId?: string;
   customerAddress: string;
   municipality: string;
   wilaya: string;

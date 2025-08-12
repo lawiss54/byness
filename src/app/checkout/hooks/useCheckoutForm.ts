@@ -53,8 +53,6 @@ export const useCheckoutForm = () => {
     }
   });
 
-  
-
   const nextStep = async () => {
     const isValid = await form.trigger();
     if (isValid && currentStep < 2) {

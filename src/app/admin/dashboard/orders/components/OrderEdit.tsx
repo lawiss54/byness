@@ -63,6 +63,7 @@ export default function OrderEdit({
     calculateTotal,
   } = useOrderEdit(order, onSave, setPdfUrl, setShowPdfModal);
 
+  
   if (loading) {
     return <Loader type="fashion" size="lg" text="Chargement des données..." overlay={true} />;
   }

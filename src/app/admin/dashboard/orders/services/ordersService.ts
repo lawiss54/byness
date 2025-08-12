@@ -5,11 +5,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
 export const ordersService = {
   
   async fetchOrders() {
-    const res = await fetch(`${API_BASE_URL}/api/orders`);
+    const res = await fetch(`${API_BASE_URL}/api/orders`, {
+      cache: "no-store",
+    });
     if (!res.ok) {
       throw new Error('Failed to fetch orders');
     }
     const data = await res.json();
+    
     
     return data.data.map(transformOrders);
   },
