@@ -103,14 +103,6 @@ export default function CartItem({ item, index }: CartItemProps) {
                   </h3>
 
                   <div className="flex flex-wrap items-center gap-3 text-sm text-brand-darkGreen-400">
-                    <span className="flex items-center gap-1">
-                      <div
-                        className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-                        style={{ backgroundColor: item?.color?.toLowerCase() }}
-                      />
-                      {item?.colorName}
-                    </span>
-                    <span>Taille: {item.size}</span>
                     <span className="bg-brand-camel-100 text-brand-camel-600 px-2 py-1 rounded-full text-xs font-semibold">
                       {item?.category}
                     </span>
