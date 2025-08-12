@@ -8,7 +8,6 @@ import type { ContentSection } from './types'
 export const convertToCamelCase = (data: any): ContentSection => {
   return {
     id: data.id?.toString() || "",
-    title: data.title || "",
     badge: data.badge || "",
     mainTitle: data.main_title || "",
     description: data.description || "",

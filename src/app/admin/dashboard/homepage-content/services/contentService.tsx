@@ -36,7 +36,6 @@ export class ContentService {
    */
   static async createSection(formData: ContentFormData): Promise<any> {
     const sectionData = {
-      title: formData.title.trim(),
       badge: formData.badge.trim(),
       mainTitle: formData.mainTitle.trim(),
       description: formData.description.trim(),
@@ -68,7 +67,6 @@ export class ContentService {
    */
   static async updateSection(sectionId: string, formData: ContentFormData): Promise<any> {
     const sectionData = {
-      title: formData.title.trim(),
       badge: formData.badge.trim(),
       mainTitle: formData.mainTitle.trim(),
       description: formData.description.trim(),
