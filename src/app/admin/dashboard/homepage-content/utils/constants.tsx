@@ -5,7 +5,7 @@ export const API_ENDPOINTS = {
   CONTENT: `${API_BASE_URL}/api/contant`,
   CONTENT_BY_ID: (id: string) => `${API_BASE_URL}/api/contant/${id}`,
   CONTENT_STATUS: (id: string) => `${API_BASE_URL}/api/contant/status/${id}`,
-  CONTENT_ORDER: `${API_BASE_URL}/api/contant/order`,
+  CONTENT_ORDER: (id: string) => `${API_BASE_URL}/api/contant/order/${id}`,
 } as const
 
 export const FORM_VALIDATION = {

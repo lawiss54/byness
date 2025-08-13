@@ -193,7 +193,7 @@ export const ContentSectionsList: React.FC<ContentSectionsListProps> = ({
                           <EyeOff className="w-3 h-3 sm:w-4 sm:h-4" />
                         )
                       }
-                      onClick={() => onToggleActive(section.id)}
+                      onClick={() => onToggleActive(section.id, !section.isActive)}
                       title={section.isActive ? "Masquer" : "Afficher"}
                       disabled={statusButton}
                       className="min-w-[28px] sm:min-w-[32px]"

@@ -137,8 +137,8 @@ export class ContentService {
   /**
    * إعادة ترتيب الأقسام
    */
-  static async reorderSections(sections: ContentSection[]): Promise<any> {
-    const res = await fetch(API_ENDPOINTS.CONTENT_ORDER, {
+  static async reorderSections(sectionId: string , direction: string): Promise<any> {
+    const res = await fetch(API_ENDPOINTS.CONTENT_ORDER(sectionId), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

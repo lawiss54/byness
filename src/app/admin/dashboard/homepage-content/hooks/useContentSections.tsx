@@ -72,15 +72,35 @@ export const useContentSections = ({ initialSections = [] }: UseContentSectionsP
   /**
    * تغيير حالة القسم
    */
-  const handleToggleActive = useCallback(async (sectionId: string) => {
-    // ... implementation ...
-  }, [sections]);
+  const handleToggleActive = useCallback(async (sectionId: string, newStatus: boolean) => {
+    setButtonLoading(true);
+    try {
+      const toggleActive = await ContentService.toggleSectionStatus(sectionId, newStatus);
+      toast.success(toggleActive.message);
+      const updatedSections = sections.filter((section) => section.id !== sectionId);
+      await saveSections(updatedSections);
+    } catch (error) {
+      toast.error("Une erreur s'est produite lors de la suppression");
+    } finally {
+        setButtonLoading(false);
+    }
+  }, [sections, saveSections]);
 
   /**
    * إعادة ترتيب الأقسام
    */
   const handleReorder = useCallback(async (sectionId: string, direction: "up" | "down") => {
-    // ... implementation ...
+    setButtonLoading(true);
+    try {
+      const toggleActive = await ContentService.reorderSections(sectionId, direction);
+      toast.success(toggleActive.message);
+      const updatedSections = sections.filter((section) => section.id !== sectionId);
+      await saveSections(updatedSections);
+    } catch (error) {
+      toast.error("Une erreur s'est produite lors de la suppression");
+    } finally {
+        setButtonLoading(false);
+    }
   }, [sections, saveSections]);
 
   // The useEffect for initial loading is removed.
