@@ -1,15 +1,13 @@
-
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-    
-    const cookieStore = cookies();
-    const token = (await cookieStore).get('access_token')?.value;
+    try {
+        const cookieStore = cookies();
+        const token = (await cookieStore).get('access_token')?.value;
 
-    
         if (!API_URL) {
             console.error("API_URL is not defined in environment variables");
             return NextResponse.json(
@@ -28,18 +26,18 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         const { id } = params;
         
         if (!id) {
-          return NextResponse.json(
-            { error: "ID du contant manquant" },
-            { status: 400 }
-          );
+            return NextResponse.json(
+                { error: "ID du contant manquant" },
+                { status: 400 }
+            );
         }
 
-        const body = await req.json(); // البيانات المرسلة من المستخدم
+        const body = await req.json();
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-        const res = await fetch(`${API_URL}/api/contant-managers/order/${$id}`, {
+        const res = await fetch(`${API_URL}/api/contant-managers/order/${id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -52,24 +50,36 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
         clearTimeout(timeoutId);
 
+        const data = await res.json();
+
         if (!res.ok) {
-          const errorMessage =
-            data?.error ||
-            data?.message ||
-            `Erreur ${res.status}: ${res.statusText}`;
-  
-          return NextResponse.json(
-            { error: errorMessage },
-            { status: res.status }
-          );
+            const errorMessage =
+                data?.error ||
+                data?.message ||
+                `Erreur ${res.status}: ${res.statusText}`;
+
+            return NextResponse.json(
+                { error: errorMessage },
+                { status: res.status }
+            );
         }
 
-        const data = await res.json();
+        return NextResponse.json(data, { status: res.status });
+
+    } catch (error) {
+        console.error("API route error:", error);
         
+        // Handle AbortError specifically
+        if (error instanceof Error && error.name === 'AbortError') {
+            return NextResponse.json(
+                { error: "Timeout de la requête" },
+                { status: 408 }
+            );
+        }
 
-        return NextResponse.json(data.message, {status: res.status})
-
-
+        return NextResponse.json(
+            { error: "Erreur interne du serveur" },
+            { status: 500 }
+        );
+    }
 }
-
-

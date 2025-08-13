@@ -152,7 +152,7 @@ export const useContentSections = ({ initialSections = [] }: UseContentSectionsP
         setButtonLoading(false);
       }
   }, [sections, saveSections]);
-  // The useEffect for initial loading is removed.
+  
 
   // حساب الإحصائيات باستخدام useMemo لتحسين الأداء
   const statistics = useMemo(() => ({
