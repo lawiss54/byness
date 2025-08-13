@@ -131,8 +131,7 @@ export async function GET() {
       );
     }
 
-    console.log("API Response received successfully");
-
+    
     // إرجاع البيانات مع معلومات إضافية
     return NextResponse.json(
       {
@@ -140,7 +139,14 @@ export async function GET() {
         data: data.data || data,
         message: data.message || "Données récupérées avec succès"
       },
-      { status: 200 }
+      { 
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
     );
 
   } catch (error) {

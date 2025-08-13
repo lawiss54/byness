@@ -16,6 +16,8 @@ export class ContentService {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
+      next: { revalidate: 0 }, 
+      cache: "no-store", 
     })
 
     if (!res.ok) {
