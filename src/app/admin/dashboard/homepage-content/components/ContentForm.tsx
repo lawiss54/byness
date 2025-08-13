@@ -37,7 +37,8 @@ export const ContentForm: React.FC<ContentFormProps> = ({
     formState: { errors },
     setValue,
     watch,
-    reset
+    reset,
+    control
   } = useForm<ContentFormSchema>({
     resolver: zodResolver(contentFormSchema),
     defaultValues: {
@@ -132,8 +133,8 @@ export const ContentForm: React.FC<ContentFormProps> = ({
         <FormHeader isEditing={!!editingSection} onClose={handleClose} />
         
         <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4 sm:p-6 space-y-4 sm:space-y-6"> 
-          <FormFields register={register} errors={errors} />
-          <ButtonFields register={register} errors={errors} />
+          <FormFields register={register} errors={errors} control={control} />
+          <ButtonFields errors={errors} control={control} />
           <ImageUpload
             watchedImage={watchedImage}
             onImageUpload={handleImageUpload}

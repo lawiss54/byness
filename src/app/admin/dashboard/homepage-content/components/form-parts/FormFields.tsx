@@ -1,37 +1,50 @@
 import type React from "react"
 import { Input } from '@/components/Dashboard/HomeHeroSection'
 import { Type, Tag } from 'lucide-react'
-import type { UseFormRegister, FieldErrors } from 'react-hook-form'
+import { useForm, type UseFormRegister, type FieldErrors, type Control, Controller } from 'react-hook-form'
 import type { ContentFormSchema } from '../../utils/validationSchema'
 
 interface FormFieldsProps {
   register: UseFormRegister<ContentFormSchema>;
   errors: FieldErrors<ContentFormSchema>;
+  control: Control<ContentFormSchema>;
 }
 
-export const FormFields: React.FC<FormFieldsProps> = ({ register, errors }) => {
+export const FormFields: React.FC<FormFieldsProps> = ({ register, errors, control }) => {
   return (
     <>
       {/* Badge */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Badge (optionnel)</label>
-        <Input
-          {...register('badge')}
-          placeholder="Exemple: Nouveau, Recommandé, Offre spéciale"
-          icon={<Tag className="w-4 h-4" />}
-          error={errors.badge?.message}
+        <Controller
+          name="badge"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              placeholder="Exemple: Nouveau, Recommandé, Offre spéciale"
+              icon={<Tag className="w-4 h-4" />}
+              error={errors.badge?.message}
+            />
+          )}
         />
       </div>
 
       {/* Main Title */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal *</label>
-        <Input
-          {...register('mainTitle')}
-          placeholder="Le titre qui apparaîtra sur la page"
-          required
-          icon={<Type className="w-4 h-4" />}
-          error={errors.mainTitle?.message}
+        <Controller
+          name="mainTitle"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              placeholder="Le titre qui apparaîtra sur la page"
+              required
+              icon={<Type className="w-4 h-4" />}
+              error={errors.mainTitle?.message}
+            />
+          )}
         />
       </div>
 
