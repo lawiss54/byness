@@ -29,7 +29,7 @@ export const PreviewMode: React.FC<PreviewModeProps> = ({ sections, previewMode 
           </p>
         </div>
       </div>
-      
+
       <div className="space-y-6 sm:space-y-8">
         {sections
           .filter((section) => section.isActive)

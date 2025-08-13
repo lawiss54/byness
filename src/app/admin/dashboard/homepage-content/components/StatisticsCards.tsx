@@ -24,7 +24,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({ sections }) =>
           </div>
         </div>
       </Card>
-      
+
       <Card className="p-3 sm:p-4">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
@@ -38,7 +38,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({ sections }) =>
           </div>
         </div>
       </Card>
-      
+
       <Card className="p-3 sm:p-4">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
@@ -52,7 +52,7 @@ export const StatisticsCards: React.FC<StatisticsCardsProps> = ({ sections }) =>
           </div>
         </div>
       </Card>
-      
+
       <Card className="p-3 sm:p-4 col-span-2 lg:col-span-1">
         <div className="flex items-center justify-between">
           <div className="min-w-0">

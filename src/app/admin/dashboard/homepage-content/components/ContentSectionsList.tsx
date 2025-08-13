@@ -105,15 +105,15 @@ export const ContentSectionsList: React.FC<ContentSectionsListProps> = ({
                       <span>Ordre: {section.order}</span>
                     </div>
                   </div>
-                  
+
                   <h4 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
                     {section.mainTitle}
                   </h4>
-                  
+
                   <p className="text-gray-600 mb-3 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                     {section.description}
                   </p>
-                  
+
                   {section.buttonText && (
                     <div className="flex items-center gap-2 mb-3 sm:mb-4">
                       <Button size="sm" variant="outline" className="pointer-events-none bg-transparent">
@@ -131,7 +131,7 @@ export const ContentSectionsList: React.FC<ContentSectionsListProps> = ({
                       )}
                     </div>
                   )}
-                  
+
                   <div className="text-xs sm:text-sm text-gray-500">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                       <span>Créé le: {new Date(section.createdAt).toLocaleDateString("fr-FR")}</span>
