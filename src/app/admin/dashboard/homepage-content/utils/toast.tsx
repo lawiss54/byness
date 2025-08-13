@@ -1,13 +1,14 @@
+import {toast} from "react-toastify";
 /**
  * نظام الإشعارات المؤقت
  */
 export const toast = {
   success: (message: string) => {
-    console.log("Success:", message)
+    toast.success(message)
     // يمكن استبدالها بمكتبة إشعارات حقيقية لاحقاً
   },
   error: (message: string) => {
-    console.log("Error:", message)
+    toast.error(message)
     // يمكن استبدالها بمكتبة إشعارات حقيقية لاحقاً
   },
 }

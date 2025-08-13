@@ -27,7 +27,7 @@ export class ContentService {
     if (response.data && Array.isArray(response.data)) {
       return response.data.map(convertToCamelCase)
     } else {
-      throw new Error("تنسيق البيانات غير صحيح")
+      throw new Error("Le format des données est incorrect")
     }
   }
 
@@ -56,7 +56,7 @@ export class ContentService {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || "خطأ في إنشاء القسم")
+      throw new Error(errorData.message || "Erreur lors de la création du contenu promotionnel")
     }
 
     return await response.json()
@@ -87,7 +87,7 @@ export class ContentService {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}))
-      throw new Error(errorData.message || "خطأ في تحديث القسم")
+      throw new Error(errorData.message || "Erreur lors de la mise à jour du contenu promotionnel")
     }
 
     return await response.json()
