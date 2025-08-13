@@ -3,11 +3,15 @@ import type React from "react"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from "framer-motion"
-import { X, Save, Upload, Type, Tag, Link, FileText } from 'lucide-react'
-import { Button, Input } from '@/components/Dashboard/HomeHeroSection'
 import { contentFormSchema, type ContentFormSchema } from '../utils/validationSchema'
 import type { ContentSection } from '../utils/types'
-import { useEffect } from 'react' // إضافة useEffect
+import { useEffect } from 'react'
+import { FormHeader } from './form-parts/FormHeader'
+import { FormFields } from './form-parts/FormFields'
+import { ButtonFields } from './form-parts/ButtonFields'
+import { ImageUpload } from './form-parts/ImageUpload'
+import { StatusToggle } from './form-parts/StatusToggle'
+import { FormActions } from './form-parts/FormActions'
 
 interface ContentFormProps {
   showForm: boolean
@@ -125,164 +129,22 @@ export const ContentForm: React.FC<ContentFormProps> = ({
         exit={{ scale: 0.95, opacity: 0 }}
         className="bg-white rounded-3xl shadow-2xl w-full max-w-6xl max-h-full overflow-auto"
       >
-        <div className="sticky top-0 bg-white p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between rounded-t-xl">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-            {editingSection ? "Modifier le contenu" : "Ajouter nouveau contenu"}
-          </h2>
-          <Button
-            size="sm"
-            variant="ghost"
-            icon={<X className="w-4 h-4" />}
-            onClick={handleClose}
-            className="flex-shrink-0"
-          />
-        </div>
+        <FormHeader isEditing={!!editingSection} onClose={handleClose} />
         
         <form onSubmit={handleSubmit(handleFormSubmit)} className="p-4 sm:p-6 space-y-4 sm:space-y-6"> 
-
-          {/* Badge */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Badge (optionnel)</label>
-            <Input
-              {...register('badge')}
-              placeholder="Exemple: Nouveau, Recommandé, Offre spéciale"
-              icon={<Tag className="w-4 h-4" />}
-              error={errors.badge?.message}
-            />
-          </div>
-
-          {/* Main Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Titre principal *</label>
-            <Input
-              {...register('mainTitle')}
-              placeholder="Le titre qui apparaîtra sur la page"
-              required
-              icon={<Type className="w-4 h-4" />}
-              error={errors.mainTitle?.message}
-            />
-          </div>
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
-            <textarea
-              {...register('description')}
-              placeholder="Description détaillée du contenu"
-              required
-              rows={4}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
-                errors.description ? 'border-red-300' : 'border-gray-300'
-              }`}
-            />
-            {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
-          </div>
-
-          {/* Button Text and Link - Side by side on larger screens */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Texte du bouton</label>
-              <Input
-                {...register('buttonText')}
-                placeholder="Exemple: En savoir plus"
-                icon={<FileText className="w-4 h-4" />}
-                error={errors.buttonText?.message}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Lien du bouton </label>
-              <Input
-                {...register('buttonLink')}
-                placeholder="Exemple: /services ou https://exemple.com"
-                icon={<Link className="w-4 h-4" />}
-                error={errors.buttonLink?.message}
-              />
-            </div>
-          </div>
-
-          {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Image (optionnel)</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-blue-400 transition-colors">
-              {watchedImage ? (
-                <div className="space-y-4">
-                  <img
-                    src={watchedImage || "/placeholder.svg"}
-                    alt="Aperçu"
-                    className="max-h-32 sm:max-h-40 mx-auto rounded-lg"
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setValue('image', '')}
-                  >
-                    Supprimer l'image
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Upload className="w-6 h-6 sm:w-8 sm:h-8 mx-auto text-gray-400" />
-                  <div>
-                    <label className="cursor-pointer">
-                      <span className="text-blue-600 hover:text-blue-700 text-sm sm:text-base">
-                        Choisir un fichier
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0]
-                          if (file) handleImageUpload(file)
-                        }}
-                      />
-                    </label>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, WEBP, AVIF jusqu'à 15MB</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Active Toggle */}
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="isActive"
-              {...register('isActive')}
-              className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-            />
-            <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-              Afficher ce contenu sur la page d'accueil
-            </label>
-          </div>
-
-          {/* Form Actions */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4 sm:pt-6 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              className="w-full sm:w-auto order-2 sm:order-1 bg-transparent"
-            >
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              icon={
-                isLoading ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )
-              }
-              className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto order-1 sm:order-2"
-            >
-              {isLoading ? "Enregistrement en cours..." : editingSection ? "Mettre à jour" : "Enregistrer"}
-            </Button>
-          </div>
+          <FormFields register={register} errors={errors} />
+          <ButtonFields register={register} errors={errors} />
+          <ImageUpload
+            watchedImage={watchedImage}
+            onImageUpload={handleImageUpload}
+            onRemoveImage={() => setValue('image', '')}
+          />
+          <StatusToggle register={register} />
+          <FormActions
+            isLoading={isLoading}
+            isEditing={!!editingSection}
+            onClose={handleClose}
+          />
         </form>
       </motion.div>
     </motion.div>
