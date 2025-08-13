@@ -91,18 +91,67 @@ export const useContentSections = ({ initialSections = [] }: UseContentSectionsP
    */
   const handleReorder = useCallback(async (sectionId: string, direction: "up" | "down") => {
     setButtonLoading(true);
-    try {
-      const toggleActive = await ContentService.reorderSections(sectionId, direction);
-      toast.success(toggleActive.message);
-      const updatedSections = sections.filter((section) => section.id !== sectionId);
-      await saveSections(updatedSections);
-    } catch (error) {
-      toast.error("Une erreur s'est produite lors de la suppression");
-    } finally {
+      try {
+        const response = await ContentService.reorderSections(sectionId, direction);
+        toast.success(response.message);
+        
+        // إنشاء نسخة من المصفوفة للتعديل عليها
+        const updatedSections = [...sections];
+        
+        // العثور على العنصر المطلوب تحديثه
+        const currentSectionIndex = updatedSections.findIndex(section => section.id === sectionId);
+        
+        if (currentSectionIndex === -1) {
+          console.error("Section not found");
+          return;
+        }
+        
+        const currentSection = updatedSections[currentSectionIndex];
+        
+        if (direction === "up") {
+          // البحث عن العنصر الذي فوقه (ترتيب أقل)
+          const targetIndex = updatedSections.findIndex(
+            section => section.order === currentSection.order - 1
+          );
+          
+          if (targetIndex !== -1) {
+            // تبديل الترتيب بين العنصرين
+            const targetSection = updatedSections[targetIndex];
+            const tempOrder = currentSection.order;
+            
+            updatedSections[currentSectionIndex].order = targetSection.order;
+            updatedSections[targetIndex].order = tempOrder;
+          }
+        } 
+        else if (direction === "down") {
+          // البحث عن العنصر الذي تحته (ترتيب أكبر)
+          const targetIndex = updatedSections.findIndex(
+            section => section.order === currentSection.order + 1
+          );
+          
+          if (targetIndex !== -1) {
+            // تبديل الترتيب بين العنصرين
+            const targetSection = updatedSections[targetIndex];
+            const tempOrder = currentSection.order;
+            
+            updatedSections[currentSectionIndex].order = targetSection.order;
+            updatedSections[targetIndex].order = tempOrder;
+          }
+        }
+        
+        // ترتيب المصفوفة حسب order الجديد
+        updatedSections.sort((a, b) => a.order - b.order);
+        
+        // حفظ التحديثات
+        await saveSections(updatedSections);
+        
+      } catch (error) {
+        console.error("Error reordering sections:", error);
+        toast.error("Une erreur s'est produite lors de la réorganisation");
+      } finally {
         setButtonLoading(false);
-    }
+      }
   }, [sections, saveSections]);
-
   // The useEffect for initial loading is removed.
 
   // حساب الإحصائيات باستخدام useMemo لتحسين الأداء

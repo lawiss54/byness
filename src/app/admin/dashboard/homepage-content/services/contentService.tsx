@@ -144,7 +144,7 @@ export class ContentService {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ sections }),
+      body: JSON.stringify({ direction: direction }),
     })
 
     if (!res.ok) {
