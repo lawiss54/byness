@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 interface SelectOption {
   value: string;
   label: string;
-  id: string;
+  id?: string;
 }
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
