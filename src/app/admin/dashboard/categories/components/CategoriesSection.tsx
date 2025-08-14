@@ -88,7 +88,7 @@ export default function CategoriesSection({ initialCategories }: CategoriesSecti
       <div className="flex justify-between items-center">
         <div className="w-1/3 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <Input 
+          <Input
             placeholder="Search categories..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

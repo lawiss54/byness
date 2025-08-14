@@ -29,7 +29,7 @@ export function useCategoriesManagement({ initialCategories = [] }: UseCategorie
       const res = await fetch('/api/Category');
       if (!res.ok) throw new Error('Failed to fetch categories');
       const data = await res.json();
-      setCategories(data.data || []);
+      setCategories(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erreur lors du chargement");
     } finally {
@@ -38,7 +38,7 @@ export function useCategoriesManagement({ initialCategories = [] }: UseCategorie
   }, []);
 
   const filteredCategories = useMemo(() => {
-    if (!Array.isArray(categories)) return [];
+    if (!categories) return [];
     return categories.filter(cat => {
       const matchesSearch = cat?.name?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = statusFilter === 'all' || cat?.status === statusFilter;
