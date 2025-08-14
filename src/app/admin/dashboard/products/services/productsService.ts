@@ -62,7 +62,7 @@ export async function fetchCategoriesService(): Promise<Category[]> {
     throw new Error(`HTTP error! status: ${res.status}`);
   }
   const data = await res.json();
-  return data.data.map(transformCategory);
+  return data.map(transformCategory);
 }
 
 export async function deleteProductService(productSlug: string): Promise<void> {
