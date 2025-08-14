@@ -3,7 +3,6 @@ import { ContentService } from '../services/contentService'
 import { toast } from '../utils/toast'
 import type { ContentSection } from '../utils/types'
 import type { ContentFormSchema } from '../utils/validationSchema'
-import { convertToCamelCase } from '../utils/convertToCamelCase'
 
 /**
  * Hook لإدارة نموذج المحتوى
@@ -13,9 +12,7 @@ export const useContentForm = (
   setSections: React.Dispatch<React.SetStateAction<ContentSection[]>>
 ) => {
   const [showForm, setShowForm] = useState(false)
-  const [editingSection, setEditingSection] = useState<ContentSection | null>(
-    null
-  )
+  const [editingSection, setEditingSection] = useState<ContentSection | null>(null)
   const [buttonLoading, setButtonLoading] = useState(false)
 
   /**
@@ -37,46 +34,67 @@ export const useContentForm = (
   /**
    * إرسال النموذج
    */
-  const handleSubmit = useCallback(
-    async (data: ContentFormSchema) => {
+  const handleSubmit = useCallback(async (data: ContentFormSchema) => {
+    try {
       setButtonLoading(true)
-      try {
-        let result
 
-        if (editingSection) {
-          // تحديث القسم الموجود
-          result = await ContentService.updateSection(editingSection.id, data)
-          const updatedSection = convertToCamelCase(
-            result.data
-          ) as ContentSection
-          const updatedSections = sections.map((section) =>
-            section.id === editingSection.id ? updatedSection : section
-          )
-          setSections(updatedSections)
-        } else {
-          // إنشاء قسم جديد
-          result = await ContentService.createSection(data)
-          const newSection = convertToCamelCase(result.data) as ContentSection
-          setSections((prevSections) => [...prevSections, newSection])
+      if (editingSection) {
+        // تحديث القسم الموجود
+        const result = await ContentService.updateSection(editingSection.id, data)
+
+        const newSection: ContentSection = {
+          ...editingSection,
+          badge: data.badge || "",
+          mainTitle: data.mainTitle,
+          description: data.description,
+          buttonText: data.buttonText || "",
+          buttonLink: data.buttonLink || "",
+          image: data.image || "",
+          isActive: data.isActive,
+          updatedAt: new Date().toISOString(),
         }
 
-        toast.success(
-          result.message || "L'opération a été effectuée avec succès"
+        const updatedSections = sections.map((section) =>
+          section.id === editingSection.id ? newSection : section
         )
-        resetForm()
-      } catch (error) {
-        console.error("Erreur lors de la soumission du formulaire:", error)
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "Une erreur inattendue s’est produite"
-        toast.error(errorMessage)
-      } finally {
-        setButtonLoading(false)
+        setSections(updatedSections)
+        toast.success(result.message || "La section a été mise à jour avec succès");
+      } else {
+        // إنشاء قسم جديد
+        const result = await ContentService.createSection(data)
+
+        const newSection: ContentSection = {
+          id: result.data?.id?.toString() || Date.now().toString(),
+          badge: data.badge || "",
+          mainTitle: data.mainTitle,
+          description: data.description,
+          buttonText: data.buttonText || "",
+          buttonLink: data.buttonLink || "",
+          image: data.image || "",
+          isActive: data.isActive,
+          order: sections.length + 1,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        setSections((prevSections) => [...prevSections, newSection])
+        toast.success(result.message || "La section a été créée avec succès")
       }
-    },
-    [editingSection, sections, setSections, resetForm]
-  )
+
+      resetForm()
+    } catch (error) {
+      console.error(" Erreur au handleSubmit:", error)
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        toast.error("Erreur de connexion au serveur, veuillez réessayer")
+      } else if (error instanceof Error) {
+        toast.error(error.message)
+      } else {
+        toast.error("Une erreur inattendue s’est produite")
+      }
+    } finally {
+      setButtonLoading(false)
+    }
+  }, [editingSection, sections, setSections, resetForm])
 
   return {
     showForm,
