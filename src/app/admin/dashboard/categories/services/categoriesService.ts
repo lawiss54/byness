@@ -43,3 +43,77 @@ export async function fetchCategories(): Promise<Category[]> {
     return [];
   }
 }
+
+
+export async function deletCategory(slug: string): Promise<void> {
+  const res = await fetch(`${API_BASE_URL}/api/Category/${slug}`,
+  {
+    method: 'DELETE',
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
+
+  if(!res.ok){
+    console.error(`Failed to fetch categories: ${res.status} ${res}`);
+    // Return empty array as a fallback to prevent crashes downstream
+    return [];
+  }
+
+  try {
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Failed to parse JSON for delet category:", error);
+    return [];
+  }
+}
+
+export async function saveCategory(data: Partial<Category>): Promise<void> {
+  const res = await fetch(`${API_BASE_URL}/api/Category`,
+  {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if(!res.ok){
+    console.error(`Failed to fetch categories: ${res.status} ${res.statusText}`);
+    // Return empty array as a fallback to prevent crashes downstream
+    return [];
+  }
+
+  try {
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Failed to parse JSON for delet category:", error);
+    return [];
+  }
+}
+
+export async function changeStatusCategory(slug: string, status: string): Promise<void>{
+  const res = await fetch(`${API_BASE_URL}/api/Category/${slug}/status`, {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({status: data}),
+  });
+  if(!res.ok){
+    console.error(`Failed to update status of categories: ${res.status} ${res.statusText}`);
+    // Return empty array as a fallback to prevent crashes downstream
+    return [];
+  }
+  try {
+    const result = await res.json();
+    return result;
+  } catch (error) {
+    console.error("Failed to parse JSON for delet category:", error);
+    return [];
+  }
+}

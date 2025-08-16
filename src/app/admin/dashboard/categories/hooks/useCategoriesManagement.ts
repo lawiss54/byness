@@ -4,6 +4,7 @@ import { useState, useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import type { Category } from '@/app/admin/types';
+import {deletCategory, saveCategory, changeStatusCategory} from "../services/categoriesService"
 
 type CategoryStatus = 'all' | 'active' | 'inactive';
 
@@ -19,7 +20,7 @@ export function useCategoriesManagement({ initialCategories = [] }: UseCategorie
   const [statusFilter, setStatusFilter] = useState<CategoryStatus>('all');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(4);
   const router = useRouter();
 
   const fetchCategories = useCallback(async () => {
@@ -61,11 +62,33 @@ export function useCategoriesManagement({ initialCategories = [] }: UseCategorie
   }), [categories]);
 
   const handleDeleteCategory = async (slug: string) => {
-    // ... (implementation remains the same)
+    setLoading(true);
+    console.log(slug);
+    try {
+      const response = await deletCategory(slug);
+      setLoading(false);
+      toast.success(response);
+      
+    } catch (error) {
+      toast.error('Impossible de supprimer la catégorie.')
+      console.error("Failed to parse JSON for categories:", error);
+    } finally {
+      setLoading(false)
+    }
   };
 
-  const handleSaveCategory = async (data: Partial<Category>, editingCategory: Category | null) => {
-    // ... (implementation remains the same)
+  const handleSaveCategory = async (data: Partial<Category>, editingCategory) => {
+    setLoading(true);
+    try {
+      const response = await saveCategory(data);
+      setLoading(false);
+      toast.success(response);
+    } catch (error) {
+      toast.error('Impossible de ajoute la catégorie.')
+      console.error("Failed to parse JSON for categories:", error);
+    } finally {
+      setLoading(false)
+    }
   };
 
   const handleSelectCategory = (slug: string) => {
@@ -83,7 +106,17 @@ export function useCategoriesManagement({ initialCategories = [] }: UseCategorie
   };
 
   const handleChangeStatusCategory = async (slug: string, status: string) => {
-    // ... (implementation remains the same)
+    setLoading(true);
+    try {
+      const response = await changeStatusCategory(slug, status);
+      setLoading(false);
+      toast.success(response);
+    } catch (error) {
+      toast.error('Impossible de ajoute la catégorie.')
+      console.error("Failed to parse JSON for categories:", error);
+    } finally {
+      setLoading(false)
+    }
   };
 
   return {
