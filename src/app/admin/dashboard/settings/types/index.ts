@@ -4,7 +4,7 @@ export interface Settings {
   storeGeneral: StoreGeneral;
   socialMedia: SocialMedia;
   pixelTracking: PixelTracking;
-  yalidineApiKey: string;
+  yalidineApiKey?: string;
 }
 
 export interface StoreGeneral {

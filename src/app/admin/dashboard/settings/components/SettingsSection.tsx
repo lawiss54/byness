@@ -8,7 +8,7 @@ import { useSettings } from '../hooks/useSettings';
 import type { Settings as SettingsType } from '../services';
 import BasicInformation from './BasicInformation'; // Assuming this is a sub-component
 import ContactInformation from './ContactInformation'; // Assuming this is a sub-component
-import Yalidine from './Yalidine'; // Assuming this is a sub-component
+import PixelsIformation from './PixelsIformation'; // Assuming this is a sub-component
 
 interface SettingsSectionProps {
   initialSettings: SettingsType | null;
@@ -39,7 +39,7 @@ export default function SettingsSection({ initialSettings }: SettingsSectionProp
       case 'social':
         return <ContactInformation settings={settings.socialmedia} setSettings={setSettings} />; // Simplified
       case 'pixels':
-        return <Yalidine settings={settings.pixel} setSettings={setSettings} />; // Simplified
+        return <PixelsIformation settings={settings.pixel} setSettings={setSettings} />; // Simplified
       default:
         return null;
     }
