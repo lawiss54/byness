@@ -35,11 +35,11 @@ export default function SettingsSection({ initialSettings }: SettingsSectionProp
   const renderTabContent = () => {
     switch (activeTab) {
       case 'general':
-        return <BasicInformation settings={settings} setSettings={setSettings} />;
+        return <BasicInformation settings={settings.settings} setSettings={setSettings} />;
       case 'social':
-        return <ContactInformation settings={settings} setSettings={setSettings} />; // Simplified
+        return <ContactInformation settings={settings.socialmedia} setSettings={setSettings} />; // Simplified
       case 'pixels':
-        return <Yalidine settings={settings} setSettings={setSettings} />; // Simplified
+        return <Yalidine settings={settings.pixel} setSettings={setSettings} />; // Simplified
       default:
         return null;
     }

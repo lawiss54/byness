@@ -26,6 +26,7 @@ export const useSettings = ({ initialSettings }: UseSettingsProps) => {
   }, [initialSettings]);
 
   const saveSettings = async (newSettings: Settings) => {
+    console.log(newSettings)
     try {
       setLoading(true);
       const res = await fetch('/api/settings', {

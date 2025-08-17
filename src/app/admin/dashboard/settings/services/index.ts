@@ -1,11 +1,5 @@
-export interface Settings {
-  // Define the shape of the settings object
-  // This is an assumption based on the component names
-  storeName: string;
-  contactEmail: string;
-  contactPhone: string;
-  yalidineApiKey: string;
-}
+import {Settings} from "../types";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
 
 export async function getSettings(): Promise<Settings | null> {
