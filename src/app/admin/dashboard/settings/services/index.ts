@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
 
 export async function getSettings(): Promise<Settings | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}/api/settings`);
+    const res = await fetch(`/api/settings`);
     if (!res.ok) {
       throw new Error('Failed to fetch settings');
     }
