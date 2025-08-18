@@ -12,19 +12,66 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
   const logoInputRef = useRef<HTMLInputElement>(null);
   const iconInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (field: keyof StoreGeneral, file: File | null) => {
+  // التحقق من وجود handleInputChange
+  if (!handleInputChange || typeof handleInputChange !== 'function') {
+    console.error('handleInputChange is not provided or is not a function');
+    return <div>Error: handleInputChange function is missing</div>;
+  }
+
+  // تحويل الملف إلى base64
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileChange = async (field: keyof StoreGeneral, file: File | null) => {
     if (file) {
-      // إنشاء URL للصورة لعرضها
-      const fileUrl = URL.createObjectURL(file);
-      handleInputChange(field, fileUrl);
+      try {
+        // تحويل الصورة إلى base64
+        const base64String = await convertToBase64(file);
+        console.log(`Uploading ${field}:`, base64String.substring(0, 50) + '...');
+        handleInputChange(field, base64String);
+      } catch (error) {
+        console.error('Error converting file to base64:', error);
+      }
     }
   };
 
   const clearFile = (field: keyof StoreGeneral, inputRef: React.RefObject<HTMLInputElement>) => {
-    if (inputRef.current) {
-      inputRef.current.value = '';
+    try {
+      // تنظيف input file
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+      // تنظيف القيمة في الحالة
+      console.log(`Clearing ${field}`);
+      handleInputChange(field, '');
+    } catch (error) {
+      console.error('Error in clearFile:', error);
     }
-    handleInputChange(field, '');
+  };
+
+  // التحقق من نوع الصورة وإرجاع المسار المناسب
+  const getImageSrc = (imagePath: File | string | undefined): string | null => {
+    if (!imagePath) return null;
+    
+    // إذا كان File object (نادر الحدوث في هذا السياق)
+    if (imagePath instanceof File) {
+      return URL.createObjectURL(imagePath);
+    }
+    
+    // إذا كانت الصورة base64 (صورة جديدة محملة)
+    if (typeof imagePath === 'string' && imagePath.startsWith('data:image/')) {
+      return imagePath;
+    }
+    
+    // إذا كانت الصورة رابط كامل (من Laravel API أو CDN)
+    // Laravel API يرسل الرابط كاملاً فلا نحتاج لمعالجة إضافية
+    return typeof imagePath === 'string' ? imagePath : null;
   };
 
   const ImagePreview = ({ src, alt, onClear }: { src: string; alt: string; onClear: () => void }) => (
@@ -33,11 +80,20 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
         src={src} 
         alt={alt} 
         className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+        onError={(e) => {
+          // في حالة فشل تحميل الصورة
+          console.error('Error loading image:', src);
+        }}
       />
       <button
         type="button"
-        onClick={onClear}
-        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClear();
+        }}
+        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors z-10"
+        title="حذف الصورة"
       >
         <X className="w-3 h-3" />
       </button>
@@ -122,9 +178,9 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             Logo
           </label>
           <div className="space-y-3">
-            {settings?.siteLogo && (
+            {getImageSrc(settings?.siteLogo) && (
               <ImagePreview 
-                src={settings.siteLogo} 
+                src={getImageSrc(settings.siteLogo)!} 
                 alt="Logo de la boutique"
                 onClear={() => clearFile('siteLogo', logoInputRef)}
               />
@@ -136,7 +192,9 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  handleFileChange('siteLogo', file || null);
+                  if (file) {
+                    handleFileChange('siteLogo', file);
+                  }
                 }}
                 className="hidden"
                 id="logo-upload"
@@ -149,7 +207,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
                 Choisir un logo
               </label>
               <span className="text-sm text-gray-500">
-                PNG, JPG jusqu'à 2MB
+                PNG, JPG jusqu'à 15MB
               </span>
             </div>
           </div>
@@ -161,9 +219,9 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             Favicon
           </label>
           <div className="space-y-3">
-            {settings?.siteIcon && (
+            {getImageSrc(settings?.siteIcon) && (
               <ImagePreview 
-                src={settings.siteIcon} 
+                src={getImageSrc(settings.siteIcon)!} 
                 alt="Favicon"
                 onClear={() => clearFile('siteIcon', iconInputRef)}
               />
@@ -175,7 +233,9 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  handleFileChange('siteIcon', file || null);
+                  if (file) {
+                    handleFileChange('siteIcon', file);
+                  }
                 }}
                 className="hidden"
                 id="icon-upload"
