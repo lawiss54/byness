@@ -12,13 +12,13 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
   const logoInputRef = useRef<HTMLInputElement>(null);
   const iconInputRef = useRef<HTMLInputElement>(null);
 
-  // التحقق من وجود handleInputChange
+  // Vérification de la présence de handleInputChange
   if (!handleInputChange || typeof handleInputChange !== 'function') {
-    console.error('handleInputChange is not provided or is not a function');
-    return <div>Error: handleInputChange function is missing</div>;
+    console.error('handleInputChange n\'est pas fourni ou n\'est pas une fonction');
+    return <div>Erreur: fonction handleInputChange manquante</div>;
   }
 
-  // تحويل الملف إلى base64
+  // Conversion du fichier en base64
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -31,46 +31,62 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
   const handleFileChange = async (field: keyof StoreGeneral, file: File | null) => {
     if (file) {
       try {
-        // تحويل الصورة إلى base64
+        // Conversion de l'image en base64
         const base64String = await convertToBase64(file);
-        console.log(`Uploading ${field}:`, base64String.substring(0, 50) + '...');
+        console.log(`Téléchargement ${field}:`, base64String.substring(0, 50) + '...');
         handleInputChange(field, base64String);
       } catch (error) {
-        console.error('Error converting file to base64:', error);
+        console.error('Erreur lors de la conversion du fichier en base64:', error);
       }
     }
   };
 
-  const clearFile = (field: keyof StoreGeneral, inputRef: React.RefObject<HTMLInputElement>) => {
+  // Fonction séparée pour supprimer siteLogo
+  const clearLogo = () => {
     try {
-      // تنظيف input file
-      if (inputRef.current) {
-        inputRef.current.value = '';
+      // Nettoyage de l'input file
+      if (logoInputRef.current) {
+        logoInputRef.current.value = '';
       }
-      // تنظيف القيمة في الحالة
-      console.log(`Clearing ${field}`);
-      handleInputChange(field, '');
+      // Nettoyage de la valeur dans l'état
+      console.log('Suppression siteLogo');
+      handleInputChange('siteLogo', '');
     } catch (error) {
-      console.error('Error in clearFile:', error);
+      console.error('Erreur dans clearLogo:', error);
     }
   };
 
-  // التحقق من نوع الصورة وإرجاع المسار المناسب
+  // Fonction séparée pour supprimer siteIcon
+  const clearIcon = () => {
+    try {
+      // Nettoyage de l'input file
+      if (iconInputRef.current) {
+        iconInputRef.current.value = '';
+      }
+      // Nettoyage de la valeur dans l'état
+      console.log('Suppression siteIcon');
+      handleInputChange('siteIcon', '');
+    } catch (error) {
+      console.error('Erreur dans clearIcon:', error);
+    }
+  };
+
+  // Vérification du type d'image et retour du chemin approprié
   const getImageSrc = (imagePath: File | string | undefined): string | null => {
     if (!imagePath) return null;
     
-    // إذا كان File object (نادر الحدوث في هذا السياق)
+    // Si c'est un objet File (rare dans ce contexte)
     if (imagePath instanceof File) {
       return URL.createObjectURL(imagePath);
     }
     
-    // إذا كانت الصورة base64 (صورة جديدة محملة)
+    // Si l'image est en base64 (nouvelle image téléchargée)
     if (typeof imagePath === 'string' && imagePath.startsWith('data:image/')) {
       return imagePath;
     }
     
-    // إذا كانت الصورة رابط كامل (من Laravel API أو CDN)
-    // Laravel API يرسل الرابط كاملاً فلا نحتاج لمعالجة إضافية
+    // Si l'image est un lien complet (de Laravel API ou CDN)
+    // Laravel API envoie le lien complet donc pas besoin de traitement supplémentaire
     return typeof imagePath === 'string' ? imagePath : null;
   };
 
@@ -81,8 +97,8 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
         alt={alt} 
         className="w-20 h-20 object-cover rounded-lg border border-gray-200"
         onError={(e) => {
-          // في حالة فشل تحميل الصورة
-          console.error('Error loading image:', src);
+          // En cas d'échec du chargement de l'image
+          console.error('Erreur lors du chargement de l\'image:', src);
         }}
       />
       <button
@@ -93,7 +109,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
           onClear();
         }}
         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 transition-colors z-10"
-        title="حذف الصورة"
+        title="Supprimer l'image"
       >
         <X className="w-3 h-3" />
       </button>
@@ -182,7 +198,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
               <ImagePreview 
                 src={getImageSrc(settings.siteLogo)!} 
                 alt="Logo de la boutique"
-                onClear={() => clearFile('siteLogo', logoInputRef)}
+                onClear={clearLogo}
               />
             )}
             <div className="flex items-center space-x-3">
@@ -223,7 +239,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
               <ImagePreview 
                 src={getImageSrc(settings.siteIcon)!} 
                 alt="Favicon"
-                onClear={() => clearFile('siteIcon', iconInputRef)}
+                onClear={clearIcon}
               />
             )}
             <div className="flex items-center space-x-3">
@@ -242,7 +258,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
               />
               <label
                 htmlFor="icon-upload"
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                className="inline-flex items-components px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Choisir un favicon
