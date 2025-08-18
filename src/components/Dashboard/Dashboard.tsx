@@ -127,7 +127,10 @@ export default function Dashboard() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (products.length === 0 && orders.length === 0) return;
-    console.log(order);
+    if(order){
+      console.log(order);
+    }
+    
 
     const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);
     const totalProducts = products.length;
