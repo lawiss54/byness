@@ -128,11 +128,16 @@ export default function Dashboard() {
     if (typeof window === 'undefined') return;
     if (products.length === 0 && orders.length === 0) return;
    
-      console.log(orders);
-    
-    
 
-    const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);
+    const totalRevenue = orders
+      .filter(order => order.status === "Livré")  
+      .reduce((sum, order) => {
+        const orderItemsTotal = order.items.reduce((itemsSum, item) => {
+          return itemsSum + (parseFloat(item.price) * item.quantity);
+        }, 0);
+        
+        return sum + orderItemsTotal;
+      }, 0);
     const totalProducts = products.length;
     const totalOrders = orders.length;
     const activeProducts = products.filter(p => p.status === 'active').length;
