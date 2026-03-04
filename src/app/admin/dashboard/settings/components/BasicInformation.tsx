@@ -133,7 +133,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             </label>
             <input 
               type="text"
-              value={settings?.siteName || ''}
+              value={settings?.siteName}
               onChange={(e) => handleInputChange('siteName', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -145,7 +145,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             E-mail de contact
           </label>
           <input
-            value={settings?.contactEmail || ''}
+            value={settings?.contactEmail}
             onChange={(e) => handleInputChange('contactEmail', e.target.value)}
             type="email"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -157,7 +157,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             Numéro de téléphone
           </label>
           <input
-            value={settings?.contactPhone || ''}
+            value={settings?.contactPhone}
             onChange={(e) => handleInputChange('contactPhone', e.target.value)}
             type="tel"
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -169,7 +169,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             Adresse
           </label>
           <textarea
-            value={settings?.address || ''}
+            value={settings?.address}
             onChange={(e) => handleInputChange('address', e.target.value)}
             rows={3}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -181,7 +181,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             Description de la boutique
           </label>
           <textarea
-            value={settings?.siteDescription || ''}
+            value={settings?.siteDescription}
             onChange={(e) => handleInputChange('siteDescription', e.target.value)}
             rows={3}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
