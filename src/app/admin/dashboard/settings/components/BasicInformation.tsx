@@ -131,7 +131,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Nom de la boutique
             </label>
-            <Input 
+            <input 
               type="text"
               value={settings?.siteName || ''}
               onChange={(e) => handleInputChange('siteName', e.target.value)}
@@ -144,7 +144,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
           <label className="block text-sm font-medium text-gray-700 mb-2">
             E-mail de contact
           </label>
-          <Input
+          <input
             value={settings?.contactEmail || ''}
             onChange={(e) => handleInputChange('contactEmail', e.target.value)}
             type="email"
@@ -156,7 +156,7 @@ export default function BasicInformation({ settings, handleInputChange }: BasicI
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Numéro de téléphone
           </label>
-          <Input
+          <input
             value={settings?.contactPhone || ''}
             onChange={(e) => handleInputChange('contactPhone', e.target.value)}
             type="tel"
