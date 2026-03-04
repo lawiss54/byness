@@ -43,7 +43,7 @@ export default function PixelsInformation({ settings, handleInputChange }: Pixel
       <div className="relative">
         <input
           type={showFields[field as keyof typeof showFields] ? "text" : "password"}
-          value={value || ''}
+          value={value}
           onChange={(e) => handleInputChange(field, e.target.value)}
           placeholder={placeholder}
           className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-gray-400"
