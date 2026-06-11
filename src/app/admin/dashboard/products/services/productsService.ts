@@ -5,7 +5,8 @@ import type { Product, Category } from '@/app/admin/types';
  * Service for products API calls
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_LOCAL_URL;
+const PRODUCTS_API_ROUTE = '/api/products';
+const CATEGORIES_API_ROUTE = '/api/Category';
 
 // Transform raw product data from API
 function transformProduct(raw: any): Product {
@@ -48,21 +49,39 @@ function transformCategory(raw: any): Category {
 }
 
 export async function fetchProductsService(): Promise<Product[]> {
-  const res = await fetch(`${API_BASE_URL}/api/products`);
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+  try {
+    const res = await fetch(PRODUCTS_API_ROUTE, { cache: 'no-store' });
+    if (!res.ok) {
+      console.error('Failed to fetch products:', res.status, res.statusText);
+      return [];
+    }
+
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : data?.data ?? [];
+
+    return items.map(transformProduct);
+  } catch (error) {
+    console.error('Failed to parse products response:', error);
+    return [];
   }
-  const data = await res.json();
-  return data.data.map(transformProduct);
 }
 
 export async function fetchCategoriesService(): Promise<Category[]> {
-  const res = await fetch(`${API_BASE_URL}/api/Category`);
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
+  try {
+    const res = await fetch(CATEGORIES_API_ROUTE, { cache: 'no-store' });
+    if (!res.ok) {
+      console.error('Failed to fetch categories:', res.status, res.statusText);
+      return [];
+    }
+
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : data?.data ?? [];
+
+    return items.map(transformCategory);
+  } catch (error) {
+    console.error('Failed to parse categories response:', error);
+    return [];
   }
-  const data = await res.json();
-  return data.map(transformCategory);
 }
 
 export async function deleteProductService(productSlug: string): Promise<void> {

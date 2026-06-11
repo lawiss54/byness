@@ -3,7 +3,7 @@ import { fetchProductsService, fetchCategoriesService } from './services/product
 import ProductsSection from './components/ProductsSection';
 import { Loader } from '@/components/shared';
 
-
+export const dynamic = 'force-dynamic';
 
 // This is the new Server Component entry point for the products management page.
 export default async function AdminProductsPage() {
