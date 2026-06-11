@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, Facebook, BarChart3, Save } from 'lucide-react';
 import { Button, Card } from '@/components/shared/ui';
 import { useSettings } from '../hooks/useSettings';
-import type { Settings as SettingsType } from '../services';
+import type { Settings as SettingsType } from '../types';
 import BasicInformation from './BasicInformation'; // Assuming this is a sub-component
 import ContactInformation from './ContactInformation'; // Assuming this is a sub-component
 import PixelsIformation from './PixelsIformation'; // Assuming this is a sub-component

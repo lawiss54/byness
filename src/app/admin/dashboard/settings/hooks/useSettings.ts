@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Settings } from '../services'; // Assuming settings type is in the service file
+import type { Settings } from '../types';
+import { normalizeSettings } from '../services';
 
 interface UseSettingsProps {
   initialSettings: Settings | null;
 }
 
 export const useSettings = ({ initialSettings }: UseSettingsProps) => {
-  const [settings, setSettings] = useState(initialSettings);
+  const [settings, setSettings] = useState<Settings>(() => normalizeSettings(initialSettings));
   const [loading, setLoading] = useState(false);
 
   // The logic for different types of settings (site, social, pixel)
@@ -20,9 +21,7 @@ export const useSettings = ({ initialSettings }: UseSettingsProps) => {
     // If initialSettings are provided, set them.
     // The original component had complex logic with localStorage
     // which we are simplifying by relying on server-fetched data.
-    if (initialSettings) {
-      setSettings(initialSettings);
-    }
+    setSettings(normalizeSettings(initialSettings));
   }, [initialSettings]);
 
   const saveSettings = async (newSettings: Settings) => {
@@ -43,7 +42,7 @@ export const useSettings = ({ initialSettings }: UseSettingsProps) => {
       }
 
       const response = await res.json();
-      setSettings(response.data); // Update state with response from server
+      setSettings(normalizeSettings(response?.data ?? response ?? newSettings));
       toast.success('Paramètres enregistrés avec succès');
     } catch (error) {
       console.error('Error saving settings:', error);

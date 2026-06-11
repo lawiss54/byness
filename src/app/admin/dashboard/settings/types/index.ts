@@ -1,10 +1,7 @@
 export interface Settings {
-  // Define the shape of the settings object
-  // This is an assumption based on the component names
-  storeGeneral: StoreGeneral;
-  socialMedia: SocialMedia;
-  pixelTracking: PixelTracking;
-  yalidineApiKey?: string;
+  settings: StoreGeneral;
+  socialmedia: SocialMedia;
+  pixel: PixelTracking;
 }
 
 export interface StoreGeneral {
