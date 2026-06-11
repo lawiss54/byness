@@ -18,6 +18,40 @@ export default function SettingsSection({ initialSettings }: SettingsSectionProp
   const [activeTab, setActiveTab] = useState('general');
   const { settings, setSettings, loading, saveSettings } = useSettings({ initialSettings });
 
+  const handleInputChange = (field: string, value: string) => {
+    setSettings((prev) => {
+      if (!prev) return prev;
+
+      if (activeTab === 'general') {
+        return {
+          ...prev,
+          settings: {
+            ...prev.settings,
+            [field]: value,
+          },
+        } as SettingsType;
+      }
+
+      if (activeTab === 'social') {
+        return {
+          ...prev,
+          socialmedia: {
+            ...prev.socialmedia,
+            [field]: value,
+          },
+        } as SettingsType;
+      }
+
+      return {
+        ...prev,
+        pixel: {
+          ...prev.pixel,
+          [field]: value,
+        },
+      } as SettingsType;
+    });
+  };
+
   const handleSave = () => {
     if (settings) {
       saveSettings(settings);
@@ -33,13 +67,15 @@ export default function SettingsSection({ initialSettings }: SettingsSectionProp
   // The original component had three separate forms for site, social, and pixels.
   // I will assume these have been extracted into their own components.
   const renderTabContent = () => {
+    if (!settings) return null;
+
     switch (activeTab) {
       case 'general':
-        return <BasicInformation settings={settings.settings} handleInputChange={setSettings} />;
+        return <BasicInformation settings={settings.settings} handleInputChange={handleInputChange} />;
       case 'social':
-        return <ContactInformation settings={settings.socialmedia} handleInputChange={setSettings} />; // Simplified
+        return <ContactInformation settings={settings.socialmedia} handleInputChange={handleInputChange} />;
       case 'pixels':
-        return <PixelsIformation settings={settings.pixel} handleInputChange={setSettings} />; // Simplified
+        return <PixelsIformation settings={settings.pixel} handleInputChange={handleInputChange} />;
       default:
         return null;
     }

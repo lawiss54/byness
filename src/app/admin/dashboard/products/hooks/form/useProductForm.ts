@@ -13,7 +13,7 @@ const productSchema = z.object({
   description: z.string().min(10, 'La description doit contenir au moins 10 caractères'),
   price: z.number().min(0, 'Le prix doit être positif'),
   original_price: z.number().optional(),
-  category: z.string().min(1, 'Veuillez sélectionner une catégorie'),
+  category: z.string().optional(),
   stockQuantity: z.number().min(0, 'Le stock doit être positif'),
   status: z.enum(['active', 'inactive']),
   badge: z.string().optional(),

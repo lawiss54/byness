@@ -89,13 +89,12 @@ export default function BasicInfoSection({
         <Select
           {...register('category')}
           label="Catégorie"
-          placeholder="Sélectionner une catégorie"
+          placeholder="Sélectionner une catégorie (optionnel)"
           options={[
-            { value: product?.category, label: product?.category },
+            { value: product?.category || '', label: product?.category || 'Aucune catégorie' },
             ...(categories || [])
           ]}
           error={errors.category?.message}
-          required
         />
         
         <Select
