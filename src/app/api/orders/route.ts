@@ -1,191 +1,143 @@
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { cookies } from "next/headers";
-import { getFingerprint } from "@/lib/getFingerprint";
-import { rateLimiter } from "@/lib/rateLimiter";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const dynamic = "force-dynamic"; // يمنع ISR من Next.js
-export const revalidate = 0; // ضمان إضافي لتعطيل التخزين المؤقت
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export async function GET(NextResponse) {
+// Headers مشتركة لمنع التخزين المؤقت
+const NO_CACHE_HEADERS = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+  "Pragma": "no-cache",
+  "Expires": "0",
+};
+
+// دالة مساعدة للتحقق من API_URL
+function checkApiUrl() {
+  if (!API_URL) {
+    console.error("API_URL is not defined in environment variables");
+    return NextResponse.json(
+      { error: "Configuration serveur manquante" },
+      { status: 500, headers: NO_CACHE_HEADERS }
+    );
+  }
+  return null;
+}
+
+// دالة مساعدة لاستخراج رسالة الخطأ
+function extractErrorMessage(data: any, status: number, statusText: string) {
+  return (
+    data?.error ||
+    data?.message ||
+    data?.data?.error ||
+    `Erreur ${status}: ${statusText}`
+  );
+}
+
+// دالة مساعدة لـ fetch مع JSON parsing
+async function fetchJson(url: string, options?: RequestInit) {
+  const res = await fetch(url, options);
+
+  let data: any;
   try {
-    if (!API_URL) {
-      console.error("API_URL is not defined in environment variables");
-      return NextResponse.json(
-        { error: "Configuration serveur manquante" },
-        {
-          status: 500,
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-            "Pragma": "no-cache",
-            "Expires": "0",
-          },
-        }
-      );
-    }
+    data = await res.json();
+  } catch {
+    throw new Error("PARSE_ERROR");
+  }
 
-    const res = await fetch(`${API_URL}/api/order`, {
-      cache: "no-store", // ⬅ يمنع التخزين المؤقت من fetch
+  return { res, data };
+}
+
+export async function GET() {
+  const urlError = checkApiUrl();
+  if (urlError) return urlError;
+
+  try {
+    const { res, data } = await fetchJson(`${API_URL}/api/order`, {
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
     });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch (parseError) {
-      console.error("Failed to parse JSON response:", parseError);
-      return NextResponse.json(
-        { error: "Réponse serveur invalide" },
-        {
-          status: 502,
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-            "Pragma": "no-cache",
-            "Expires": "0",
-          },
-        }
-      );
-    }
-
     if (!res.ok) {
-      const errorMessage =
-        data?.error ||
-        data?.message ||
-        data?.data?.error ||
-        `Erreur ${res.status}: ${res.statusText}`;
-
-      console.error("API Error:", {
-        status: res.status,
-        statusText: res.statusText,
-        error: errorMessage,
-        data: data,
-      });
-
+      const errorMessage = extractErrorMessage(data, res.status, res.statusText);
+      console.error("API Error:", { status: res.status, error: errorMessage });
       return NextResponse.json(
         { error: errorMessage },
-        {
-          status: res.status,
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-            "Pragma": "no-cache",
-            "Expires": "0",
-          },
-        }
+        { status: res.status, headers: NO_CACHE_HEADERS }
       );
     }
 
     if (!data) {
       return NextResponse.json(
         { error: "Aucune donnée reçue du serveur" },
-        {
-          status: 204,
-          headers: {
-            "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-            "Pragma": "no-cache",
-            "Expires": "0",
-          },
-        }
+        { status: 204, headers: NO_CACHE_HEADERS }
       );
     }
 
-    return NextResponse.json(data, {
-      status: 200,
-      headers: {
-        "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0",
-      },
-    });
+    return NextResponse.json(data, { status: 200, headers: NO_CACHE_HEADERS });
+
   } catch (error: any) {
-    console.error("Orders API Error:", error);
-
-    let status = 500;
-    let message =
-      "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site.";
-
-    if (error.name === "AbortError") {
-      status = 408;
-      message = "Délai d'attente de la requête dépassé";
-    } else if (error.name === "TypeError" && error.message.includes("fetch")) {
-      status = 503;
-      message = "Impossible de se connecter au serveur";
-    }
-
-    return NextResponse.json(
-      { error: message },
-      {
-        status,
-        headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0",
-        },
-      }
-    );
+    return handleFetchError(error);
   }
 }
 
+export async function POST(req: NextRequest) {
+  const urlError = checkApiUrl();
+  if (urlError) return urlError;
 
-
-export async function POST(req: NextRequest, NextResponse) {
   try {
-   
-
     const body = await req.json();
 
-    const response = await fetch(`${API_URL}/api/order`, {
-      method: 'POST',
+    const { res, data } = await fetchJson(`${API_URL}/api/order`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(body),
     });
 
-    let data;
-    try {
-      data = await response.json();
-    } catch (error) {
-      console.error('Failed to parse JSON response', error);
-      return NextResponse.json(
-        { error: 'Réponse serveur invalide' },
-        { status: 502 }
-      );
+    if (!res.ok) {
+      const errorMessage = extractErrorMessage(data, res.status, res.statusText);
+      return NextResponse.json({ error: errorMessage }, { status: res.status });
     }
 
-    if (!response.ok) {
-      const errorMessage =
-        data?.error ||
-        data?.message ||
-        data?.data?.error ||
-        `Erreur ${response.status}: ${response.statusText}`;
+    return NextResponse.json(data.data ?? data, { status: res.status });
 
-      return NextResponse.json(
-        { error: errorMessage },
-        { status: response.status }
-      );
-    }
-
-    return NextResponse.json(data.data || data, { status: response.status });
   } catch (error: any) {
-    console.error('Product POST API Error:', error);
+    return handleFetchError(error);
+  }
+}
 
-    if (error?.name === 'AbortError') {
-      return NextResponse.json(
-        { error: "Délai d'attente de la requête dépassé" },
-        { status: 408 }
-      );
-    }
+// معالج مركزي للأخطاء
+function handleFetchError(error: any): NextResponse {
+  console.error("Fetch Error:", error);
 
+  if (error?.message === "PARSE_ERROR") {
     return NextResponse.json(
-      { error: "Erreur lors de la création de la commande" },
-      { status: 500 }
+      { error: "Réponse serveur invalide" },
+      { status: 502, headers: NO_CACHE_HEADERS }
     );
   }
+  if (error?.name === "AbortError") {
+    return NextResponse.json(
+      { error: "Délai d'attente de la requête dépassé" },
+      { status: 408, headers: NO_CACHE_HEADERS }
+    );
+  }
+  if (error?.name === "TypeError" && error.message.includes("fetch")) {
+    return NextResponse.json(
+      { error: "Impossible de se connecter au serveur" },
+      { status: 503, headers: NO_CACHE_HEADERS }
+    );
+  }
+
+  return NextResponse.json(
+    { error: "Erreur serveur. Si le problème persiste, veuillez contacter le développeur du site." },
+    { status: 500, headers: NO_CACHE_HEADERS }
+  );
 }
