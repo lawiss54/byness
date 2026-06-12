@@ -10,7 +10,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export const dynamic = "force-dynamic"; // يمنع ISR من Next.js
 export const revalidate = 0; // ضمان إضافي لتعطيل التخزين المؤقت
 
-export async function GET() {
+export async function GET(NextResponse) {
   try {
     if (!API_URL) {
       console.error("API_URL is not defined in environment variables");
@@ -133,17 +133,9 @@ export async function GET() {
 
 
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest, NextResponse) {
   try {
-    const fingerprint = getFingerprint(req);
-    const { success } = await rateLimiter.limit(fingerprint);
-
-    if (!success) {
-      return NextResponse.json(
-        { error: "Trop de requêtes. Veuillez réessayer après quelques secondes." },
-        { status: 429 }
-      );
-    }
+   
 
     const body = await req.json();
 
