@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { Product, Category } from '@/app/admin/types';
-import { fetchProductsService } from '../services/productsService';
+import { fetchProductsService, fetchCategoriesService } from '../services/productsService';
 
 interface UseProductsProps {
   initialProducts?: Product[];
@@ -19,6 +19,10 @@ export function useProducts({ initialProducts = [], initialCategories = [] }: Us
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
 
+  useEffect(() => {
+    setCategories(initialCategories);
+  }, [initialCategories]);
+
   // This function can be called to manually refetch or update the product list.
   const fetchProducts = useCallback(async () => {
     try {
@@ -34,7 +38,20 @@ export function useProducts({ initialProducts = [], initialCategories = [] }: Us
     }
   }, []);
 
-  // The initial fetch in useEffect is no longer needed as data is passed via props.
+  const fetchCategories = useCallback(async () => {
+    try {
+      const data = await fetchCategoriesService();
+      setCategories(data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (initialCategories.length === 0) {
+      fetchCategories();
+    }
+  }, [fetchCategories, initialCategories.length]);
 
   return {
     products,
@@ -42,6 +59,7 @@ export function useProducts({ initialProducts = [], initialCategories = [] }: Us
     loading,
     error,
     categories,
-    fetchProducts
+    fetchProducts,
+    fetchCategories
   };
 }
