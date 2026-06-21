@@ -57,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const metadata = {
     title: settings?.settings?.siteName || 'By Ness - Boutique premium pour femmes',
     description: settings?.settings?.siteDescription || 'Découvrez le luxe et l’élégance avec notre collection de marques premium.',
-    keywords: settings?.settings?.keywords || ['byness', 'vêtements femme', 'algérie', 'premium', 'mode', 'luxe'],
+    keywords: settings?.settings?.keywords || ['bynescollection', 'bynes collection', 'Atelier bynes', 'bynesscollection', 'byness collection', 'luxe'],
     authors: [{ name: settings?.settings?.siteName || 'By Ness' }],
     robots: {
       index: true,
